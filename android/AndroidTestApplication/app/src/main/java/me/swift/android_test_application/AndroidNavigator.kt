@@ -16,14 +16,14 @@ class AndroidNavigator(
   private val bottomNavigationView: BottomNavigationView
 ) {
 
-  val device = AndroidDevice(this)
+  val androidDevice = AndroidDevice(this)
 
-  val pageHome = Page(device)
-  val pageClone = Page(device)
+  val pageHome = Page(androidDevice)
+  val pageClone = Page(androidDevice)
 
-  val viewHome = AndroidDeviceView(context, pageHome)
+  val viewHome = AndroidDeviceView(context, androidDevice, pageHome)
   val viewHello = createHelloWorldView()
-  val viewClone = AndroidDeviceView(context, pageClone)
+  val viewClone = AndroidDeviceView(context, androidDevice, pageClone)
 
   var currentView: View = viewHome
     private set

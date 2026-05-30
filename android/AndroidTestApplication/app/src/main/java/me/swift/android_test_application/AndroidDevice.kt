@@ -10,7 +10,7 @@ class AndroidDevice(
   override fun getTime(): Long = System.currentTimeMillis()
 
   override fun startRepainting(page: Page) {
-    val currentView = androidNavigator.getCurrentView()
+    val currentView = androidNavigator.currentView
 
     if ((currentView is AndroidDeviceView) && (currentView.getPage() === page)) {
       currentView.startRepainting()

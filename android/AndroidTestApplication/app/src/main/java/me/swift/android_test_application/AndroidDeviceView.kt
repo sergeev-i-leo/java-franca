@@ -15,10 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class AndroidDeviceView(
   context: Context,
+  private val androidDevice: AndroidDevice,
   private val page: Page
 ) : View(context) {
-
-  private val androidDevice = AndroidDevice(this)
 
   private val painter = AndroidPainter()
 
