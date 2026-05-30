@@ -27,7 +27,9 @@ compileKotlin {
 sourceSets {
   main {
     java {
-      srcDirs("src/main/java")
+      srcDirs("src/main/java",
+              "../../java_common/src/main/java"
+      )
     }
   }
 }
