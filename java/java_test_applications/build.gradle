@@ -2,7 +2,7 @@ plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.8.0'
 }
 
-group = 'me.swift'
+group = 'java_test_applications'
 version = '1.0-SNAPSHOT'
 
 repositories {
