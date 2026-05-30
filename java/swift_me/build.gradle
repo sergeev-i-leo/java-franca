@@ -1,0 +1,55 @@
+plugins {
+  id 'org.jetbrains.kotlin.jvm' version '1.8.0'
+}
+
+group = 'ru.sergeev_i_leo'
+version = '1.0-SNAPSHOT'
+
+repositories {
+  mavenCentral()
+  maven { url 'https://packages.jetbrains.team/maven/p/skija/maven' }
+}
+
+dependencies {
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
+  implementation("io.ktor:ktor-client-java:2.3.7")
+  implementation("org.apache.xmlgraphics:batik-transcoder:1.16")
+  implementation("org.apache.xmlgraphics:batik-codec:1.16")
+  implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.80")
+  implementation("javazoom:jlayer:1.0.1")
+  implementation("org.nanohttpd:nanohttpd:2.3.1")
+}
+
+compileKotlin {
+  kotlinOptions.jvmTarget = '17'
+}
+
+sourceSets {
+  main {
+    java {
+      srcDirs("src/main/java")
+    }
+  }
+}
+
+task swing_test_application(type: JavaExec) {
+  mainClass = 'ru.sergeev_i_leo.swing_applications.SwingTestApplication'
+  classpath = sourceSets.main.runtimeClasspath
+  debug = true
+
+  jvmArgs = [
+          '-Xdebug',
+          '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
+  ]
+}
+
+task skia_test_application(type: JavaExec) {
+  mainClass = 'ru.sergeev_i_leo.skia_applications.SkiaTestApplication'
+  classpath = sourceSets.main.runtimeClasspath
+  debug = true
+
+  jvmArgs = [
+          '-Xdebug',
+          '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
+  ]
+}
