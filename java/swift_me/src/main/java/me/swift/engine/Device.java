@@ -11,7 +11,7 @@ public class Device extends TranspilableClass {
     return 0L;
   }
 
-  public void startRepainting() {
+  public void startRepainting(Page page) {
   }
 
 }

@@ -7,11 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SwingTestApplication extends JPanel {
 
   SwingDevice swingDevice = new SwingDevice(this);
   Page page = null;
+
+  ScheduledExecutorService scheduledExecutorService = null;
+  long lastTickTime = 0L;
 
   public SwingTestApplication() {
     setPreferredSize(new Dimension(800, 600));
@@ -36,6 +42,30 @@ public class SwingTestApplication extends JPanel {
   protected void paintComponent(Graphics graphics) {
     super.paintComponent(graphics);
     page.paint(new SwingPainter(graphics));
+  }
+
+  public void startRepainting() {
+    if (scheduledExecutorService != null) {
+      return;
+    }
+    scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    lastTickTime = swingDevice.getTime();
+    scheduledExecutorService.scheduleAtFixedRate(this::tick, 0, 2, TimeUnit.MILLISECONDS);
+  }
+
+  private void tick() {
+    long tickTime = swingDevice.getTime();
+    if (tickTime - lastTickTime < 16) {
+      return;
+    }
+    lastTickTime = tickTime;
+    if (page.needsRepainting()) {
+      SwingUtilities.invokeLater(() -> repaint());
+    }
+    if (!page.needsNextRepainting()) {
+      scheduledExecutorService.shutdown();
+      scheduledExecutorService = null;
+    }
   }
 
   public static void main(String[] args) {

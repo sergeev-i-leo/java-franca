@@ -2,32 +2,25 @@ package me.swift.android_test_application
 
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import me.swift.engine.Device
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class AndroidDevice(
-  private val activity: MainActivity,
-  private val view: View
+  private val view: AndroidDeviceView
 ) : Device() {
 
   private var scheduledExecutorService: ScheduledExecutorService? = null
   private var lastTickTime = 0L
   private val mainHandler = Handler(Looper.getMainLooper())
+  private val isPainting = AtomicBoolean(false)
 
-  @Volatile
-  private var isPainting = false
-
-  override fun getTime(): Long {
-    return System.currentTimeMillis()
-  }
+  override fun getTime(): Long = System.currentTimeMillis()
 
   override fun startRepainting() {
-    if (scheduledExecutorService != null) {
-      return
-    }
+    if (scheduledExecutorService != null) return
 
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     lastTickTime = getTime()
@@ -39,29 +32,29 @@ class AndroidDevice(
     )
   }
 
-  fun onPaintStart() {
-    isPainting = true
-  }
-
-  fun onPaintEnd() {
-    isPainting = false
-  }
-
   private fun tick() {
-    val tickTime = time
-    if (tickTime - lastTickTime < 16) {
-      return
-    }
+    val tickTime = getTime()
+    if (tickTime - lastTickTime < 16) return
 
     lastTickTime = tickTime
 
-    if ((!isPainting) && (activity.page.needsRepainting())) {
+    val currentPage = view.getPage()
+
+    if ((!isPainting.get()) && (currentPage?.needsRepainting() == true)) {
       mainHandler.post { view.invalidate() }
     }
 
-    if (!activity.page.needsNextRepainting()) {
+    if (currentPage?.needsNextRepainting() != true) {
       scheduledExecutorService?.shutdown()
       scheduledExecutorService = null
     }
+  }
+
+  fun onPaintStart() {
+    isPainting.set(true)
+  }
+
+  fun onPaintEnd() {
+    isPainting.set(false)
   }
 }
