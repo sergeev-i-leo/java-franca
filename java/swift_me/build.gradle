@@ -2,7 +2,7 @@ plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.8.0'
 }
 
-group = 'ru.sergeev_i_leo'
+group = 'me.swift'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -33,7 +33,7 @@ sourceSets {
 }
 
 task swing_test_application(type: JavaExec) {
-  mainClass = 'ru.sergeev_i_leo.swing_applications.SwingTestApplication'
+  mainClass = 'me.swift.swing_applications.SwingTestApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 
@@ -44,7 +44,7 @@ task swing_test_application(type: JavaExec) {
 }
 
 task skia_test_application(type: JavaExec) {
-  mainClass = 'ru.sergeev_i_leo.skia_applications.SkiaTestApplication'
+  mainClass = 'me.swift.skia_applications.SkiaTestApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 
