@@ -1,4 +1,4 @@
-package me.swift.engine.json;
+package me.swift.engine.parsers.json;
 
 public class JsonBooleanPrimitive extends JsonPrimitive {
 

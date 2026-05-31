@@ -1,11 +1,9 @@
-package me.swift.engine.json;
+package me.swift.engine.parsers.json;
 
 import me.swift.engine.TranspilableClass;
 import me.swift.engine.expected.ExpectedList;
 import me.swift.engine.expected.ExpectedRuntime;
 import me.swift.engine.expected.ExpectedStringBuilder;
-
-import java.util.ArrayList;
 
 public class JsonParser extends TranspilableClass {
 
