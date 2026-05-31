@@ -1,4 +1,6 @@
-package me.swift.engine;
+package me.swift.step_gs;
+
+import me.swift.engine.TranspilableClass;
 
 public class Device extends TranspilableClass {
 

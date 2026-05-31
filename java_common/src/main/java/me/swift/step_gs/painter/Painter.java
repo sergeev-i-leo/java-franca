@@ -1,4 +1,4 @@
-package me.swift.engine.painter;
+package me.swift.step_gs.painter;
 
 import me.swift.engine.TranspilableClass;
 

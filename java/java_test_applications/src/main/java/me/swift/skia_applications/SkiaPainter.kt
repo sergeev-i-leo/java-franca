@@ -1,6 +1,6 @@
 package me.swift.skia_applications
 
-import me.swift.engine.painter.Painter
+import me.swift.step_gs.painter.Painter
 
 class SkiaPainter(private val canvas: org.jetbrains.skia.Canvas) : Painter() {
 

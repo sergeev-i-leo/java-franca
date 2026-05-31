@@ -1,6 +1,7 @@
-package me.swift.engine;
+package me.swift.step_gs;
 
-import me.swift.engine.painter.Painter;
+import me.swift.engine.TranspilableClass;
+import me.swift.step_gs.painter.Painter;
 
 public class View extends TranspilableClass {
 

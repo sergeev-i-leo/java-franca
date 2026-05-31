@@ -1,12 +1,12 @@
-package me.swift.engine.test_components;
+package me.swift.step_gs.test_components;
 
 import java.util.Random;
 
-import me.swift.engine.Device;
-import me.swift.engine.Page;
-import me.swift.engine.View;
-import me.swift.engine.animations.LinearAnimation;
-import me.swift.engine.painter.Painter;
+import me.swift.step_gs.Device;
+import me.swift.step_gs.Page;
+import me.swift.step_gs.View;
+import me.swift.step_gs.animations.LinearAnimation;
+import me.swift.step_gs.painter.Painter;
 
 public class TestView0 extends View {
 

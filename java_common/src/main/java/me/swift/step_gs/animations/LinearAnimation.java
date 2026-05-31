@@ -1,7 +1,7 @@
-package me.swift.engine.animations;
+package me.swift.step_gs.animations;
 
-import me.swift.engine.Device;
-import me.swift.engine.Page;
+import me.swift.step_gs.Device;
+import me.swift.step_gs.Page;
 
 public class LinearAnimation extends Animation {
 

@@ -1,8 +1,8 @@
-package me.swift.engine.animations;
+package me.swift.step_gs.animations;
 
-import me.swift.engine.Page;
+import me.swift.step_gs.Page;
 import me.swift.engine.TranspilableClass;
-import me.swift.engine.Device;
+import me.swift.step_gs.Device;
 
 public class Animation extends TranspilableClass {
 

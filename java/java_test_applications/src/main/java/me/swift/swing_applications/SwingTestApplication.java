@@ -1,7 +1,7 @@
 package me.swift.swing_applications;
 
-import me.swift.engine.Page;
-import me.swift.engine.test_components.TestView0;
+import me.swift.step_gs.Page;
+import me.swift.step_gs.test_components.TestView0;
 
 import javax.swing.*;
 import java.awt.*;

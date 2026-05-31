@@ -1,7 +1,7 @@
 package me.swift.skia_applications
 
-import me.swift.engine.Device
-import me.swift.engine.Page
+import me.swift.step_gs.Device
+import me.swift.step_gs.Page
 
 class SkiaDevice(private val skiaTestApplication: SkiaTestApplication) : Device() {
 

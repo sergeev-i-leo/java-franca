@@ -1,6 +1,6 @@
 package me.swift.swing_applications;
 
-import me.swift.engine.painter.Painter;
+import me.swift.step_gs.painter.Painter;
 
 import java.awt.*;
 
