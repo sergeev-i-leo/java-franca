@@ -1,9 +1,11 @@
-package me.swift.engine.data.json;
+package me.swift.engine.json;
 
 import me.swift.engine.TranspilableClass;
 import me.swift.engine.expected.ExpectedList;
 import me.swift.engine.expected.ExpectedRuntime;
 import me.swift.engine.expected.ExpectedStringBuilder;
+
+import java.util.ArrayList;
 
 public class JsonParser extends TranspilableClass {
 
@@ -24,7 +26,7 @@ public class JsonParser extends TranspilableClass {
 
   public JsonElement parse(String input) {
     if (input == null) {
-      return new JsonBooleanPrimitive("Error");
+      return new JsonStringPrimitive("404");
     }
     if (this.input != null) {
       delete(this.input);
@@ -56,11 +58,11 @@ public class JsonParser extends TranspilableClass {
     }
     String string = parseString();
     if (string != null) {
-      return new JsonBooleanPrimitive(string);
+      return new JsonStringPrimitive(string);
     }
-    JsonElement numberJsonElement = parseNumber();
-    if (numberJsonElement != null) {
-      return numberJsonElement;
+    JsonPrimitive numberJsonPrimitive = parseNumber();
+    if (numberJsonPrimitive != null) {
+      return numberJsonPrimitive;
     }
     jsonElement = parseLiteral();
     if (jsonElement != null) {
@@ -90,13 +92,13 @@ public class JsonParser extends TranspilableClass {
         }
         break;
       }
-      String className = jsonObject0.getMemberAsString("$className");
+      String className = jsonObject0.getAsString("$className");
       if (className != null) {
         JsonObject jsonObject1 = createJsonObjectByClassName(className);
-        ExpectedList<String> keys = jsonObject0.keySet();
+        ExpectedList<String> keys = jsonObject0.keysExpectedList();
         for (int i = 0; i < keys.size(); i++) {
           String key = keys.get(i);
-          jsonObject1.add(key, jsonObject0.getMember(key));
+          jsonObject1.set(key, jsonObject0.get(key));
         }
         jsonObject1.deserialize(jsonObject0);
         jsonObject0 = jsonObject1;
@@ -128,7 +130,7 @@ public class JsonParser extends TranspilableClass {
       if (input.charAt(position) == ':') {
         position++;
         JsonElement jsonElement = parseJsonElement();
-        jsonObject.add(name, jsonElement);
+        jsonObject.set(name, jsonElement);
       }
     } catch (Exception e) {
       System.out.println("End of input at " + position);
@@ -191,7 +193,7 @@ public class JsonParser extends TranspilableClass {
     }
   }
 
-  private JsonElement parseNumber() {
+  private JsonPrimitive parseNumber() {
     ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
     try {
       char character = input.charAt(position);
@@ -225,13 +227,11 @@ public class JsonParser extends TranspilableClass {
         String numberString = expectedStringBuilder.toString();
 
         if (ExpectedRuntime.isInt(numberString)) {
-          return ExpectedRuntime.parseInt(numberString);
+          return new JsonIntegerPrimitive(ExpectedRuntime.parseInt(numberString));
         }
 
-        try {
-          return Double.parseDouble(numberString);
-        } catch (NumberFormatException exception) {
-          // fall through
+        if (ExpectedRuntime.isDouble(numberString)) {
+          return new JsonDoublePrimitive(ExpectedRuntime.parseDouble(numberString));
         }
       } else {
         return null;
@@ -266,7 +266,7 @@ public class JsonParser extends TranspilableClass {
   private void skipWhitespaces() {
     while (position < input.length()) {
       char c = input.charAt(position);
-      if (c == '\t' || c == '\n' || c == '\r' || c == ' ') {
+      if ((c == '\t') || (c == '\n') || (c == '\r') || (c == ' ')) {
         position++;
       } else {
         break;

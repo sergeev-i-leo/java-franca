@@ -1,4 +1,4 @@
-package me.swift.engine.data.json;
+package me.swift.engine.json;
 
 import me.swift.engine.expected.ExpectedRuntime;
 

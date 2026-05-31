@@ -1,4 +1,4 @@
-package me.swift.engine.data.json;
+package me.swift.engine.json;
 
 public class JsonPrimitive extends JsonElement {
 

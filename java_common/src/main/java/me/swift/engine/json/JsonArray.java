@@ -1,4 +1,4 @@
-package me.swift.engine.data.json;
+package me.swift.engine.json;
 
 import me.swift.engine.expected.ExpectedList;
 
@@ -10,6 +10,7 @@ public class JsonArray extends JsonElement {
   public void destroy() {
     jsonElements.destroyAll();
     jsonElements.destroy();
+    jsonElements = null;
     super.destroy();
   }
 
@@ -34,23 +35,35 @@ public class JsonArray extends JsonElement {
     return jsonElements.size() == 0;
   }
 
-  public void add(Object value) {
-    if (value instanceof JsonElement) {
-      jsonElements.add((JsonElement) value);
-      return;
-    }
-    jsonElements.add(value == null ? new JsonNull() : new JsonBooleanPrimitive(value));
+  public void addBoolean(boolean value) {
+    jsonElements.add(new JsonBooleanPrimitive(value));
+  }
+
+  public void addInteger(int value) {
+    jsonElements.add(new JsonIntegerPrimitive(value));
+  }
+
+  public void addDouble(double value) {
+    jsonElements.add(new JsonDoublePrimitive(value));
+  }
+
+  public void addString(String value) {
+    jsonElements.add(new JsonStringPrimitive(value));
+  }
+
+  public void add(JsonElement jsonElement) {
+    jsonElements.add(jsonElement);
   }
 
   public void set(int index, JsonElement jsonElement) {
     jsonElements.set(index, jsonElement != null ? jsonElement : new JsonNull());
   }
 
-  public JsonElement remove(int index) {
-    return jsonElements.removeAt(index);
-  }
-
   public JsonElement get(int index) {
     return jsonElements.get(index);
+  }
+
+  public JsonElement remove(int index) {
+    return jsonElements.removeAt(index);
   }
 }

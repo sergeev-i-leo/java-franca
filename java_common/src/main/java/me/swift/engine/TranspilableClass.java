@@ -5,7 +5,7 @@ public class TranspilableClass {
   public void destroy() {
   }
 
-  public void delete(String string) {
+  public void delete(Object value) {
 
   }
 }
