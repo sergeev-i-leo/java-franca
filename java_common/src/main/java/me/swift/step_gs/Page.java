@@ -16,15 +16,14 @@ import me.swift.step_gs.painter.Painter;
 
 public class Page extends TranspilableClass {
 
-  Device device;
+  Device device = null;
 
   int lastAnimationId = 0;
   Animation firstAnimation = null;
 
   public SwiftArray<View> views = new SwiftArray<View>();
 
-  public Page(Device device) {
-    this.device = device;
+  public Page() {
   }
 
   @Override
@@ -34,11 +33,19 @@ public class Page extends TranspilableClass {
     super.destroy();
   }
 
+  public void setDevice(Device device) {
+    this.device = device;
+  }
+
   public synchronized void requestRepainting() {
     registerAnimation(new Animation(0f, 0f, 1L));
   }
 
   public synchronized void registerAnimation(Animation animation) {
+    if (device == null) {
+      return;
+    }
+
     // the new animation becomes the first in the chain because registerAnimation can be called from Animation.needsRepainting
 
     lastAnimationId++;
@@ -55,6 +62,9 @@ public class Page extends TranspilableClass {
   }
 
   public synchronized void removeAnimation(Animation animation) {
+    if (device == null) {
+      return;
+    }
 
     Animation currentAnimation = firstAnimation;
     while (currentAnimation != null) {
@@ -81,6 +91,10 @@ public class Page extends TranspilableClass {
   }
 
   public synchronized boolean needsRepainting() {
+    if (device == null) {
+      return false;
+    }
+
     boolean result = false;
 
     long time = device.getTime();
@@ -111,12 +125,20 @@ public class Page extends TranspilableClass {
   }
 
   public void paint(Painter painter) {
+    if (device == null) {
+      return;
+    }
+
     for (int i = 0; i < views.count(); i++) {
       views.get(i).paint(device, painter, this);
     }
   }
 
   public synchronized boolean needsNextRepainting() {
+    if (device == null) {
+      return false;
+    }
+
     boolean result = false;
 
     long time = device.getTime();
@@ -136,6 +158,10 @@ public class Page extends TranspilableClass {
   }
 
   public void handlePointerDown(float pointedX, float pointedY, int buttonNumber) {
+    if (device == null) {
+      return;
+    }
+
     for (int i = 0; i < views.count(); i++) {
       views.get(i).handlePointerDown(device, this, 0f, 0f, pointedX, pointedY, buttonNumber);
     }

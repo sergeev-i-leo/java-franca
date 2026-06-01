@@ -5,12 +5,12 @@ import me.swift.step_gs.Page;
 
 public class SwingDevice extends JavaDevice {
 
-  SwingTestApplication swingTestApplication;
+  SwingApplication swingApplication;
 
-  public SwingDevice(SwingTestApplication swingTestApplication) {
+  public SwingDevice(SwingApplication swingApplication) {
     super();
 
-    this.swingTestApplication = swingTestApplication;
+    this.swingApplication = swingApplication;
   }
 
   @Override
@@ -20,6 +20,6 @@ public class SwingDevice extends JavaDevice {
 
   @Override
   public void startRepainting(Page page) {
-    swingTestApplication.startRepainting();
+    swingApplication.startRepainting();
   }
 }

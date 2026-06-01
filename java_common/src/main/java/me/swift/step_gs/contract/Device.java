@@ -9,18 +9,11 @@ public class Device {
   }
 
   public void readFile(String path, StringConsumer callback) {
-    // Реализация в платформозависимом классе
   }
 
-  /**
-   * Асинхронно записывает файл
-   * @param path путь к файлу
-   * @param content содержимое для записи
-   * @param callback возвращает OptionalInt (200 если успех, null если ошибка)
-   */
   public void writeFile(String path, String content, OptionalIntConsumer callback) {
-    // Реализация в платформозависимом классе
   }
+
   public void startRepainting(Page page) {
   }
 
