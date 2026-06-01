@@ -1,11 +1,11 @@
-package me.swift.engine.parsers.html;
+package me.swift.engine.data.html;
 
 import me.swift.engine.contract.OptionalInt;
 import me.swift.engine.contract.SwiftRuntime;
 import me.swift.engine.contract.SwiftStringBuilder;
-import me.swift.engine.parsers.Parser;
-import me.swift.engine.parsers.json.JsonArray;
-import me.swift.engine.parsers.json.JsonObject;
+import me.swift.engine.data.Parser;
+import me.swift.engine.data.json.JsonArray;
+import me.swift.engine.data.json.JsonObject;
 
 public class HtmlParser extends Parser {
 

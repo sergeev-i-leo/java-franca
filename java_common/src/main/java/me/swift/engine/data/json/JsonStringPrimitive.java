@@ -1,4 +1,4 @@
-package me.swift.engine.parsers.json;
+package me.swift.engine.data.json;
 
 public class JsonStringPrimitive extends JsonPrimitive {
 

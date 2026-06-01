@@ -1,4 +1,4 @@
-package me.swift.engine.parsers;
+package me.swift.engine.data;
 
 import me.swift.engine.contract.TranspilableClass;
 

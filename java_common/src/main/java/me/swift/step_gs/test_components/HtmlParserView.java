@@ -1,7 +1,8 @@
 package me.swift.step_gs.test_components;
 
-import me.swift.engine.parsers.html.HtmlParser;
-import me.swift.engine.parsers.json.JsonArray;
+import me.swift.engine.data.html.HtmlBuilder;
+import me.swift.engine.data.html.HtmlParser;
+import me.swift.engine.data.json.JsonArray;
 import me.swift.step_gs.Page;
 import me.swift.step_gs.View;
 import me.swift.step_gs.contract.Device;
@@ -11,6 +12,7 @@ public class HtmlParserView extends View {
 
   private int state = 0;
   private JsonArray jsonArray = null;
+  private String htmlOutput = null;
 
   @Override
   public void paint(Device device, Painter painter, Page page) {
@@ -47,8 +49,16 @@ public class HtmlParserView extends View {
           HtmlParser htmlParser = new HtmlParser();
           jsonArray = htmlParser.parse(result);
           delete(htmlParser);
-          delete(jsonArray);
-          state = 200;
+          HtmlBuilder htmlBuilder = new HtmlBuilder();
+          htmlOutput = htmlBuilder.build(jsonArray);
+          device.writeFile("html-tmp.html", htmlOutput, optionalInt -> {
+            if ((optionalInt != null) && (optionalInt.value == 200)) {
+              state = 200;
+            } else {
+              state = 404;
+            }
+            page.requestRepainting();
+          });
         } else {
           state = 404;
         }
