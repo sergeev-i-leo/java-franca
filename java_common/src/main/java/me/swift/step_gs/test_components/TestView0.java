@@ -42,26 +42,26 @@ public class TestView0 extends View {
       viewAnimation = null;
     }
   }
-}
 
-class ViewAnimation extends LinearAnimation {
+  static class ViewAnimation extends LinearAnimation {
 
-  TestView0 testView0;
+    TestView0 testView0;
 
-  ViewAnimation(float initialValue, float targetValue, long duration, TestView0 testView0) {
-    super(initialValue, targetValue, duration);
+    ViewAnimation(float initialValue, float targetValue, long duration, TestView0 testView0) {
+      super(initialValue, targetValue, duration);
 
-    this.testView0 = testView0;
-  }
-
-  @Override
-  public boolean needsRepainting(Device device, Page page, long time) {
-    boolean result = super.needsRepainting(device, page, time);
-    if (!result) {
-      testView0.removeViewAnimation(page);
-      return false;
+      this.testView0 = testView0;
     }
 
-    return true;
+    @Override
+    public boolean needsRepainting(Device device, Page page, long time) {
+      boolean result = super.needsRepainting(device, page, time);
+      if (!result) {
+        testView0.removeViewAnimation(page);
+        return false;
+      }
+
+      return true;
+    }
   }
 }

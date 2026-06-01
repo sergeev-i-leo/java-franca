@@ -1,6 +1,6 @@
 package me.swift.engine.parsers.json;
 
-import me.swift.engine.TranspilableClass;
+import me.swift.engine.contract.TranspilableClass;
 
 public class JsonElement extends TranspilableClass {
 

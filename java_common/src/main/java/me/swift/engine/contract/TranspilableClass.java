@@ -1,4 +1,4 @@
-package me.swift.engine;
+package me.swift.engine.contract;
 
 public class TranspilableClass {
 

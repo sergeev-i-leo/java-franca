@@ -21,6 +21,7 @@ public class SwingApplication extends JPanel {
     setPreferredSize(new Dimension(800, 600));
     setBackground(Color.WHITE);
 
+    this.page = page;
     page.setDevice(swingDevice);
 
     addMouseListener(new MouseAdapter() {

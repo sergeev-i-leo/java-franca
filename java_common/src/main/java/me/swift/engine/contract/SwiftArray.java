@@ -13,10 +13,6 @@ public class SwiftArray<T> implements Iterable<T> {
     storage = new ArrayList<>();
   }
 
-  public SwiftArray(T... items) {
-    storage = new ArrayList<>(Arrays.asList(items));
-  }
-
   public SwiftArray(Collection<? extends T> collection) {
     storage = new ArrayList<>(collection);
   }

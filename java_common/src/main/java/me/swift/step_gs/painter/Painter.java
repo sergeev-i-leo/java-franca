@@ -1,6 +1,6 @@
 package me.swift.step_gs.painter;
 
-import me.swift.engine.TranspilableClass;
+import me.swift.engine.contract.TranspilableClass;
 
 public class Painter extends TranspilableClass {
 

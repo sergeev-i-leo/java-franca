@@ -45,6 +45,17 @@ task swing_test_application(type: JavaExec) {
   ]
 }
 
+task obsidian_parser_application(type: JavaExec) {
+  mainClass = 'me.swift.swing_applications.ObsidianParserApplication'
+  classpath = sourceSets.main.runtimeClasspath
+  debug = true
+
+  jvmArgs = [
+          '-Xdebug',
+          '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
+  ]
+}
+
 task skia_test_application(type: JavaExec) {
   mainClass = 'me.swift.skia_applications.SkiaTestApplication'
   classpath = sourceSets.main.runtimeClasspath

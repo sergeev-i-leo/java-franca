@@ -1,6 +1,6 @@
 package me.swift.step_gs;
 
-import me.swift.engine.TranspilableClass;
+import me.swift.engine.contract.TranspilableClass;
 import me.swift.step_gs.animations.Animation;
 import me.swift.engine.contract.SwiftArray;
 import me.swift.step_gs.contract.Device;

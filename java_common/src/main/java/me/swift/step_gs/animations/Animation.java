@@ -1,7 +1,7 @@
 package me.swift.step_gs.animations;
 
 import me.swift.step_gs.Page;
-import me.swift.engine.TranspilableClass;
+import me.swift.engine.contract.TranspilableClass;
 import me.swift.step_gs.contract.Device;
 
 public class Animation extends TranspilableClass {
