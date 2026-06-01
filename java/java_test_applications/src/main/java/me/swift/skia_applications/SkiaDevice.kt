@@ -1,9 +1,9 @@
 package me.swift.skia_applications
 
-import me.swift.step_gs.Device
+import me.swift.contract.JavaDevice
 import me.swift.step_gs.Page
 
-class SkiaDevice(private val skiaTestApplication: SkiaTestApplication) : Device() {
+class SkiaDevice(private val skiaTestApplication: SkiaTestApplication) : JavaDevice() {
 
   override fun getTime(): Long = System.currentTimeMillis()
 

@@ -1,6 +1,6 @@
 package me.swift.engine.parsers.json;
 
-import me.swift.engine.core.SwiftRuntime;
+import me.swift.engine.contract.SwiftRuntime;
 
 public class JsonIntegerPrimitive extends JsonPrimitive {
 

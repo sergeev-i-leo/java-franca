@@ -2,7 +2,8 @@ package me.swift.step_gs;
 
 import me.swift.engine.TranspilableClass;
 import me.swift.step_gs.animations.Animation;
-import me.swift.engine.core.SwiftArray;
+import me.swift.engine.contract.SwiftArray;
+import me.swift.step_gs.contract.Device;
 import me.swift.step_gs.painter.Painter;
 
 /**

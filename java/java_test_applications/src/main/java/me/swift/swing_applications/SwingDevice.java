@@ -1,9 +1,9 @@
 package me.swift.swing_applications;
 
-import me.swift.step_gs.Device;
+import me.swift.contract.JavaDevice;
 import me.swift.step_gs.Page;
 
-public class SwingDevice extends Device {
+public class SwingDevice extends JavaDevice {
 
   SwingTestApplication swingTestApplication;
 

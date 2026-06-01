@@ -1,4 +1,4 @@
-package me.swift.engine.core;
+package me.swift.engine.contract;
 
 import java.util.*;
 import java.util.function.Function;

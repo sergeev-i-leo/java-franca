@@ -2,7 +2,7 @@ package me.swift.step_gs.test_components;
 
 import java.util.Random;
 
-import me.swift.step_gs.Device;
+import me.swift.step_gs.contract.Device;
 import me.swift.step_gs.Page;
 import me.swift.step_gs.View;
 import me.swift.step_gs.animations.LinearAnimation;

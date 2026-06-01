@@ -1,7 +1,7 @@
 package me.swift.engine.parsers.json;
 
-import me.swift.engine.core.SwiftArray;
-import me.swift.engine.core.SwiftDictionary;
+import me.swift.engine.contract.SwiftArray;
+import me.swift.engine.contract.SwiftDictionary;
 
 public class JsonObject extends JsonElement {
 

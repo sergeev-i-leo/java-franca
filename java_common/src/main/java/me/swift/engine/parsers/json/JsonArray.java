@@ -1,6 +1,6 @@
 package me.swift.engine.parsers.json;
 
-import me.swift.engine.core.SwiftArray;
+import me.swift.engine.contract.SwiftArray;
 
 public class JsonArray extends JsonElement {
 

@@ -1,4 +1,4 @@
-package me.swift.engine.core;
+package me.swift.engine.contract;
 
 public class SwiftStringBuilder {
 

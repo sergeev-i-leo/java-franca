@@ -1,6 +1,7 @@
 package me.swift.step_gs;
 
 import me.swift.engine.parsers.json.JsonObject;
+import me.swift.step_gs.contract.Device;
 import me.swift.step_gs.painter.Painter;
 
 public class View extends JsonObject {
