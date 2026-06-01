@@ -17,14 +17,14 @@ public class JsonObject extends JsonElement {
   @Override
   public String serialize() {
     StringBuilder text = new StringBuilder("{");
-    setString("$className", getClassName());
+    setStringMember("$className", getClassName());
     SwiftArray<String> keys = keys();
     for (int i = 0; i < keys.count(); i++) {
       if (i > 0) {
         text.append(",");
       }
       text.append("\"").append(keys.get(i)).append("\":");
-      JsonElement member = get(keys.get(i));
+      JsonElement member = getMember(keys.get(i));
       if (member != null) {
         text.append(member.serialize());
       }
@@ -44,83 +44,83 @@ public class JsonObject extends JsonElement {
     return jsonElements.keys();
   }
 
-  public void setBoolean(String memberName, boolean value) {
+  public void setBooleanMember(String memberName, boolean value) {
     jsonElements.put(memberName, new JsonBooleanPrimitive(value));
   }
 
-  public void setInt(String memberName, int value) {
+  public void setIntegerMember(String memberName, int value) {
     jsonElements.put(memberName, new JsonIntegerPrimitive(value));
   }
 
-  public void setDouble(String memberName, double value) {
+  public void setDoubleMember(String memberName, double value) {
     jsonElements.put(memberName, new JsonDoublePrimitive(value));
   }
 
-  public void setString(String memberName, String value) {
+  public void setStringMember(String memberName, String value) {
     jsonElements.put(memberName, new JsonStringPrimitive(value));
   }
 
-  public void set(String memberName, JsonElement jsonElement) {
+  public void setMember(String memberName, JsonElement jsonElement) {
     jsonElements.put(memberName, jsonElement);
   }
 
-  public boolean isBoolean(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isBooleanMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isBoolean();
   }
 
-  public boolean isInteger(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isIntegerMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isInteger();
   }
 
-  public boolean isDouble(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isDoubleMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isDouble();
   }
 
-  public boolean isString(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isStringMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isString();
   }
 
-  public boolean isJsonNull(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isJsonNullMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isJsonNull();
   }
 
-  public boolean isJsonArray(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isJsonArrayMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isJsonArray();
   }
 
-  public boolean isJsonObject(String memberName) {
-    JsonElement jsonElement = get(memberName);
+  public boolean isJsonObjectMember(String memberName) {
+    JsonElement jsonElement = getMember(memberName);
     if (jsonElement == null) {
       return false;
     }
     return jsonElement.isJsonObject();
   }
 
-  public boolean getAsBoolean(String memberName) {
+  public boolean getBooleanMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement instanceof JsonBooleanPrimitive) {
       JsonPrimitive jsonPrimitive = (JsonBooleanPrimitive) jsonElement;
@@ -131,7 +131,7 @@ public class JsonObject extends JsonElement {
     return false;
   }
 
-  public Integer getAsInteger(String memberName) {
+  public Integer getIntegerMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement instanceof JsonBooleanPrimitive) {
       JsonPrimitive jsonPrimitive = (JsonBooleanPrimitive) jsonElement;
@@ -142,7 +142,7 @@ public class JsonObject extends JsonElement {
     return null;
   }
 
-  public Double getAsDouble(String memberName) {
+  public Double getDoubleMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement instanceof JsonBooleanPrimitive) {
       JsonPrimitive jsonPrimitive = (JsonBooleanPrimitive) jsonElement;
@@ -153,7 +153,7 @@ public class JsonObject extends JsonElement {
     return null;
   }
 
-  public String getAsString(String memberName) {
+  public String getStringMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement instanceof JsonBooleanPrimitive) {
       JsonPrimitive jsonPrimitive = (JsonBooleanPrimitive) jsonElement;
@@ -164,11 +164,11 @@ public class JsonObject extends JsonElement {
     return null;
   }
 
-  public JsonElement get(String memberName) {
+  public JsonElement getMember(String memberName) {
     return jsonElements.get(memberName);
   }
 
-  public JsonNull getAsJsonNull(String memberName) {
+  public JsonNull getJsonNullMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement.isJsonNull()) {
       return jsonElement.getAsJsonNull();
@@ -176,7 +176,7 @@ public class JsonObject extends JsonElement {
     return null;
   }
 
-  public JsonArray getAsJsonArray(String memberName) {
+  public JsonArray getJsonArrayMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement.isJsonArray()) {
       return jsonElement.getAsJsonArray();
@@ -184,7 +184,7 @@ public class JsonObject extends JsonElement {
     return null;
   }
 
-  public JsonObject getAsJsonObject(String memberName) {
+  public JsonObject getJsonObjectMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement.isJsonObject()) {
       return jsonElement.getAsJsonObject();
@@ -192,7 +192,7 @@ public class JsonObject extends JsonElement {
     return null;
   }
 
-  public void remove(String memberName) {
+  public void removeMember(String memberName) {
     jsonElements.remove(memberName);
   }
 }

@@ -88,13 +88,13 @@ public class JsonParser extends TranspilableClass {
         }
         break;
       }
-      String className = jsonObject0.getAsString("$className");
+      String className = jsonObject0.getStringMember("$className");
       if (className != null) {
         JsonObject jsonObject1 = createJsonObjectByClassName(className);
         SwiftArray<String> keys = jsonObject0.keys();
         for (int i = 0; i < keys.count(); i++) {
           String key = keys.get(i);
-          jsonObject1.set(key, jsonObject0.get(key));
+          jsonObject1.setMember(key, jsonObject0.getMember(key));
         }
         jsonObject1.deserialize(jsonObject0);
         jsonObject0 = jsonObject1;
@@ -126,7 +126,7 @@ public class JsonParser extends TranspilableClass {
       if (input.charAt(position) == ':') {
         position++;
         JsonElement jsonElement = parseJsonElement();
-        jsonObject.set(name, jsonElement);
+        jsonObject.setMember(name, jsonElement);
       }
     } catch (Exception e) {
       System.out.println("End of input at " + position);

@@ -4,6 +4,10 @@ public class SwiftStringBuilder {
 
   private StringBuilder stringBuilder = new StringBuilder();
 
+  public boolean isEmpty() {
+    return stringBuilder.isEmpty();
+  }
+
   public void appendCharacter(char character) {
     stringBuilder.append(character);
   }
@@ -14,5 +18,9 @@ public class SwiftStringBuilder {
 
   public String getString() {
     return stringBuilder.toString();
+  }
+
+  public String getLowerCaseString() {
+    return stringBuilder.toString().toLowerCase();
   }
 }

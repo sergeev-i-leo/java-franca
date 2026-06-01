@@ -20,7 +20,7 @@ public class JsonArray extends JsonElement {
       if (i > 0) {
         text.append(",");
       }
-      text.append(get(i).serialize());
+      text.append(getElement(i).serialize());
     }
     text.append("]");
     return text.toString();
@@ -34,35 +34,35 @@ public class JsonArray extends JsonElement {
     return jsonElements.count() == 0;
   }
 
-  public void addBoolean(boolean value) {
+  public void addBooleanElement(boolean value) {
     jsonElements.append(new JsonBooleanPrimitive(value));
   }
 
-  public void addInteger(int value) {
+  public void addIntegerElement(int value) {
     jsonElements.append(new JsonIntegerPrimitive(value));
   }
 
-  public void addDouble(double value) {
+  public void addDoubleElement(double value) {
     jsonElements.append(new JsonDoublePrimitive(value));
   }
 
-  public void addString(String value) {
+  public void addStringElement(String value) {
     jsonElements.append(new JsonStringPrimitive(value));
   }
 
-  public void add(JsonElement jsonElement) {
+  public void addElement(JsonElement jsonElement) {
     jsonElements.append(jsonElement);
   }
 
-  public void set(int index, JsonElement jsonElement) {
+  public void setElement(int index, JsonElement jsonElement) {
     jsonElements.set(index, jsonElement != null ? jsonElement : new JsonNull());
   }
 
-  public JsonElement get(int index) {
+  public JsonElement getElement(int index) {
     return jsonElements.get(index);
   }
 
-  public void remove(int index) {
+  public void removeElement(int index) {
     jsonElements.removeAt(index);
   }
 }
