@@ -26,12 +26,7 @@ public class JsonStringPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public boolean isJsonPrimitive() {
-    return true;
-  }
-
-  @Override
-  public boolean isString() {
+  public boolean isJsonStringPrimitive() {
     return true;
   }
 
