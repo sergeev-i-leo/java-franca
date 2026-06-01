@@ -1,5 +1,7 @@
 package me.swift.step_gs.test_components;
 
+import me.swift.engine.parsers.html.HtmlParser;
+import me.swift.engine.parsers.json.JsonArray;
 import me.swift.step_gs.Page;
 import me.swift.step_gs.View;
 import me.swift.step_gs.contract.Device;
@@ -41,6 +43,10 @@ public class HtmlParserView extends View {
       page.requestRepainting();
       device.readFile("html-0.html", result -> {
         if (result != null) {
+          HtmlParser htmlParser = new HtmlParser();
+          JsonArray jsonArray = htmlParser.parse(result);
+          delete(htmlParser);
+          delete(jsonArray);
           state = 200;
         } else {
           state = 404;

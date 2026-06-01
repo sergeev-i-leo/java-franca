@@ -45,6 +45,17 @@ task swing_test_application(type: JavaExec) {
   ]
 }
 
+task html_parser_application(type: JavaExec) {
+  mainClass = 'me.swift.swing_applications.HtmlParserApplication'
+  classpath = sourceSets.main.runtimeClasspath
+  debug = true
+
+  jvmArgs = [
+          '-Xdebug',
+          '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
+  ]
+}
+
 task obsidian_parser_application(type: JavaExec) {
   mainClass = 'me.swift.swing_applications.ObsidianParserApplication'
   classpath = sourceSets.main.runtimeClasspath

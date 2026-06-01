@@ -9,6 +9,16 @@ import me.swift.engine.parsers.json.JsonObject;
 
 public class HtmlParser extends Parser {
 
+  public JsonArray parse(String input) {
+    if (input != null) {
+      this.input = input;
+    }
+
+    position = 0;
+
+    return parseViews(null, null);
+  }
+
   public JsonArray parseViews(JsonArray parentJsonArray, String parentTagName) {
 
     JsonArray jsonArray = new JsonArray();
