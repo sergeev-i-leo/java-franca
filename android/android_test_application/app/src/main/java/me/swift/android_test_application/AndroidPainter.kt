@@ -2,7 +2,7 @@ package me.swift.android_test_application
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import me.swift.engine.painter.Painter
+import me.swift.step_gs.painter.Painter
 
 class AndroidPainter(
 ) : Painter() {

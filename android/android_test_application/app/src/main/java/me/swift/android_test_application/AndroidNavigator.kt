@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import me.swift.engine.Page
-import me.swift.engine.test_components.TestView0
+import me.swift.step_gs.Page
+import me.swift.step_gs.test_components.TestView0
 
 class AndroidNavigator(
   private val context: Context,
@@ -18,8 +18,8 @@ class AndroidNavigator(
 
   val androidDevice = AndroidDevice(this)
 
-  val pageHome = Page(androidDevice)
-  val pageClone = Page(androidDevice)
+  val pageHome = Page()
+  val pageClone = Page()
 
   val viewHome = AndroidDeviceView(context, androidDevice, pageHome)
   val viewHello = createHelloWorldView()
@@ -31,9 +31,11 @@ class AndroidNavigator(
 
   init {
 
-    pageHome.views.add(TestView0())
+    pageHome.setDevice(androidDevice)
+    pageHome.views.append(TestView0())
 
-    pageClone.views.add(TestView0())
+    pageClone.setDevice(androidDevice)
+    pageClone.views.append(TestView0())
 
     listOf(viewHome, viewHello, viewClone).forEach { view ->
       view.layoutParams = ViewGroup.LayoutParams(

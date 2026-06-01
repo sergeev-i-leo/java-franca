@@ -1,7 +1,8 @@
 package me.swift.android_test_application
 
-import me.swift.engine.Device
-import me.swift.engine.Page
+import me.swift.step_gs.Page
+import me.swift.step_gs.contract.Device
+
 
 class AndroidDevice(
   private val androidNavigator: AndroidNavigator
