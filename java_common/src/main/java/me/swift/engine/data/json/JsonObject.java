@@ -45,6 +45,11 @@ public class JsonObject extends JsonElement {
     return true;
   }
 
+  @Override
+  public JsonObject getAsJsonObject() {
+    return this;
+  }
+
   public SwiftArray<String> keys() {
     return jsonElements.keys();
   }

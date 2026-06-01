@@ -41,6 +41,14 @@ public class JsonElement extends TranspilableClass {
     return false;
   }
 
+  public JsonArray getAsJsonArray() {
+    return null;
+  }
+
+  public JsonObject getAsJsonObject() {
+    return null;
+  }
+
   public String getAsString() {
     return "";
   }
