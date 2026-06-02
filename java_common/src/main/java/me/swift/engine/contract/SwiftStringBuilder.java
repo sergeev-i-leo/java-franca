@@ -8,6 +8,10 @@ public class SwiftStringBuilder {
     return stringBuilder.isEmpty();
   }
 
+  public boolean isNotEmpty() {
+    return !stringBuilder.isEmpty();
+  }
+
   public void appendCharacter(char character) {
     stringBuilder.append(character);
   }

@@ -22,193 +22,114 @@ public class HtmlParser extends Parser {
     return jsonArray;
   }
 
-  public void parseHtmlNodes(JsonArray jsonArray) {
+  public void parseHtmlNodes(JsonArray viewsJsonArray) {
 
     while (true) {
+
+      // look for first '<'
 
       while ((position < input.length()) && (peekCharacter() != '<')) {
         consumeCharacter();
       }
 
       if (position >= input.length()) {
+        // not found
         return;
       }
 
-      JsonObject jsonObject = parseHtmlNode(parentTagName)
-
-      if (peekCharacter() != '<') {
-        // collect text nodes
-        JsonObject spanJsonObject = new JsonObject();
-        spanJsonObject = parseSpanView(spanJsonObject);
-        if (spanJsonObject != null) {
-          if (parentJsonArray != null) {
-            parentJsonArray.addElement(spanJsonObject);
-          } else {
-            jsonArray.addElement(spanJsonObject);
-          }
-          continue;
-        }
-      }
-
-      if (peekNextCharacter(1) == '/') {
-        // /
-        consumeCharacter();
-        // >
-        consumeCharacter();
-        String tagName = parseTagName();
-        // >
-        consumeCharacter();
-        if (tagName.equals(parentTagName)) {
-          delete(tagName);
-          tagName = null;
-          break;
-        }
-      }
-
-      consumeCharacter();
-
-      if (tagName.equals("span")) {
-        delete(tagName);
-
-        JsonObject spanJsonObject = new JsonObject();
-        parseHtmlAttributes(spanJsonObject);
-        consumeCharacter();
-        spanJsonObject = parseSpanView(spanJsonObject);
-        if (parentJsonArray != null) {
-          parentJsonArray.addElement(spanJsonObject);
-        } else {
-          jsonArray.addElement(spanJsonObject);
-        }
-        // /
-        consumeCharacter();
-        // >
-        consumeCharacter();
-        delete(parseTagName());
-        // >
-        consumeCharacter();
-        continue;
-      }
-
-      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
-        // self-closing
-        consumeCharacter();
-        consumeCharacter();
-      } else if (tagName.equals("img")) {
-      } else if (jsonObject != null) {
-        consumeCharacter();
-        // add children
-        JsonArray viewsJsonArray = new JsonArray();
-        jsonObject.setMember("views", viewsJsonArray);
-        parseHtmlNodes(viewsJsonArray, tagName);
-        // children may be text
-        convertToTextView(jsonObject);
-      }
-
-      delete(tagName);
-
-      if (jsonObject != null) {
-        if (parentJsonArray != null) {
-          parentJsonArray.addElement(jsonObject);
-        } else {
-          jsonArray.addElement(jsonObject);
-        }
-      }
+      parseHtmlNode(viewsJsonArray);
     }
-    if (parentJsonArray != null) {
-      delete(jsonArray);
-      return parentJsonArray;
-    }
-    return jsonArray;
   }
 
-  public JsonObject parseHtmlNode(String parentTagName) {
+  public void parseHtmlNode(JsonArray viewsJsonArray) {
     if (consumeCharacter() != '<') {
-      return null;
+      return;
     }
     String tagName = parseTagName();
-    JsonObject jsonObject;
+    JsonObject jsonObject = null;
+    if (tagName.equals("img")) {
+      jsonObject = new JsonObject();
+      viewsJsonArray.addElement(jsonObject);
+      jsonObject.setStringMember("tagName", tagName);
+      jsonObject.setStringMember("className", "image-view");
+      parseHtmlAttributes(jsonObject);
+      // self-closing
+      consumeCharacter();
+      return;
+    }
+    if (tagName.equals("tbody")) {
+      parseHtmlNodeContents(tagName, viewsJsonArray);
+      return;
+    }
+    if (tagName.equals("span")) {
+      parseHtmlNodeContents(tagName, viewsJsonArray);
+      return;
+    }
+    jsonObject = new JsonObject();
     switch (tagName) {
-      case "img":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
-        jsonObject.setStringMember("className", "image-view");
-        parseHtmlAttributes(jsonObject);
-        // self-closing
-        consumeCharacter();
-        return jsonObject;
-      case "table":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
-        jsonObject.setStringMember("className", "table-view");
-        parseHtmlAttributes(jsonObject);
-        break;
-      case "tbody":
-        break;
-      case "tr":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
-        jsonObject.setStringMember("className", "table-row-view");
-        parseHtmlAttributes(jsonObject);
-        break;
-      case "th":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
-        stuffCellJsonObject(jsonObject, "table-header-cell-view");
-        break;
-      case "td":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
-        stuffCellJsonObject(jsonObject, "table-cell-view");
-        break;
       case "h1":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-h1-view");
         parseHtmlAttributes(jsonObject);
         break;
       case "h2":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-h2-view");
         parseHtmlAttributes(jsonObject);
         break;
       case "h3":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-h3-view");
         parseHtmlAttributes(jsonObject);
         break;
       case "h4":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-h4-view");
         parseHtmlAttributes(jsonObject);
         break;
       case "h5":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-h5-view");
         parseHtmlAttributes(jsonObject);
         break;
       case "h6":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-h6-view");
         parseHtmlAttributes(jsonObject);
         break;
       case "p":
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
         jsonObject.setStringMember("className", "typography-paragraph-view");
         parseHtmlAttributes(jsonObject);
         break;
-      default:
-        jsonObject = new JsonObject();
-        jsonObject.setStringMember("tagName", tagName);
+      case "table":
+        jsonObject.setStringMember("className", "table-view");
         parseHtmlAttributes(jsonObject);
+        break;
+      case "tr":
+        jsonObject.setStringMember("className", "table-row-view");
+        parseHtmlAttributes(jsonObject);
+        break;
+      case "th":
+        parseHtmlAttributes(jsonObject);
+        stuffCellJsonObject(jsonObject, "table-header-cell-view");
+        break;
+      case "td":
+        parseHtmlAttributes(jsonObject);
+        stuffCellJsonObject(jsonObject, "table-cell-view");
+        break;
+      default:
         break;
     }
 
+    viewsJsonArray.addElement(jsonObject);
+    jsonObject.setStringMember("tagName", tagName);
+    if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
+      // self-closing
+      consumeCharacter();
+      consumeCharacter();
+      return;
+    }
+
+    // '>'
+    consumeCharacter();
+
+    viewsJsonArray = new JsonArray();
+    jsonObject.setMember("views", viewsJsonArray);
+    parseHtmlNodeContents(tagName, viewsJsonArray);
   }
 
   private String parseTagName() {
@@ -222,47 +143,9 @@ public class HtmlParser extends Parser {
     return string;
   }
 
-  private JsonObject parseTextNodeContent(JsonArray parentJsonArray, String parentTagName) {
+  private void parseHtmlNodeContents(String tagName, JsonArray viewsJsonArray) {
+    JsonObject jsonObject = parseTextContents();
 
-  }
-
-  private void stuffCellJsonObject(JsonObject cellJsonObject, String className) {
-    cellJsonObject.setStringMember("className", className);
-    parseHtmlAttributes(cellJsonObject);
-
-    String colspan = cellJsonObject.getStringMember("colspan");
-    if (colspan != null) {
-      OptionalInt optionalInt = SwiftRuntime.parseInt(colspan);
-      if (optionalInt == null) {
-        cellJsonObject.setIntegerMember("columns-count", 1);
-      } else if (optionalInt.value < 1) {
-        cellJsonObject.setIntegerMember("columns-count", 1);
-        delete(optionalInt);
-      } else {
-        cellJsonObject.setIntegerMember("columns-count", optionalInt.value);
-        delete(optionalInt);
-      }
-      delete(colspan);
-    } else {
-      cellJsonObject.setIntegerMember("columns-count", 1);
-    }
-
-    String rowspan = cellJsonObject.getStringMember("rowspan");
-    if (rowspan != null) {
-      OptionalInt optionalInt = SwiftRuntime.parseInt(rowspan);
-      if (optionalInt == null) {
-        cellJsonObject.setIntegerMember("rows-count", 1);
-      } else if (optionalInt.value < 1) {
-        cellJsonObject.setIntegerMember("rows-count", 1);
-        delete(optionalInt);
-      } else {
-        cellJsonObject.setIntegerMember("rows-count", optionalInt.value);
-        delete(optionalInt);
-      }
-      delete(rowspan);
-    } else {
-      cellJsonObject.setIntegerMember("rows-count", 1);
-    }
   }
 
   private void parseHtmlAttributes(JsonObject jsonObject) {
@@ -342,32 +225,74 @@ public class HtmlParser extends Parser {
     return (c != '>') && (c != '/') && (!Character.isWhitespace(c));
   }
 
-  private JsonObject parseSpanView(JsonObject spanJsonObject) {
-    String styleColor = spanJsonObject.getStringMember("style.color");
+  private void stuffCellJsonObject(JsonObject cellJsonObject, String className) {
+    cellJsonObject.setStringMember("className", className);
 
-    boolean returnSpanJsonObject = false;
+    String colspan = cellJsonObject.getStringMember("colspan");
+    if (colspan != null) {
+      OptionalInt optionalInt = SwiftRuntime.parseInt(colspan);
+      if (optionalInt == null) {
+        cellJsonObject.setIntegerMember("columns-count", 1);
+      } else if (optionalInt.value < 1) {
+        cellJsonObject.setIntegerMember("columns-count", 1);
+        delete(optionalInt);
+      } else {
+        cellJsonObject.setIntegerMember("columns-count", optionalInt.value);
+        delete(optionalInt);
+      }
+      delete(colspan);
+    } else {
+      cellJsonObject.setIntegerMember("columns-count", 1);
+    }
 
+    String rowspan = cellJsonObject.getStringMember("rowspan");
+    if (rowspan != null) {
+      OptionalInt optionalInt = SwiftRuntime.parseInt(rowspan);
+      if (optionalInt == null) {
+        cellJsonObject.setIntegerMember("rows-count", 1);
+      } else if (optionalInt.value < 1) {
+        cellJsonObject.setIntegerMember("rows-count", 1);
+        delete(optionalInt);
+      } else {
+        cellJsonObject.setIntegerMember("rows-count", optionalInt.value);
+        delete(optionalInt);
+      }
+      delete(rowspan);
+    } else {
+      cellJsonObject.setIntegerMember("rows-count", 1);
+    }
+  }
+
+  private JsonObject parseTextContents(boolean forceCreation) {
     SwiftStringBuilder swiftStringBuilder = new SwiftStringBuilder();
     while (position < input.length()) {
-      if (peekCharacter() == '<') {
-        // consume <br>
-        if (input.indexOf("<br>", position) != position) {
-          break;
-        } else {
-          returnSpanJsonObject = true;
-          swiftStringBuilder.appendString("\\n");
+      if (peekNextCharacter(0) == '<') {
+        if ((peekNextCharacter(1) == 'b') && (peekNextCharacter(2) == 'r') && (peekNextCharacter(3) == '>')) {
+          swiftStringBuilder.appendString("<br>");
           position += 4;
           continue;
         }
+        break;
       }
+
       char c = consumeCharacter();
-      if (!Character.isWhitespace(c)) {
-        returnSpanJsonObject = true;
+      if (Character.isWhitespace(c)) {
+        if (forceCreation) {
+          swiftStringBuilder.appendCharacter(c);
+        } else if (swiftStringBuilder.isNotEmpty()) {
+          swiftStringBuilder.appendCharacter(c);
+        }
+        continue;
       }
       swiftStringBuilder.appendCharacter(c);
     }
 
-    if (!swiftStringBuilder.isEmpty()) {
+    if (swiftStringBuilder.isEmpty()) {
+      return null;
+    }
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.setStringMember("tagName", "#text");
+    jsonObject.setStringMember("value", "#text");
       spanJsonObject.setStringMember("text", swiftStringBuilder.getString());
       /*text = decodeHtmlLetters(text);
 
@@ -391,23 +316,23 @@ public class HtmlParser extends Parser {
     return spanJsonObject;
   }
 
-  private String decodeHtmlLetters(String html) {
+  private String decodeHtmlLetters(String input) {
     String result = "";
     int i = 0;
 
-    while (i < html.length()) {
-      char c = html.charAt(i);
+    while (i < input.length()) {
+      char c = input.charAt(i);
       if (c == '&') {
         String entity = "";
         entity += c;
         i++;
 
-        while ((i < html.length()) && (html.charAt(i) != ';') && (Character.isLetterOrDigit(html.charAt(i)) || (html.charAt(i) == '#'))) {
-          entity += html.charAt(i);
+        while ((i < input.length()) && (input.charAt(i) != ';') && (Character.isLetterOrDigit(input.charAt(i)) || (input.charAt(i) == '#'))) {
+          entity += input.charAt(i);
           i++;
         }
 
-        if ((i < html.length()) && (html.charAt(i) == ';')) {
+        if ((i < input.length()) && (input.charAt(i) == ';')) {
           entity += ';';
           i++;
 
@@ -480,8 +405,8 @@ public class HtmlParser extends Parser {
           }
         } else {
           result += entity;
-          if (i < html.length()) {
-            result += html.charAt(i);
+          if (i < input.length()) {
+            result += input.charAt(i);
             i++;
           }
         }

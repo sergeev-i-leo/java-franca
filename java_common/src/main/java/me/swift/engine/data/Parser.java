@@ -118,6 +118,18 @@ public class Parser extends TranspilableClass {
     return '\u0000';
   }
 
+  public boolean peekString(String string) {
+    for (int i = 0; i < string.length(); i++) {
+      if (position + i >= input.length()) {
+        return false;
+      }
+      if (input.charAt(position + i) != string.charAt(i)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   public char consumeCharacter() {
     if (position < input.length()) {
       return input.charAt(position++);
@@ -125,7 +137,7 @@ public class Parser extends TranspilableClass {
     return '\u0000';
   }
 
-  public boolean skipWhitespaces() {
+  public void skipWhitespaces() {
     while (position < input.length()) {
       char c = input.charAt(position);
       if (isWhitespace(c)) {
@@ -134,7 +146,6 @@ public class Parser extends TranspilableClass {
         break;
       }
     }
-    return position < input.length();
   }
 
   public boolean isWhitespace(char c) {
