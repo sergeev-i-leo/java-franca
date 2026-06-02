@@ -54,13 +54,16 @@ public class HtmlParser extends Parser {
   }
 
   public void parseHtmlNode(JsonArray jsonArray) {
-    if (consumeCharacter() != '<') {
-      return;
+    skipWhitespaces();
+
+    while ((peekCharacter() == '<') && (peekNextCharacter(1) == '!')) {
+      appendTextJsonObject(jsonArray, "<!");
+      parseTextContents(jsonArray);
+      skipWhitespaces();
     }
 
-    if (peekCharacter() == '!') {
-      consumeCharacter();
-      parseTextContents(jsonArray);
+    if (consumeCharacter() != '<') {
+      return;
     }
 
     String tagName = parseTagName();
@@ -79,6 +82,14 @@ public class HtmlParser extends Parser {
       return;
     }
     if (tagName.equals("span")) {
+      parseHtmlNodeContents(tagName, jsonArray);
+      return;
+    }
+    if (tagName.equals("strong")) {
+      parseHtmlNodeContents(tagName, jsonArray);
+      return;
+    }
+    if (tagName.equals("em")) {
       parseHtmlNodeContents(tagName, jsonArray);
       return;
     }
@@ -384,25 +395,14 @@ public class HtmlParser extends Parser {
       }
 
       if (c == '\r') {
-        consumeCharacter();
+        skipCharacters(1);
         if (peekCharacter() == '\n') {
-          c = consumeCharacter();
-        } else {
-          c = '\n';
+          skipCharacters(1);
         }
-      }
-
-      if (c == '\n') {
-        if (textStringBuffer.isNotEmpty()) {
-          appendTextJsonObject(jsonArray, textStringBuffer.toString());
-          delete(textStringBuffer);
-          textStringBuffer = new StringBuffer();
-        }
-        JsonObject jsonObject = new JsonObject();
-        jsonArray.appendElement(jsonObject);
-        jsonObject.setStringMember("tagName", "#cr");
+        skipWhitespaces();
         continue;
       }
+
       if ((peekNextCharacter(0) == '&') && ((peekNextCharacter(1) == '#'))) {
         if (htmlLetterStringBuffer != null) {
           // html letter not finished
