@@ -2,7 +2,7 @@ package me.swift.engine.data.html;
 
 import me.swift.engine.contract.OptionalInt;
 import me.swift.engine.contract.SwiftRuntime;
-import me.swift.engine.contract.SwiftStringBuilder;
+import me.swift.engine.contract.StringBuffer;
 import me.swift.engine.data.Parser;
 import me.swift.engine.data.json.JsonArray;
 import me.swift.engine.data.json.JsonObject;
@@ -133,13 +133,13 @@ public class HtmlParser extends Parser {
   }
 
   private String parseTagName() {
-    SwiftStringBuilder swiftStringBuilder = new SwiftStringBuilder();
+    StringBuffer stringBuffer = new StringBuffer();
     while ((position < input.length()) && (Character.isLetterOrDigit(peekCharacter()))) {
       char c = consumeCharacter();
-      swiftStringBuilder.appendCharacter(c);
+      stringBuffer.appendCharacter(c);
     }
-    String string = swiftStringBuilder.getLowerCaseString();
-    delete(swiftStringBuilder);
+    String string = stringBuffer.getLowerCaseString();
+    delete(stringBuffer);
     return string;
   }
 
@@ -155,14 +155,14 @@ public class HtmlParser extends Parser {
     while ((position < input.length()) && (peekCharacter() != '>') && (peekCharacter() != '/')) {
 
       // attribute name
-      SwiftStringBuilder keySwiftStringBuilder = new SwiftStringBuilder();
+      StringBuffer keyStringBuffer = new StringBuffer();
       while ((position < input.length()) && (isAttributeNameChar(peekCharacter()))) {
-        keySwiftStringBuilder.appendCharacter(consumeCharacter());
+        keyStringBuffer.appendCharacter(consumeCharacter());
       }
 
       skipWhitespaces();
 
-      SwiftStringBuilder valueSwiftStringBuilder = new SwiftStringBuilder();
+      StringBuffer valueStringBuffer = new StringBuffer();
       if (peekCharacter() == '=') {
         consumeCharacter();
 
@@ -174,25 +174,25 @@ public class HtmlParser extends Parser {
           consumeCharacter();
 
           while ((position < input.length()) && (peekCharacter() != quote)) {
-            valueSwiftStringBuilder.appendCharacter(consumeCharacter());
+            valueStringBuffer.appendCharacter(consumeCharacter());
           }
 
           // skip quote
           consumeCharacter();
         } else {
           while ((position < input.length()) && (isAttributeValueChar(peekCharacter()))) {
-            valueSwiftStringBuilder.appendCharacter(consumeCharacter());
+            valueStringBuffer.appendCharacter(consumeCharacter());
           }
         }
-        if (keySwiftStringBuilder.isEmpty()) {
-          delete(keySwiftStringBuilder);
-          delete(valueSwiftStringBuilder);
+        if (keyStringBuffer.isEmpty()) {
+          delete(keyStringBuffer);
+          delete(valueStringBuffer);
           skipWhitespaces();
           continue;
         }
-        String attributeName = keySwiftStringBuilder.getLowerCaseString();
+        String attributeName = keyStringBuffer.getLowerCaseString();
         if (attributeName.equals("style")) {
-          String[] styles = valueSwiftStringBuilder.getString().split(";");
+          String[] styles = valueStringBuffer.getString().split(";");
           for (String style : styles) {
             style = style.trim();
             if (style.isEmpty()) {
@@ -210,7 +210,7 @@ public class HtmlParser extends Parser {
             jsonObject.setStringMember("style." + name, value);
           }
         } else{
-          jsonObject.setStringMember(attributeName, valueSwiftStringBuilder.getString());
+          jsonObject.setStringMember(attributeName, valueStringBuffer.getString());
         }
         skipWhitespaces();
       }
@@ -264,56 +264,201 @@ public class HtmlParser extends Parser {
   }
 
   private JsonObject parseTextContents(boolean forceCreation) {
-    SwiftStringBuilder swiftStringBuilder = new SwiftStringBuilder();
+
+    StringBuffer stringBuffer = new StringBuffer();
+    StringBuffer htmlLetterStringBuffer = null;
+
     while (position < input.length()) {
       if (peekNextCharacter(0) == '<') {
-        if ((peekNextCharacter(1) == 'b') && (peekNextCharacter(2) == 'r') && (peekNextCharacter(3) == '>')) {
-          swiftStringBuilder.appendString("<br>");
+        if (peekString("<br>")) {
+          stringBuffer.appendString("<br>");
           position += 4;
           continue;
         }
         break;
       }
+      if ((peekNextCharacter(0) == '&') && ((peekNextCharacter(1) == '#'))) {
+        if (htmlLetterStringBuffer != null) {
+          // html letter not finished
+          stringBuffer.appendString(htmlLetterStringBuffer.getString());
+          delete(htmlLetterStringBuffer);
+        }
+        htmlLetterStringBuffer = new StringBuffer();
+        position += 2;
+        continue;
+      }
+      if (htmlLetterStringBuffer != null) {
+        char c = peekCharacter();
+        if (c == ';') {
+          // try to convert to char
+          position++;
+          continue;
+        }
+        if (Character.isLetterOrDigit(c)) {
+          htmlLetterStringBuffer.appendCharacter(c);
+          position++;
+          continue;
+        }
+        // error in html
+        stringBuffer.appendString(htmlLetterStringBuffer.getString());
+        delete(htmlLetterStringBuffer);
+        htmlLetterStringBuffer = null;
+      }
+      if (peekString("&amp;")) {
+        stringBuffer.appendString("&");
+        position += 5;
+        continue;
+      }
+      if (peekString("&lt;")) {
+        stringBuffer.appendString("<");
+        position += 4;
+        continue;
+      }
+      if (peekString("&gt;")) {
+        stringBuffer.appendString(">");
+        position += 4;
+        continue;
+      }
+      if (peekString("&quot;")) {
+        stringBuffer.appendString("\"");
+        position += 6;
+        continue;
+      }
+      if (peekString("&#39;")) {
+        stringBuffer.appendString("'");
+        position += 5;
+        continue;
+      }
+      if (peekString("&nbsp;")) {
+        stringBuffer.appendString(" ");
+        position += 6;
+        continue;
+      }
+      if (peekString("&Aacute;")) {
+        stringBuffer.appendString("Á");
+        position += 8;
+        continue;
+      }
+      if (peekString("&aacute;")) {
+        stringBuffer.appendString("á");
+        position += 8;
+        continue;
+      }
+      if (peekString("&Eacute;")) {
+        stringBuffer.appendString("É");
+        position += 8;
+        continue;
+      }
+      if (peekString("&eacute;")) {
+        stringBuffer.appendString("é");
+        position += 8;
+        continue;
+      }
+      if (peekString("&Iacute;")) {
+        stringBuffer.appendString("Í");
+        position += 8;
+        continue;
+      }
+      if (peekString("&iacute;")) {
+        stringBuffer.appendString("í");
+        position += 8;
+        continue;
+      }
+      if (peekString("&Oacute;")) {
+        stringBuffer.appendString("Ó");
+        position += 8;
+        continue;
+      }
+      if (peekString("&oacute;")) {
+        stringBuffer.appendString("ó");
+        position += 8;
+        continue;
+      }
+      if (peekString("&Uacute;")) {
+        stringBuffer.appendString("Ú");
+        position += 8;
+        continue;
+      }
+      if (peekString("&uacute;")) {
+        stringBuffer.appendString("ú");
+        position += 8;
+        continue;
+      }
+      if (peekString("&Ntilde;")) {
+        stringBuffer.appendString("Ñ");
+        position += 8;
+        continue;
+      }
+      if (peekString("&ntilde;")) {
+        stringBuffer.appendString("ñ");
+        position += 8;
+        continue;
+      }
+      if (peekString("&copy;")) {
+        stringBuffer.appendString("©");
+        position += 6;
+        continue;
+      }
+      if (peekString("&reg;")) {
+        stringBuffer.appendString("®");
+        position += 5;
+        continue;
+      }
+      if (peekString("&trade;")) {
+        stringBuffer.appendString("™");
+        position += 7;
+        continue;
+      }
+      if (peekString("&euro;")) {
+        stringBuffer.appendString("€");
+        position += 6;
+        continue;
+      }
+      if (peekString("&pound;")) {
+        stringBuffer.appendString("£");
+        position += 7;
+        continue;
+      }
+      if (peekString("&cent;")) {
+        stringBuffer.appendString("¢");
+        position += 6;
+        continue;
+      }
+      if (peekString("&yen;")) {
+        stringBuffer.appendString("¥");
+        position += 5;
+        continue;
+      }
 
       char c = consumeCharacter();
       if (Character.isWhitespace(c)) {
         if (forceCreation) {
-          swiftStringBuilder.appendCharacter(c);
-        } else if (swiftStringBuilder.isNotEmpty()) {
-          swiftStringBuilder.appendCharacter(c);
+          stringBuffer.appendCharacter(c);
+        } else if (stringBuffer.isNotEmpty()) {
+          stringBuffer.appendCharacter(c);
         }
         continue;
       }
-      swiftStringBuilder.appendCharacter(c);
+      stringBuffer.appendCharacter(c);
     }
 
-    if (swiftStringBuilder.isEmpty()) {
+    if (htmlLetterStringBuffer != null) {
+      // not completed html character
+      stringBuffer.appendString(htmlLetterStringBuffer.getString());
+      delete(htmlLetterStringBuffer);
+    }
+
+    if (stringBuffer.isEmpty()) {
+      delete(stringBuffer);
       return null;
     }
+
     JsonObject jsonObject = new JsonObject();
     jsonObject.setStringMember("tagName", "#text");
-    jsonObject.setStringMember("value", "#text");
-      spanJsonObject.setStringMember("text", swiftStringBuilder.getString());
-      /*text = decodeHtmlLetters(text);
+    jsonObject.setStringMember("value", stringBuffer.getString());
 
-      for (int i = 0; i < text.length(); i++) {
-
-        HtmlLetterBlock htmlLetterBlock = new HtmlLetterBlock();
-        spanBlock.addBlock(htmlLetterBlock);
-        htmlLetterBlock.text = String.valueOf(text.charAt(i));
-        htmlLetterBlock.styleColor = styleColor;
-        if ("#000000".equals(htmlLetterBlock.styleColor)) {
-          htmlLetterBlock.styleColor = null;
-        }
-      }*/
-    }
-
-    if (!returnSpanJsonObject) {
-      // <span> </span>
-      delete(spanJsonObject);
-      return null;
-    }
-    return spanJsonObject;
+    delete(stringBuffer);
+    return jsonObject;
   }
 
   private String decodeHtmlLetters(String input) {
@@ -327,7 +472,7 @@ public class HtmlParser extends Parser {
         entity += c;
         i++;
 
-        while ((i < input.length()) && (input.charAt(i) != ';') && (Character.isLetterOrDigit(input.charAt(i)) || (input.charAt(i) == '#'))) {
+        while ((i < input.length()) && (input.charAt(i) != ';') &&  || (input.charAt(i) == '#'))) {
           entity += input.charAt(i);
           i++;
         }
@@ -346,56 +491,6 @@ public class HtmlParser extends Parser {
               //int codePoint = ExpectedRuntime.parseInteger(string);
               //decoded = String.valueOf((char) codePoint);
             }
-          } else if (entity.equals("&amp;")) {
-            decoded = "&";
-          } else if (entity.equals("&lt;")) {
-            decoded = "<";
-          } else if (entity.equals("&gt;")) {
-            decoded = ">";
-          } else if (entity.equals("&quot;")) {
-            decoded = "\"";
-          } else if (entity.equals("&#39;")) {
-            decoded = "'";
-          } else if (entity.equals("&nbsp;")) {
-            decoded = " ";
-          } else if (entity.equals("&Aacute;")) {
-            decoded = "Á";
-          } else if (entity.equals("&aacute;")) {
-            decoded = "á";
-          } else if (entity.equals("&Eacute;")) {
-            decoded = "É";
-          } else if (entity.equals("&eacute;")) {
-            decoded = "é";
-          } else if (entity.equals("&Iacute;")) {
-            decoded = "Í";
-          } else if (entity.equals("&iacute;")) {
-            decoded = "í";
-          } else if (entity.equals("&Oacute;")) {
-            decoded = "Ó";
-          } else if (entity.equals("&oacute;")) {
-            decoded = "ó";
-          } else if (entity.equals("&Uacute;")) {
-            decoded = "Ú";
-          } else if (entity.equals("&uacute;")) {
-            decoded = "ú";
-          } else if (entity.equals("&Ntilde;")) {
-            decoded = "Ñ";
-          } else if (entity.equals("&ntilde;")) {
-            decoded = "ñ";
-          } else if (entity.equals("&copy;")) {
-            decoded = "©";
-          } else if (entity.equals("&reg;")) {
-            decoded = "®";
-          } else if (entity.equals("&trade;")) {
-            decoded = "™";
-          } else if (entity.equals("&euro;")) {
-            decoded = "€";
-          } else if (entity.equals("&pound;")) {
-            decoded = "£";
-          } else if (entity.equals("&cent;")) {
-            decoded = "¢";
-          } else if (entity.equals("&yen;")) {
-            decoded = "¥";
           }
 
           if (decoded != null) {

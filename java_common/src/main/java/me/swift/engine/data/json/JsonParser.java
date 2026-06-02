@@ -1,5 +1,6 @@
 package me.swift.engine.data.json;
 
+import me.swift.engine.contract.StringBuffer;
 import me.swift.engine.contract.TranspilableClass;
 import me.swift.engine.contract.*;
 
@@ -190,37 +191,37 @@ public class JsonParser extends TranspilableClass {
   }
 
   private JsonPrimitive parseNumber() {
-    SwiftStringBuilder swiftStringBuilder = new SwiftStringBuilder();
+    StringBuffer stringBuffer = new StringBuffer();
     try {
       char character = input.charAt(position);
       if (((character >= '0') && (character <= '9')) || (character == '-')) {
-        swiftStringBuilder.appendCharacter(character);
+        stringBuffer.appendCharacter(character);
         position++;
         while (position < input.length()) {
           character = input.charAt(position);
           if (character >= '0' && character <= '9') {
-            swiftStringBuilder.appendCharacter(character);
+            stringBuffer.appendCharacter(character);
             position++;
           } else if (character == '.') {
-            swiftStringBuilder.appendCharacter(character);
+            stringBuffer.appendCharacter(character);
             position++;
           } else if (character == 'e') {
-            swiftStringBuilder.appendCharacter(character);
+            stringBuffer.appendCharacter(character);
             position++;
           } else if (character == 'E') {
-            swiftStringBuilder.appendCharacter(character);
+            stringBuffer.appendCharacter(character);
             position++;
           } else if (character == '+') {
-            swiftStringBuilder.appendCharacter(character);
+            stringBuffer.appendCharacter(character);
             position++;
           } else if (character == '-') {
-            swiftStringBuilder.appendCharacter(character);
+            stringBuffer.appendCharacter(character);
             position++;
           } else {
             break;
           }
         }
-        String numberString = swiftStringBuilder.toString();
+        String numberString = stringBuffer.toString();
 
         OptionalInt optionalInt = SwiftRuntime.parseInt(numberString);
         if (optionalInt != null) {

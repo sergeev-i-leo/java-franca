@@ -1,6 +1,6 @@
 package me.swift.engine.data.html;
 
-import me.swift.engine.contract.SwiftStringBuilder;
+import me.swift.engine.contract.StringBuffer;
 import me.swift.engine.contract.TranspilableClass;
 import me.swift.engine.data.json.JsonArray;
 import me.swift.engine.data.json.JsonElement;
@@ -9,84 +9,84 @@ import me.swift.engine.data.json.JsonObject;
 public class HtmlBuilder extends TranspilableClass {
 
   public String build(JsonElement jsonElement) {
-    SwiftStringBuilder swiftStringBuilder = new SwiftStringBuilder();
-    buildFromJsonElement(jsonElement, swiftStringBuilder);
-    String string = swiftStringBuilder.getString();
-    delete(swiftStringBuilder);
+    StringBuffer stringBuffer = new StringBuffer();
+    buildFromJsonElement(jsonElement, stringBuffer);
+    String string = stringBuffer.getString();
+    delete(stringBuffer);
     return string;
   }
 
-  private void buildFromJsonElement(JsonElement jsonElement, SwiftStringBuilder swiftStringBuilder) {
+  private void buildFromJsonElement(JsonElement jsonElement, StringBuffer stringBuffer) {
     JsonArray jsonArray = jsonElement.getAsJsonArray();
     JsonObject jsonObject = jsonElement.getAsJsonObject();
     if (jsonArray != null) {
       for (int i = 0; i < jsonArray.size(); i++) {
         jsonElement = jsonArray.getElement(i);
-        buildFromJsonElement(jsonElement, swiftStringBuilder);
+        buildFromJsonElement(jsonElement, stringBuffer);
       }
     } else if (jsonObject != null) {
-      buildFromJsonObject(jsonObject, swiftStringBuilder);
+      buildFromJsonObject(jsonObject, stringBuffer);
       jsonArray = jsonObject.getJsonArrayMember("views");
       if (jsonArray != null) {
-        buildFromJsonElement(jsonArray, swiftStringBuilder);
+        buildFromJsonElement(jsonArray, stringBuffer);
       }
     }
   }
 
-  private void buildFromJsonObject(JsonObject jsonObject, SwiftStringBuilder swiftStringBuilder) {
+  private void buildFromJsonObject(JsonObject jsonObject, StringBuffer stringBuffer) {
     String className = jsonObject.getStringMember("className");
     if (className != null) {
       switch (className) {
         case "image-view":
-          swiftStringBuilder.appendString("<img ");
-          buildAttributes(jsonObject, swiftStringBuilder);
-          swiftStringBuilder.appendString("/>");
+          stringBuffer.appendString("<img ");
+          buildAttributes(jsonObject, stringBuffer);
+          stringBuffer.appendString("/>");
           return;
         case "table-view":
-          swiftStringBuilder.appendString("<table ");
-          buildAttributes(jsonObject, swiftStringBuilder);
-          swiftStringBuilder.appendString("><tbody>");
-          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), swiftStringBuilder);
-          swiftStringBuilder.appendString("</tbody></table>");
+          stringBuffer.appendString("<table ");
+          buildAttributes(jsonObject, stringBuffer);
+          stringBuffer.appendString("><tbody>");
+          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), stringBuffer);
+          stringBuffer.appendString("</tbody></table>");
           return;
         case "table-row-view":
-          swiftStringBuilder.appendString("<tr ");
-          buildAttributes(jsonObject, swiftStringBuilder);
-          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), swiftStringBuilder);
-          swiftStringBuilder.appendString("</tr>");
+          stringBuffer.appendString("<tr ");
+          buildAttributes(jsonObject, stringBuffer);
+          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), stringBuffer);
+          stringBuffer.appendString("</tr>");
           return;
         case "table-header-cell-view":
-          swiftStringBuilder.appendString("<th ");
-          buildAttributes(jsonObject, swiftStringBuilder);
-          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), swiftStringBuilder);
-          swiftStringBuilder.appendString("</th>");
+          stringBuffer.appendString("<th ");
+          buildAttributes(jsonObject, stringBuffer);
+          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), stringBuffer);
+          stringBuffer.appendString("</th>");
           return;
         case "table-cell-view":
-          swiftStringBuilder.appendString("<td ");
-          buildAttributes(jsonObject, swiftStringBuilder);
-          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), swiftStringBuilder);
-          swiftStringBuilder.appendString("</td>");
+          stringBuffer.appendString("<td ");
+          buildAttributes(jsonObject, stringBuffer);
+          buildFromJsonElement(jsonObject.getJsonArrayMember("views"), stringBuffer);
+          stringBuffer.appendString("</td>");
           return;
         case "typography-h1-view":
-          buildTextElements(jsonObject, "h1", swiftStringBuilder);
+          buildTextElements(jsonObject, "h1", stringBuffer);
           return;
         case "typography-h2-view":
-          buildTextElements(jsonObject, "h2", swiftStringBuilder);
+          buildTextElements(jsonObject, "h2", stringBuffer);
           return;
         case "typography-h3-view":
-          buildTextElements(jsonObject, "h3", swiftStringBuilder);
+          buildTextElements(jsonObject, "h3", stringBuffer);
           return;
         case "typography-h4-view":
-          buildTextElements(jsonObject, "h4", swiftStringBuilder);
+          buildTextElements(jsonObject, "h4", stringBuffer);
           return;
         case "typography-h5-view":
-          buildTextElements(jsonObject, "h5", swiftStringBuilder);
+          buildTextElements(jsonObject, "h5", stringBuffer);
           return;
         case "typography-h6-view":
-          buildTextElements(jsonObject, "h6", swiftStringBuilder);
+          buildTextElements(jsonObject, "h6", stringBuffer);
           return;
         case "typography-paragraph-view":
-          buildTextElements(jsonObject, "p", swiftStringBuilder);
+          buildTextElements(jsonObject, "p", stringBuffer);
           return;
       }
     }
@@ -94,33 +94,33 @@ public class HtmlBuilder extends TranspilableClass {
     if (tagName == null) {
       return;
     }
-    swiftStringBuilder.appendString("<");
-    swiftStringBuilder.appendString(tagName);
-    buildAttributes(jsonObject, swiftStringBuilder);
-    swiftStringBuilder.appendString(">");
-    buildFromJsonElement(jsonObject.getJsonArrayMember("views"), swiftStringBuilder);
-    swiftStringBuilder.appendString("</");
-    swiftStringBuilder.appendString(tagName);
-    swiftStringBuilder.appendString(">");
+    stringBuffer.appendString("<");
+    stringBuffer.appendString(tagName);
+    buildAttributes(jsonObject, stringBuffer);
+    stringBuffer.appendString(">");
+    buildFromJsonElement(jsonObject.getJsonArrayMember("views"), stringBuffer);
+    stringBuffer.appendString("</");
+    stringBuffer.appendString(tagName);
+    stringBuffer.appendString(">");
   }
 
-  private void buildAttributes(JsonObject jsonObject, SwiftStringBuilder swiftStringBuilder) {
+  private void buildAttributes(JsonObject jsonObject, StringBuffer stringBuffer) {
 
   }
 
-  private void buildTextElements(JsonObject jsonObject, String tagName, SwiftStringBuilder swiftStringBuilder) {
-    swiftStringBuilder.appendString("<");
-    swiftStringBuilder.appendString(tagName);
-    swiftStringBuilder.appendString(" ");
-    buildAttributes(jsonObject, swiftStringBuilder);
-    swiftStringBuilder.appendString(">");
+  private void buildTextElements(JsonObject jsonObject, String tagName, StringBuffer stringBuffer) {
+    stringBuffer.appendString("<");
+    stringBuffer.appendString(tagName);
+    stringBuffer.appendString(" ");
+    buildAttributes(jsonObject, stringBuffer);
+    stringBuffer.appendString(">");
     String text = jsonObject.getStringMember("text");
     if (text != null) {
-      swiftStringBuilder.appendString(text);
+      stringBuffer.appendString(text);
     }
-    swiftStringBuilder.appendString("</");
-    swiftStringBuilder.appendString(tagName);
-    swiftStringBuilder.appendString(">");
+    stringBuffer.appendString("</");
+    stringBuffer.appendString(tagName);
+    stringBuffer.appendString(">");
   }
 
 }

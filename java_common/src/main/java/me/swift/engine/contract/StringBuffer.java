@@ -1,6 +1,6 @@
 package me.swift.engine.contract;
 
-public class SwiftStringBuilder {
+public class StringBuffer {
 
   private StringBuilder stringBuilder = new StringBuilder();
 
