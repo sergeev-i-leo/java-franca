@@ -28,9 +28,19 @@ public class HtmlParser extends Parser {
 
       // look for first '<'
 
+      StringBuffer stringBuffer = new StringBuffer();
       while ((position < input.length()) && (peekCharacter() != '<')) {
-        consumeCharacter();
+        stringBuffer.appendCharacter(consumeCharacter());
       }
+
+      if (stringBuffer.isNotEmpty()) {
+        JsonObject textNode = new JsonObject();
+        textNode.setStringMember("tagName", "#text");
+        textNode.setStringMember("value", stringBuffer.toString());
+        viewsJsonArray.addElement(textNode);
+      }
+
+      delete(stringBuffer);
 
       if (position >= input.length()) {
         // not found
@@ -92,26 +102,33 @@ public class HtmlParser extends Parser {
   }
 
   private void parseHtmlNodeContents(String tagName, JsonArray viewsJsonArray) {
-    JsonObject jsonObject = parseTextContents();
-    if (jsonObject != null) {
-      viewsJsonArray.addElement(jsonObject);
-    }
-    if (peekCharacter() != '<') {
-      // error, must be start of content node or closing tag
-      return;
-    }
-    if (peekNextCharacter(1) == '/') {
-      // closing tag
-      position += 2;
-      String string = parseTagName();
-      if (string.equals(tagName)) {
-        // error, wrong structure
+
+    while (true) {
+      JsonObject jsonObject = parseTextContents();
+      if (jsonObject != null) {
+        viewsJsonArray.addElement(jsonObject);
       }
-      // skip '>'
+
+      if (peekCharacter() != '<') {
+        // oops, tag is missing
+        return;
+      }
+
+      // skip '<'
       position++;
-      return;
+
+      if (peekCharacter() == '/') {
+        // closing tag
+        position++;
+        String closingTagName = parseTagName();
+        position++;
+        if (!closingTagName.equals(tagName)) {
+          // error, wrong structure, show must go on
+        }
+        return;
+      }
+      parseHtmlNode(viewsJsonArray);
     }
-    parseHtmlNodes(viewsJsonArray);
   }
 
   private void parseHtmlAttributes(JsonObject jsonObject) {
