@@ -109,6 +109,11 @@ public class HtmlParser extends Parser {
         viewsJsonArray.addElement(jsonObject);
       }
 
+      if (position >= input.length()) {
+        // html is broken
+        return;
+      }
+
       if (peekCharacter() != '<') {
         // oops, tag is missing
         return;
@@ -121,13 +126,19 @@ public class HtmlParser extends Parser {
         // closing tag
         position++;
         String closingTagName = parseTagName();
-        position++;
-        if (!closingTagName.equals(tagName)) {
-          // error, wrong structure, show must go on
+        if ((position < input.length()) && (peekCharacter() == '>')) {
+          position++;
         }
+        if (closingTagName.equals(tagName)) {
+          return;
+        }
+      }
+      int storedPosition = position;
+      parseHtmlNode(viewsJsonArray);
+      if (storedPosition == position) {
+        // oops, cycling
         return;
       }
-      parseHtmlNode(viewsJsonArray);
     }
   }
 
@@ -196,6 +207,13 @@ public class HtmlParser extends Parser {
           jsonObject.setStringMember(attributeName, valueStringBuffer.getString());
         }
         skipWhitespaces();
+      } else {
+        // boolean attribute
+        if (!keyStringBuffer.isEmpty()) {
+          String attributeName = keyStringBuffer.getLowerCaseString();
+          jsonObject.setBooleanMember(attributeName, true);
+        }
+        delete(keyStringBuffer);
       }
     }
 
@@ -259,6 +277,21 @@ public class HtmlParser extends Parser {
         }
         break;
       }
+
+      char c = peekCharacter();
+      if (c == '\r') {
+        consumeCharacter();
+        if (peekCharacter() == '\n') {
+          consumeCharacter();
+        }
+        textStringBuffer.appendString("<br>");
+        continue;
+      }
+      if (c == '\n') {
+        consumeCharacter();
+        textStringBuffer.appendString("<br>");
+        continue;
+      }
       if ((peekNextCharacter(0) == '&') && ((peekNextCharacter(1) == '#'))) {
         if (htmlLetterStringBuffer != null) {
           // html letter not finished
@@ -270,7 +303,7 @@ public class HtmlParser extends Parser {
         continue;
       }
       if (htmlLetterStringBuffer != null) {
-        char c = peekCharacter();
+        c = peekCharacter();
         if (c == ';') {
           // try to convert to char
           OptionalInt optionalInt = SwiftRuntime.parseHexInt(htmlLetterStringBuffer.getString());
