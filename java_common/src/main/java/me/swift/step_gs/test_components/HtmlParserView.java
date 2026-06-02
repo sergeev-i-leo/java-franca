@@ -44,14 +44,15 @@ public class HtmlParserView extends View {
     if (state == 0) {
       state = 1;
       page.requestRepainting();
-      device.readFile("html-0.html", result -> {
+      device.readFile("test.html", result -> {
         if (result != null) {
           HtmlParser htmlParser = new HtmlParser();
           jsonArray = htmlParser.parse(result);
           delete(htmlParser);
           HtmlBuilder htmlBuilder = new HtmlBuilder();
-          htmlOutput = htmlBuilder.build(jsonArray);
-          device.writeFile("html-tmp.html", htmlOutput, optionalInt -> {
+          //htmlOutput = htmlBuilder.build(jsonArray);
+          htmlOutput="";
+          device.writeFile("test-output.html", htmlOutput, optionalInt -> {
             if ((optionalInt != null) && (optionalInt.value == 200)) {
               state = 200;
             } else {

@@ -44,23 +44,23 @@ public class JsonArray extends JsonElement {
     return jsonElements.count() == 0;
   }
 
-  public void addBooleanElement(boolean value) {
+  public void appendBooleanElement(boolean value) {
     jsonElements.append(new JsonBooleanPrimitive(value));
   }
 
-  public void addIntegerElement(int value) {
+  public void appendIntegerElement(int value) {
     jsonElements.append(new JsonIntegerPrimitive(value));
   }
 
-  public void addDoubleElement(double value) {
+  public void appendDoubleElement(double value) {
     jsonElements.append(new JsonDoublePrimitive(value));
   }
 
-  public void addStringElement(String value) {
+  public void appendStringElement(String value) {
     jsonElements.append(new JsonStringPrimitive(value));
   }
 
-  public void addElement(JsonElement jsonElement) {
+  public void appendElement(JsonElement jsonElement) {
     jsonElements.append(jsonElement);
   }
 

@@ -137,6 +137,10 @@ public class Parser extends TranspilableClass {
     return '\u0000';
   }
 
+  public void skipCharacters(int offset) {
+    position += offset;
+  }
+
   public void skipWhitespaces() {
     while (position < input.length()) {
       char c = input.charAt(position);

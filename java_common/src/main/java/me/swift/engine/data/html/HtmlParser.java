@@ -6,6 +6,7 @@ import me.swift.engine.contract.StringBuffer;
 import me.swift.engine.data.Parser;
 import me.swift.engine.data.json.JsonArray;
 import me.swift.engine.data.json.JsonObject;
+import me.swift.engine.data.json.JsonStringPrimitive;
 
 public class HtmlParser extends Parser {
 
@@ -22,7 +23,7 @@ public class HtmlParser extends Parser {
     return jsonArray;
   }
 
-  public void parseHtmlNodes(JsonArray viewsJsonArray) {
+  public void parseHtmlNodes(JsonArray jsonArray) {
 
     while (true) {
 
@@ -37,7 +38,7 @@ public class HtmlParser extends Parser {
         JsonObject textNode = new JsonObject();
         textNode.setStringMember("tagName", "#text");
         textNode.setStringMember("value", stringBuffer.toString());
-        viewsJsonArray.addElement(textNode);
+        jsonArray.appendElement(textNode);
       }
 
       delete(stringBuffer);
@@ -47,47 +48,52 @@ public class HtmlParser extends Parser {
         return;
       }
 
-      parseHtmlNode(viewsJsonArray);
+      parseHtmlNode(jsonArray);
     }
   }
 
-  public void parseHtmlNode(JsonArray viewsJsonArray) {
+  public void parseHtmlNode(JsonArray jsonArray) {
     if (consumeCharacter() != '<') {
       return;
     }
 
+    if (peekCharacter() == '!') {
+      consumeCharacter();
+      parseTextContents(jsonArray);
+    }
+
     String tagName = parseTagName();
     JsonObject jsonObject = new JsonObject();
-    viewsJsonArray.addElement(jsonObject);
+    jsonArray.appendElement(jsonObject);
     jsonObject.setStringMember("tagName", tagName);
     parseHtmlAttributes(jsonObject);
 
     if (tagName.equals("img")) {
       // self-closing
       if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
-        position += 2;
+        skipCharacters(2);
       } else if (peekCharacter() == '>') {
-        position++;
+        skipCharacters(1);
       }
       return;
     }
     if (tagName.equals("span")) {
-      parseHtmlNodeContents(tagName, viewsJsonArray);
+      parseHtmlNodeContents(tagName, jsonArray);
       return;
     }
 
     if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
       // self-closing
-      position += 2;
+      skipCharacters(2);
       return;
     }
 
     // '>'
-    position++;
+    skipCharacters(1);
 
-    viewsJsonArray = new JsonArray();
-    jsonObject.setMember("views", viewsJsonArray);
-    parseHtmlNodeContents(tagName, viewsJsonArray);
+    jsonArray = new JsonArray();
+    jsonObject.setMember("contents", jsonArray);
+    parseHtmlNodeContents(tagName, jsonArray);
   }
 
   private String parseTagName() {
@@ -101,13 +107,10 @@ public class HtmlParser extends Parser {
     return string;
   }
 
-  private void parseHtmlNodeContents(String tagName, JsonArray viewsJsonArray) {
+  private void parseHtmlNodeContents(String tagName, JsonArray jsonArray) {
 
     while (true) {
-      JsonObject jsonObject = parseTextContents();
-      if (jsonObject != null) {
-        viewsJsonArray.addElement(jsonObject);
-      }
+      parseTextContents(jsonArray);
 
       if (position >= input.length()) {
         // html is broken
@@ -120,23 +123,23 @@ public class HtmlParser extends Parser {
       }
 
       // skip '<'
-      position++;
+      skipCharacters(1);
 
       if (peekCharacter() == '/') {
         // closing tag
-        position++;
+        skipCharacters(1);
         String closingTagName = parseTagName();
         if ((position < input.length()) && (peekCharacter() == '>')) {
-          position++;
+          skipCharacters(1);
         }
         if (closingTagName.equals(tagName)) {
           return;
         }
       }
       int storedPosition = position;
-      parseHtmlNode(viewsJsonArray);
+      parseHtmlNode(jsonArray);
       if (storedPosition == position) {
-        // oops, cycling
+        // oops, no cycling!
         return;
       }
     }
@@ -144,152 +147,214 @@ public class HtmlParser extends Parser {
 
   private void parseHtmlAttributes(JsonObject jsonObject) {
 
+    JsonArray attributesJsonArray = new JsonArray();
+    jsonObject.setMember("attributes", attributesJsonArray);
+    JsonArray styleJsonArray = new JsonArray();
+    jsonObject.setMember("style", styleJsonArray);
+
     skipWhitespaces();
 
     while ((position < input.length()) && (peekCharacter() != '>') && (peekCharacter() != '/')) {
 
       // attribute name
-      StringBuffer keyStringBuffer = new StringBuffer();
-      while ((position < input.length()) && (isAttributeNameChar(peekCharacter()))) {
-        keyStringBuffer.appendCharacter(consumeCharacter());
+
+      String attributeName = parseAttributeName();
+      if (attributeName == null) {
+        return;
       }
 
       skipWhitespaces();
 
-      StringBuffer valueStringBuffer = new StringBuffer();
-      if (peekCharacter() == '=') {
-        consumeCharacter();
-
-        skipWhitespaces();
-
-        char c = peekCharacter();
-        if ((c == '"') || (c == '\'')) {
-          // skip quote
-          consumeCharacter();
-
-          while ((position < input.length()) && (peekCharacter() != c)) {
-            valueStringBuffer.appendCharacter(consumeCharacter());
-          }
-
-          // skip quote
-          consumeCharacter();
-        } else {
-          while ((position < input.length()) && (isAttributeValueChar(peekCharacter()))) {
-            valueStringBuffer.appendCharacter(consumeCharacter());
-          }
-        }
-        if (keyStringBuffer.isEmpty()) {
-          delete(keyStringBuffer);
-          delete(valueStringBuffer);
-          skipWhitespaces();
-          continue;
-        }
-        String attributeName = keyStringBuffer.getLowerCaseString();
-        if (attributeName.equals("style")) {
-          String[] styles = valueStringBuffer.getString().split(";");
-          for (String style : styles) {
-            style = style.trim();
-            if (style.isEmpty()) {
-              continue;
-            }
-
-            String[] parts = style.split(":");
-            if (parts.length < 2) {
-              continue;
-            }
-
-            String name = parts[0].trim().toLowerCase();
-            String value = parts[1].trim();
-
-            jsonObject.setStringMember("style." + name, value);
-          }
-        } else{
-          jsonObject.setStringMember(attributeName, valueStringBuffer.getString());
-        }
-        skipWhitespaces();
-      } else {
-        // boolean attribute
-        if (!keyStringBuffer.isEmpty()) {
-          String attributeName = keyStringBuffer.getLowerCaseString();
-          jsonObject.setBooleanMember(attributeName, true);
-        }
-        delete(keyStringBuffer);
-      }
-    }
-
-    String tagName = jsonObject.getStringMember("tagName");
-    if ((tagName.equals("th")) || (tagName.equals("td"))) {
-      String colspan = jsonObject.getStringMember("colspan");
-      if (colspan != null) {
-        OptionalInt optionalInt = SwiftRuntime.parseInt(colspan);
-        if (optionalInt == null) {
-          jsonObject.setIntegerMember("columns-count", 1);
-        } else if (optionalInt.value < 1) {
-          jsonObject.setIntegerMember("columns-count", 1);
-          delete(optionalInt);
-        } else {
-          jsonObject.setIntegerMember("columns-count", optionalInt.value);
-          delete(optionalInt);
-        }
-        delete(colspan);
-      } else {
-        jsonObject.setIntegerMember("columns-count", 1);
+      if (peekCharacter() != '=') {
+        attributesJsonArray.appendElement(new JsonStringPrimitive(attributeName));
+        delete(attributeName);
+        continue;
       }
 
-      String rowspan = jsonObject.getStringMember("rowspan");
-      if (rowspan != null) {
-        OptionalInt optionalInt = SwiftRuntime.parseInt(rowspan);
-        if (optionalInt == null) {
-          jsonObject.setIntegerMember("rows-count", 1);
-        } else if (optionalInt.value < 1) {
-          jsonObject.setIntegerMember("rows-count", 1);
-          delete(optionalInt);
-        } else {
-          jsonObject.setIntegerMember("rows-count", optionalInt.value);
-          delete(optionalInt);
-        }
-        delete(rowspan);
-      } else {
-        jsonObject.setIntegerMember("rows-count", 1);
-      }
+      skipCharacters(1);
+
+      parseAttributeValue(attributeName, attributesJsonArray, styleJsonArray);
     }
   }
 
-  private boolean isAttributeNameChar(char c) {
+  private String parseAttributeName() {
+    StringBuffer stringBuffer = new StringBuffer();
+    while ((position < input.length()) && (isAttributeNameCharacter(peekCharacter()))) {
+      char c = consumeCharacter();
+      stringBuffer.appendCharacter(c);
+    }
+    if (stringBuffer.isEmpty()) {
+      delete(stringBuffer);
+      return null;
+    }
+    String string = stringBuffer.getLowerCaseString();
+    delete(stringBuffer);
+    return string;
+  }
+
+  private boolean isAttributeNameCharacter(char c) {
     return (c != '=') && (c != '>') && (c != '/') && (!Character.isWhitespace(c));
   }
 
-  private boolean isAttributeValueChar(char c) {
+  private void parseAttributeValue(String attributeName, JsonArray attributesJsonArray, JsonArray styleJsonArray) {
+    skipWhitespaces();
+
+    char attributeValueDelimiter = consumeCharacter();
+    if ((attributeValueDelimiter != '\"') && (attributeValueDelimiter != '\'')) {
+      return;
+    }
+
+    if (!attributeName.equals("style")) {
+      StringBuffer stringBuffer = new StringBuffer();
+      while (position < input.length()) {
+        char c = peekCharacter();
+        if (c == '\\') {
+          skipCharacters(1);
+          c = consumeCharacter();
+          stringBuffer.appendCharacter(c);
+          continue;
+        }
+        if (c == attributeValueDelimiter) {
+          skipCharacters(1);
+          break;
+        }
+        if (!isAttributeValueCharacter(c)) {
+          break;
+        }
+        stringBuffer.appendCharacter(c);
+      }
+      if (stringBuffer.isEmpty()) {
+        delete(stringBuffer);
+        return;
+      }
+      JsonObject attributeJsonObject = new JsonObject();
+      attributesJsonArray.appendElement(attributeJsonObject);
+      attributeJsonObject.setStringMember(attributeName, stringBuffer.toString());
+
+      delete(attributeName);
+      delete(stringBuffer);
+      return;
+    }
+
+    while (position < input.length()) {
+      String styleName = parseStyleName();
+      if (styleName == null) {
+        return;
+      }
+      skipWhitespaces();
+      if (peekCharacter() != ':') {
+        delete(styleName);
+        break;
+      }
+      skipCharacters(1);
+
+      skipWhitespaces();
+      StringBuffer styleStringBuffer = parseStyleValue();
+      if (styleValue == null) {
+        delete(styleName);
+        break;
+      }
+      JsonObject styleJsonObject = new JsonObject();
+      attributesJsonArray.appendElement(styleJsonObject);
+      styleJsonObject.setStringMember(styleName, styleValue);
+
+      delete(styleName);
+      delete(styleValue);
+
+      skipWhitespaces();
+      if (peekCharacter() != ';') {
+        break;
+      }
+
+      skipCharacters(1);
+    }
+  }
+
+  private boolean isAttributeValueCharacter(char c) {
     return (c != '>') && (c != '/') && (!Character.isWhitespace(c));
   }
 
-  private JsonObject parseTextContents() {
+  private String parseStyleName() {
+    StringBuffer stringBuffer = new StringBuffer();
+    while ((position < input.length()) && (isAttributeNameCharacter(peekCharacter()))) {
+      char c = consumeCharacter();
+      stringBuffer.appendCharacter(c);
+    }
+    if (stringBuffer.isEmpty()) {
+      delete(stringBuffer);
+      return null;
+    }
+    String string = stringBuffer.getLowerCaseString();
+    delete(stringBuffer);
+    return string;
+  }
+
+  private StringBuffer parseStyleValue() {
+    skipWhitespaces();
+
+    StringBuffer stringBuffer = new StringBuffer();
+    while (position < input.length()) {
+      char c = peekCharacter();
+      if (c == '\\') {
+        skipCharacters(1);
+        c = consumeCharacter();
+        stringBuffer.appendCharacter(c);
+        continue;
+      }
+      if (!isAttributeValueCharacter(c)) {
+        break;
+      }
+      stringBuffer.appendCharacter(c);
+    }
+    if (stringBuffer.isEmpty()) {
+      delete(stringBuffer);
+      return null;
+    }
+
+    return stringBuffer;
+  }
+
+
+  private void parseTextContents(JsonArray jsonArray) {
 
     StringBuffer textStringBuffer = new StringBuffer();
     StringBuffer htmlLetterStringBuffer = null;
 
     while (position < input.length()) {
-      if (peekNextCharacter(0) == '<') {
+      char c = peekCharacter();
+      if (c == '<') {
         if (peekString("<br>")) {
-          textStringBuffer.appendString("<br>");
-          position += 4;
+          if (textStringBuffer.isNotEmpty()) {
+            appendTextJsonObject(jsonArray, textStringBuffer.toString());
+            delete(textStringBuffer);
+            textStringBuffer = new StringBuffer();
+          }
+          appendTextJsonObject(jsonArray, "<br>");
+          skipCharacters(4);
           continue;
+        } else if (peekNextCharacter(1) != '!') {
+          break;
         }
-        break;
       }
 
-      char c = peekCharacter();
       if (c == '\r') {
         consumeCharacter();
         if (peekCharacter() == '\n') {
-          consumeCharacter();
+          c = consumeCharacter();
+        } else {
+          c = '\n';
         }
-        textStringBuffer.appendString("<br>");
-        continue;
       }
+
       if (c == '\n') {
-        consumeCharacter();
-        textStringBuffer.appendString("<br>");
+        if (textStringBuffer.isNotEmpty()) {
+          appendTextJsonObject(jsonArray, textStringBuffer.toString());
+          delete(textStringBuffer);
+          textStringBuffer = new StringBuffer();
+        }
+        JsonObject jsonObject = new JsonObject();
+        jsonArray.appendElement(jsonObject);
+        jsonObject.setStringMember("tagName", "#cr");
         continue;
       }
       if ((peekNextCharacter(0) == '&') && ((peekNextCharacter(1) == '#'))) {
@@ -299,7 +364,7 @@ public class HtmlParser extends Parser {
           delete(htmlLetterStringBuffer);
         }
         htmlLetterStringBuffer = new StringBuffer();
-        position += 2;
+        skipCharacters(2);
         continue;
       }
       if (htmlLetterStringBuffer != null) {
@@ -314,12 +379,12 @@ public class HtmlParser extends Parser {
           }
           delete(htmlLetterStringBuffer);
           htmlLetterStringBuffer = null;
-          position++;
+          skipCharacters(1);
           continue;
         }
         if (Character.isLetterOrDigit(c)) {
           htmlLetterStringBuffer.appendCharacter(c);
-          position++;
+          skipCharacters(1);
           continue;
         }
         // error in html
@@ -329,32 +394,32 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&amp;")) {
         textStringBuffer.appendString("&");
-        position += 5;
+        skipCharacters(5);
         continue;
       }
       if (peekString("&lt;")) {
         textStringBuffer.appendString("<");
-        position += 4;
+        skipCharacters(4);
         continue;
       }
       if (peekString("&gt;")) {
         textStringBuffer.appendString(">");
-        position += 4;
+        skipCharacters(4);
         continue;
       }
       if (peekString("&quot;")) {
         textStringBuffer.appendString("\"");
-        position += 6;
+        skipCharacters(6);
         continue;
       }
       if (peekString("&#39;")) {
         textStringBuffer.appendString("'");
-        position += 5;
+        skipCharacters(5);
         continue;
       }
       if (peekString("&nbsp;")) {
         textStringBuffer.appendString(" ");
-        position += 6;
+        skipCharacters(6);
         continue;
       }
       if (peekString("&Aacute;")) {
@@ -419,12 +484,12 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&copy;")) {
         textStringBuffer.appendString("©");
-        position += 6;
+        skipCharacters(6);
         continue;
       }
       if (peekString("&reg;")) {
         textStringBuffer.appendString("®");
-        position += 5;
+        skipCharacters(5);
         continue;
       }
       if (peekString("&trade;")) {
@@ -434,7 +499,7 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&euro;")) {
         textStringBuffer.appendString("€");
-        position += 6;
+        skipCharacters(6);
         continue;
       }
       if (peekString("&pound;")) {
@@ -444,12 +509,12 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&cent;")) {
         textStringBuffer.appendString("¢");
-        position += 6;
+        skipCharacters(6);
         continue;
       }
       if (peekString("&yen;")) {
         textStringBuffer.appendString("¥");
-        position += 5;
+        skipCharacters(5);
         continue;
       }
 
@@ -462,16 +527,58 @@ public class HtmlParser extends Parser {
       delete(htmlLetterStringBuffer);
     }
 
-    if (textStringBuffer.isEmpty()) {
+    if (textStringBuffer.isNotEmpty()) {
+      appendTextJsonObject(jsonArray, textStringBuffer.getString());
       delete(textStringBuffer);
-      return null;
     }
+  }
 
+  private void appendTextJsonObject(JsonArray jsonArray, String text) {
     JsonObject jsonObject = new JsonObject();
+    jsonArray.appendElement(jsonObject);
     jsonObject.setStringMember("tagName", "#text");
-    jsonObject.setStringMember("value", textStringBuffer.getString());
+    jsonObject.setStringMember("value", text);
+  }
 
-    delete(textStringBuffer);
-    return jsonObject;
+  public JsonArray transformToDocumentModel(JsonArray inputJsonArray) {
+    JsonArray outputJsonArray = new JsonArray();
+/* TODO
+    String tagName = jsonObject.getStringMember("tagName");
+    if ((tagName.equals("th")) || (tagName.equals("td"))) {
+      String colspan = jsonObject.getStringMember("colspan");
+      if (colspan != null) {
+        OptionalInt optionalInt = SwiftRuntime.parseInt(colspan);
+        if (optionalInt == null) {
+          jsonObject.setIntegerMember("columns-count", 1);
+        } else if (optionalInt.value < 1) {
+          jsonObject.setIntegerMember("columns-count", 1);
+          delete(optionalInt);
+        } else {
+          jsonObject.setIntegerMember("columns-count", optionalInt.value);
+          delete(optionalInt);
+        }
+        delete(colspan);
+      } else {
+        jsonObject.setIntegerMember("columns-count", 1);
+      }
+
+      String rowspan = jsonObject.getStringMember("rowspan");
+      if (rowspan != null) {
+        OptionalInt optionalInt = SwiftRuntime.parseInt(rowspan);
+        if (optionalInt == null) {
+          jsonObject.setIntegerMember("rows-count", 1);
+        } else if (optionalInt.value < 1) {
+          jsonObject.setIntegerMember("rows-count", 1);
+          delete(optionalInt);
+        } else {
+          jsonObject.setIntegerMember("rows-count", optionalInt.value);
+          delete(optionalInt);
+        }
+        delete(rowspan);
+      } else {
+        jsonObject.setIntegerMember("rows-count", 1);
+      }
+    }*/
+    return outputJsonArray;
   }
 }
