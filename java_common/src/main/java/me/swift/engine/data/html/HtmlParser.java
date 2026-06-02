@@ -5,6 +5,7 @@ import me.swift.engine.contract.SwiftRuntime;
 import me.swift.engine.contract.StringBuffer;
 import me.swift.engine.data.Parser;
 import me.swift.engine.data.json.JsonArray;
+import me.swift.engine.data.json.JsonElement;
 import me.swift.engine.data.json.JsonObject;
 import me.swift.engine.data.json.JsonStringPrimitive;
 
@@ -583,6 +584,25 @@ public class HtmlParser extends Parser {
     jsonArray.appendElement(jsonObject);
     jsonObject.setStringMember("tagName", "#text");
     jsonObject.setStringMember("value", text);
+  }
+
+  public void toStringBuffer(JsonArray jsonArray, StringBuffer stringBuffer) {
+    for (int i = 0; i < jsonArray.count(); i++) {
+      JsonObject jsonObject = jsonArray.getElement(i).asJsonObject();
+      if (jsonObject == null) {
+        continue;
+      }
+      String tagName = jsonObject.getStringMember("tagName");
+      JsonArray contentsJsonArray = jsonObject.getJsonArrayMember("contents");
+      if (tagName != null) {
+        stringBuffer.appendCharacter('<');
+        stringBuffer.appendString(tagName);
+        stringBuffer.appendCharacter('>');
+      }
+      if (contentsJsonArray != null) {
+        toStringBuffer(contentsJsonArray, stringBuffer);
+      }
+    }
   }
 
   public JsonArray transformToDocumentModel(JsonArray inputJsonArray) {

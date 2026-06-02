@@ -20,6 +20,10 @@ public class StringBuffer {
     stringBuilder.append(string);
   }
 
+  public void appendLineEnd() {
+    appendString("\r\n");
+  }
+
   public String getString() {
     return stringBuilder.toString();
   }

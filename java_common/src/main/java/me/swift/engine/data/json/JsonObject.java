@@ -46,7 +46,7 @@ public class JsonObject extends JsonElement {
   }
 
   @Override
-  public JsonObject getAsJsonObject() {
+  public JsonObject asJsonObject() {
     return this;
   }
 

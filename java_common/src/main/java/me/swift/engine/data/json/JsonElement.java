@@ -41,11 +41,11 @@ public class JsonElement extends TranspilableClass {
     return false;
   }
 
-  public JsonArray getAsJsonArray() {
+  public JsonArray asJsonArray() {
     return null;
   }
 
-  public JsonObject getAsJsonObject() {
+  public JsonObject asJsonObject() {
     return null;
   }
 

@@ -1,5 +1,6 @@
 package me.swift.step_gs.test_components;
 
+import me.swift.engine.contract.StringBuffer;
 import me.swift.engine.data.html.HtmlBuilder;
 import me.swift.engine.data.html.HtmlParser;
 import me.swift.engine.data.json.JsonArray;
@@ -49,9 +50,10 @@ public class HtmlParserView extends View {
           HtmlParser htmlParser = new HtmlParser();
           jsonArray = htmlParser.parse(result);
           delete(htmlParser);
-          HtmlBuilder htmlBuilder = new HtmlBuilder();
-          //htmlOutput = htmlBuilder.build(jsonArray);
-          htmlOutput="";
+          StringBuffer stringBuffer = new StringBuffer();
+          htmlParser.toStringBuffer(jsonArray,stringBuffer);
+          htmlOutput = stringBuffer.getString();
+          delete(stringBuffer);
           device.writeFile("test-output.html", htmlOutput, optionalInt -> {
             if ((optionalInt != null) && (optionalInt.value == 200)) {
               state = 200;

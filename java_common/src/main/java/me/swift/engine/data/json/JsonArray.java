@@ -32,7 +32,7 @@ public class JsonArray extends JsonElement {
   }
 
   @Override
-  public JsonArray getAsJsonArray() {
+  public JsonArray asJsonArray() {
     return this;
   }
 
