@@ -147,7 +147,7 @@ public class JsonParser extends TranspilableClass {
           break;
         }
         JsonElement jsonElement = parseJsonElement();
-        jsonArray.appendElement(jsonElement);
+        jsonArray.appendItem(jsonElement);
         if (input.charAt(position) != ',') {
           break;
         }

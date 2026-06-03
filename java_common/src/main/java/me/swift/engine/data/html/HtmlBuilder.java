@@ -21,7 +21,7 @@ public class HtmlBuilder extends TranspilableClass {
     JsonObject jsonObject = jsonElement.asJsonObject();
     if (jsonArray != null) {
       for (int i = 0; i < jsonArray.count(); i++) {
-        jsonElement = jsonArray.getElement(i);
+        jsonElement = jsonArray.getItem(i);
         buildFromJsonElement(jsonElement, stringBuffer);
       }
     } else if (jsonObject != null) {

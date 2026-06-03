@@ -54,6 +54,14 @@ public class JsonObject extends JsonElement {
     return jsonElements.keys();
   }
 
+  public void setMember(String memberName, JsonElement jsonElement) {
+    jsonElements.put(memberName, jsonElement);
+  }
+
+  public void setNullMember(String memberName) {
+    jsonElements.put(memberName, new JsonNull());
+  }
+
   public void setBooleanMember(String memberName, boolean value) {
     jsonElements.put(memberName, new JsonBooleanPrimitive(value));
   }
@@ -70,56 +78,40 @@ public class JsonObject extends JsonElement {
     jsonElements.put(memberName, new JsonStringPrimitive(value));
   }
 
-  public void setMember(String memberName, JsonElement jsonElement) {
-    jsonElements.put(memberName, jsonElement);
+  public JsonElement getMember(String memberName) {
+    return jsonElements.get(memberName);
   }
 
-  public boolean isBooleanMember(String memberName) {
-    JsonElement jsonElement = getMember(memberName);
-    if (jsonElement == null) {
-      return false;
+  public JsonNull getJsonNullMember(String memberName) {
+    JsonElement jsonElement = jsonElements.get(memberName);
+    if (jsonElement.isJsonNull()) {
+      return (JsonNull) jsonElement;
     }
-    return jsonElement.isJsonBooleanPrimitive();
+    return null;
   }
 
-  public boolean isIntegerMember(String memberName) {
-    JsonElement jsonElement = getMember(memberName);
-    if (jsonElement == null) {
-      return false;
-    }
-    return jsonElement.isJsonIntegerPrimitive();
-  }
-
-  public boolean isDoubleMember(String memberName) {
-    JsonElement jsonElement = getMember(memberName);
-    if (jsonElement == null) {
-      return false;
-    }
-    return jsonElement.isJsonDoublePrimitive();
-  }
-
-  public boolean getBooleanMember(String memberName) {
+  public Boolean getBooleanMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement.isJsonBooleanPrimitive()) {
       return ((JsonBooleanPrimitive) jsonElement).getValue();
     }
-    return false;
+    return null;
   }
 
-  public int getIntegerMember(String memberName) {
+  public Integer getIntegerMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement.isJsonIntegerPrimitive()) {
       return ((JsonIntegerPrimitive) jsonElement).getValue();
     }
-    return 0;
+    return null;
   }
 
-  public double getDoubleMember(String memberName) {
+  public Double getDoubleMember(String memberName) {
     JsonElement jsonElement = jsonElements.get(memberName);
     if (jsonElement.isJsonDoublePrimitive()) {
       return ((JsonDoublePrimitive) jsonElement).getValue();
     }
-    return 0.0;
+    return null;
   }
 
   public String getStringMember(String memberName) {
@@ -129,21 +121,6 @@ public class JsonObject extends JsonElement {
     }
     if (jsonElement.isJsonStringPrimitive()) {
       return ((JsonStringPrimitive) jsonElement).getValue();
-    }
-    return null;
-  }
-
-  public JsonElement getMember(String memberName) {
-    return jsonElements.get(memberName);
-  }
-
-  public JsonNull getJsonNullMember(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
-    if (jsonElement == null) {
-      return null;
-    }
-    if (jsonElement.isJsonNull()) {
-      return (JsonNull) jsonElement;
     }
     return null;
   }

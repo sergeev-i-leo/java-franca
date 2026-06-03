@@ -10,7 +10,7 @@ import me.swift.engine.data.json.JsonStringPrimitive;
 
 public class HtmlParser extends Parser {
 
-  // 0 for nothing, 1 for nothing with input checking, 2 for debugging
+  // 0 for nothing, 1 for nothing with input flag, 2 for debugging
   public int debuggingLevel = 0;
 
   public JsonArray parse(String input) {
@@ -97,7 +97,7 @@ public class HtmlParser extends Parser {
     }
 
     JsonObject jsonObject = new JsonObject();
-    jsonArray.appendElement(jsonObject);
+    jsonArray.appendItem(jsonObject);
     jsonObject.setStringMember("tagName", tagName);
     parseHtmlAttributes(jsonObject);
 
@@ -158,7 +158,7 @@ public class HtmlParser extends Parser {
       skipWhitespaces();
 
       if (peekCharacter() != '=') {
-        attributesJsonArray.appendElement(new JsonStringPrimitive(attributeName));
+        attributesJsonArray.appendItem(new JsonStringPrimitive(attributeName));
         if (debuggingLevel > 1) {
           System.out.println("boolean attribute found " + attributeName);
         }
@@ -206,7 +206,7 @@ public class HtmlParser extends Parser {
         stringBuffer.appendCharacter(consumeCharacter());
       }
       JsonObject attributeJsonObject = new JsonObject();
-      attributesJsonArray.appendElement(attributeJsonObject);
+      attributesJsonArray.appendItem(attributeJsonObject);
       attributeJsonObject.setStringMember(attributeName, stringBuffer.toString());
 
       if (debuggingLevel > 1) {
@@ -244,7 +244,7 @@ public class HtmlParser extends Parser {
         return;
       }
       JsonObject attributeJsonObject = new JsonObject();
-      attributesJsonArray.appendElement(attributeJsonObject);
+      attributesJsonArray.appendItem(attributeJsonObject);
       attributeJsonObject.setStringMember(attributeName, stringBuffer.toString());
 
       if (debuggingLevel > 1) {
@@ -278,7 +278,7 @@ public class HtmlParser extends Parser {
         break;
       }
       JsonObject styleJsonObject = new JsonObject();
-      styleJsonArray.appendElement(styleJsonObject);
+      styleJsonArray.appendItem(styleJsonObject);
       styleJsonObject.setStringMember(styleName, stringBuffer.getString());
 
       if (debuggingLevel > 1) {
@@ -577,7 +577,7 @@ public class HtmlParser extends Parser {
 
   private void appendTextJsonObject(JsonArray jsonArray, String text) {
     JsonObject jsonObject = new JsonObject();
-    jsonArray.appendElement(jsonObject);
+    jsonArray.appendItem(jsonObject);
     jsonObject.setStringMember("tagName", "#text");
     jsonObject.setStringMember("value", text);
   }
@@ -598,7 +598,7 @@ public class HtmlParser extends Parser {
 
   public void toStringBuffer(JsonArray jsonArray, StringBuffer stringBuffer) {
     for (int i = 0; i < jsonArray.count(); i++) {
-      JsonObject jsonObject = jsonArray.getElement(i).asJsonObject();
+      JsonObject jsonObject = jsonArray.getItem(i).asJsonObject();
       if (jsonObject == null) {
         continue;
       }
