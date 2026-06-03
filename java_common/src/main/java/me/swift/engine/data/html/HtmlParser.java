@@ -110,36 +110,6 @@ public class HtmlParser extends Parser {
       }
       return;
     }
-    if (tagName.equals("span")) {
-      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
-        // self-closing
-        skipCharacters(2);
-      } else {
-        skipCharacters(1);
-      }
-      parseHtmlNodeContents(tagName, jsonArray);
-      return;
-    }
-    if (tagName.equals("strong")) {
-      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
-        // self-closing
-        skipCharacters(2);
-      } else {
-        skipCharacters(1);
-      }
-      parseHtmlNodeContents(tagName, jsonArray);
-      return;
-    }
-    if (tagName.equals("em")) {
-      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
-        // self-closing
-        skipCharacters(2);
-      } else {
-        skipCharacters(1);
-      }
-      parseHtmlNodeContents(tagName, jsonArray);
-      return;
-    }
 
     if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
       // self-closing
