@@ -18,34 +18,72 @@ public class HtmlParser extends Parser {
     position = 0;
 
     JsonArray jsonArray = new JsonArray();
-    parseHtmlNodes(jsonArray);
+    parseHtmlNodeContents(null, jsonArray);
 
     return jsonArray;
   }
 
-  public void parseHtmlNodes(JsonArray jsonArray) {
+  private void parseHtmlNodeContents(String tagName, JsonArray jsonArray) {
 
-    while (position < input.length()) {
+    while (true) {
+      parseTextContents(jsonArray);
 
-      skipWhitespaces();
+      while ((peekCharacter() == '<') && (peekNextCharacter(1) == '!')) {
+        if (peekString("<!-- printingLevel = 0")) {
+          printingLevel = 0;
+        } else if (peekString("<!-- printingLevel = 1")) {
+          printingLevel = 1;
+        } else if (peekString("<!-- printingLevel = 2")) {
+          printingLevel = 2;
+        }
+        appendTextJsonObject(jsonArray, "<!");
+        parseTextContents(jsonArray);
+        skipWhitespaces();
+      }
 
       if (position >= input.length()) {
-        // not found
+        // html is broken
+        skipCharacters(1);
         return;
       }
 
+      if (peekCharacter() != '<') {
+        // oops, tag is missing
+        skipCharacters(1);
+        return;
+      }
+
+      if (peekNextCharacter(1) == '/') {
+        // closing tag
+        skipCharacters(2);
+        String closingTagName = parseTagName();
+        if ((position < input.length()) && (peekCharacter() == '>')) {
+          skipCharacters(1);
+        }
+
+        if (printingLevel > 0) {
+          System.out.println("</" + closingTagName + ">");
+        }
+
+        if (tagName == null) {
+          // root of the document
+          return;
+        }
+        if (closingTagName.equals(tagName)) {
+          return;
+        }
+      }
+      int storedPosition = position;
       parseHtmlNode(jsonArray);
+      if (storedPosition == position) {
+        // oops, no cycling!
+        return;
+      }
     }
   }
 
   public void parseHtmlNode(JsonArray jsonArray) {
     skipWhitespaces();
-
-    while ((peekCharacter() == '<') && (peekNextCharacter(1) == '!')) {
-      appendTextJsonObject(jsonArray, "<!");
-      parseTextContents(jsonArray);
-      skipWhitespaces();
-    }
 
     if (consumeCharacter() != '<') {
       // oops, goodbye cycling
@@ -54,6 +92,11 @@ public class HtmlParser extends Parser {
     }
 
     String tagName = parseTagName();
+
+    if (printingLevel > 0) {
+      System.out.println("<" + tagName + ">");
+    }
+
     JsonObject jsonObject = new JsonObject();
     jsonArray.appendElement(jsonObject);
     jsonObject.setStringMember("tagName", tagName);
@@ -69,14 +112,32 @@ public class HtmlParser extends Parser {
       return;
     }
     if (tagName.equals("span")) {
+      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
+        // self-closing
+        skipCharacters(2);
+      } else {
+        skipCharacters(1);
+      }
       parseHtmlNodeContents(tagName, jsonArray);
       return;
     }
     if (tagName.equals("strong")) {
+      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
+        // self-closing
+        skipCharacters(2);
+      } else {
+        skipCharacters(1);
+      }
       parseHtmlNodeContents(tagName, jsonArray);
       return;
     }
     if (tagName.equals("em")) {
+      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
+        // self-closing
+        skipCharacters(2);
+      } else {
+        skipCharacters(1);
+      }
       parseHtmlNodeContents(tagName, jsonArray);
       return;
     }
@@ -101,47 +162,9 @@ public class HtmlParser extends Parser {
       char c = consumeCharacter();
       stringBuffer.appendCharacter(c);
     }
-    if (printlnIt > 0) {
-      System.out.println("tag name found " + stringBuffer.getLowerCaseString());
-    }
     String string = stringBuffer.getLowerCaseString();
     delete(stringBuffer);
     return string;
-  }
-
-  private void parseHtmlNodeContents(String tagName, JsonArray jsonArray) {
-
-    while (true) {
-      parseTextContents(jsonArray);
-
-      if (position >= input.length()) {
-        // html is broken
-        return;
-      }
-
-      if (peekCharacter() != '<') {
-        // oops, tag is missing
-        return;
-      }
-
-      if (peekNextCharacter(1) == '/') {
-        // closing tag
-        skipCharacters(2);
-        String closingTagName = parseTagName();
-        if ((position < input.length()) && (peekCharacter() == '>')) {
-          skipCharacters(1);
-        }
-        if (closingTagName.equals(tagName)) {
-          return;
-        }
-      }
-      int storedPosition = position;
-      parseHtmlNode(jsonArray);
-      if (storedPosition == position) {
-        // oops, no cycling!
-        return;
-      }
-    }
   }
 
   private void parseHtmlAttributes(JsonObject jsonObject) {
@@ -166,7 +189,7 @@ public class HtmlParser extends Parser {
 
       if (peekCharacter() != '=') {
         attributesJsonArray.appendElement(new JsonStringPrimitive(attributeName));
-        if (printlnIt > 0) {
+        if (printingLevel > 0) {
           System.out.println("boolean attribute found " + attributeName);
         }
         delete(attributeName);
@@ -207,7 +230,7 @@ public class HtmlParser extends Parser {
       StringBuffer stringBuffer = new StringBuffer();
       while (position < input.length()) {
         char c = peekCharacter();
-        if (!isAttributeValueCharacter(c)) {
+        if ((c == '>') || (c == '/') || (isWhitespace(c))) {
           break;
         }
         stringBuffer.appendCharacter(consumeCharacter());
@@ -216,7 +239,7 @@ public class HtmlParser extends Parser {
       attributesJsonArray.appendElement(attributeJsonObject);
       attributeJsonObject.setStringMember(attributeName, stringBuffer.toString());
 
-      if (printlnIt > 0) {
+      if (printingLevel > 0) {
         System.out.println("unquoted attribute found " + attributeName + " : " + stringBuffer.getString());
       }
 
@@ -254,7 +277,7 @@ public class HtmlParser extends Parser {
       attributesJsonArray.appendElement(attributeJsonObject);
       attributeJsonObject.setStringMember(attributeName, stringBuffer.toString());
 
-      if (printlnIt > 0) {
+      if (printingLevel > 0) {
         System.out.println("quoted attribute found " + attributeName + " : " + stringBuffer.getString());
       }
 
@@ -288,7 +311,7 @@ public class HtmlParser extends Parser {
       styleJsonArray.appendElement(styleJsonObject);
       styleJsonObject.setStringMember(styleName, stringBuffer.getString());
 
-      if (printlnIt > 0) {
+      if (printingLevel > 0) {
         System.out.println("style found " + styleName + " : " + stringBuffer.getString());
       }
 
@@ -574,7 +597,7 @@ public class HtmlParser extends Parser {
     }
 
     if (textStringBuffer.isNotEmpty()) {
-      if (printlnIt > 0) {
+      if (printingLevel > 0) {
         System.out.println("text found " + textStringBuffer.getString());
       }
       appendTextJsonObject(jsonArray, textStringBuffer.getString());
