@@ -1,4 +1,4 @@
-package me.swift.step_gs;
+package me.swift.step_gs.renderer;
 
 import me.swift.engine.data.json.JsonObject;
 import me.swift.step_gs.contract.Device;

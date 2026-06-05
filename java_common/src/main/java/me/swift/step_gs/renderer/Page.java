@@ -1,4 +1,4 @@
-package me.swift.step_gs;
+package me.swift.step_gs.renderer;
 
 import me.swift.engine.contract.TranspilableClass;
 import me.swift.step_gs.animations.Animation;

@@ -1,7 +1,7 @@
 package me.swift.skia_applications
 
 import me.swift.contract.JavaDevice
-import me.swift.step_gs.Page
+import me.swift.step_gs.renderer.Page
 
 class SkiaDevice(private val skiaTestApplication: SkiaTestApplication) : JavaDevice() {
 

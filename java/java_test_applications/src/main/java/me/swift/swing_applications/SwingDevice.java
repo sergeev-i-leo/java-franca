@@ -1,7 +1,7 @@
 package me.swift.swing_applications;
 
 import me.swift.contract.JavaDevice;
-import me.swift.step_gs.Page;
+import me.swift.step_gs.renderer.Page;
 
 public class SwingDevice extends JavaDevice {
 

@@ -1,11 +1,10 @@
 package me.swift.step_gs.test_components;
 
 import me.swift.engine.contract.StringBuffer;
-import me.swift.engine.data.html.HtmlBuilder;
 import me.swift.engine.data.html.HtmlParser;
 import me.swift.engine.data.json.JsonArray;
-import me.swift.step_gs.Page;
-import me.swift.step_gs.View;
+import me.swift.step_gs.renderer.Page;
+import me.swift.step_gs.renderer.View;
 import me.swift.step_gs.contract.Device;
 import me.swift.step_gs.painter.Painter;
 

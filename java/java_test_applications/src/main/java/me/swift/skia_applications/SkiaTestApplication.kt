@@ -1,7 +1,7 @@
 package me.swift.skia_applications
 
 import org.jetbrains.skiko.*
-import me.swift.step_gs.Page
+import me.swift.step_gs.renderer.Page
 import me.swift.step_gs.test_components.TestView0
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent

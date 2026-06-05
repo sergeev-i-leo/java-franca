@@ -57,7 +57,7 @@ task html_parser_application(type: JavaExec) {
 }
 
 task flavoured_markdown_parser_application(type: JavaExec) {
-  mainClass = 'me.swift.swing_applications.ObsidianParserApplication'
+  mainClass = 'me.swift.swing_applications.FlavouredMarkdownParserApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 

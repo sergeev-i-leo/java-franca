@@ -1,5 +1,5 @@
 package me.swift.swing_applications;
-import me.swift.step_gs.Page;
+import me.swift.step_gs.renderer.Page;
 
 import javax.swing.*;
 import java.awt.*;

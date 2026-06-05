@@ -1,6 +1,6 @@
 package me.swift.swing_applications;
 
-import me.swift.step_gs.Page;
+import me.swift.step_gs.renderer.Page;
 import me.swift.step_gs.test_components.FlavouredMarkdownParserView;
 
 import javax.swing.*;

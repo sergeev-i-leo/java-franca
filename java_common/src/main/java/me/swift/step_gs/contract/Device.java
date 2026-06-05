@@ -1,6 +1,6 @@
 package me.swift.step_gs.contract;
 
-import me.swift.step_gs.Page;
+import me.swift.step_gs.renderer.Page;
 
 public class Device {
 
