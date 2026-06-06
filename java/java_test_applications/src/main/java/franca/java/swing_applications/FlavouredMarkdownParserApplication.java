@@ -1,7 +1,7 @@
 package franca.java.swing_applications;
 
-import franca.java.step_gs.renderer.Page;
-import franca.java.step_gs.test_components.FlavouredMarkdownParserView;
+import franca.java.graphics.renderer.Page;
+import franca.java.graphics.test_components.FlavouredMarkdownParserView;
 
 import javax.swing.*;
 

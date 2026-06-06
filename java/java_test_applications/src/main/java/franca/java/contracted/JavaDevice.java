@@ -1,12 +1,12 @@
 package franca.java.contracted;
 
+import franca.java.graphics.contract.Device;
+import franca.java.graphics.contract.IntegerConsumer;
+import franca.java.graphics.contract.StringConsumer;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import franca.java.step_gs.contract.StringConsumer;
-import franca.java.step_gs.contract.Device;
-import franca.java.step_gs.contract.IntegerConsumer;
 
 public class JavaDevice extends Device {
 

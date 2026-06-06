@@ -28,7 +28,7 @@ sourceSets {
   main {
     java {
       srcDirs("src/main/java",
-              "../../java_common/src/main/java"
+              "../../engine/src/main/java"
       )
     }
   }

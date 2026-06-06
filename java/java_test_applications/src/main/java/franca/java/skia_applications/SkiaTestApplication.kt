@@ -1,8 +1,8 @@
 package franca.java.skia_applications
 
 import org.jetbrains.skiko.*
-import franca.java.step_gs.renderer.Page
-import franca.java.step_gs.test_components.TestView0
+import franca.java.graphics.renderer.Page
+import franca.java.graphics.test_components.TestView0
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.concurrent.Executors

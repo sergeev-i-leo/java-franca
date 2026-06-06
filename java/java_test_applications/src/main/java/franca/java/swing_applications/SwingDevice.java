@@ -1,6 +1,6 @@
 package franca.java.swing_applications;
 
-import franca.java.step_gs.renderer.Page;
+import franca.java.graphics.renderer.Page;
 import franca.java.contracted.JavaDevice;
 
 public class SwingDevice extends JavaDevice {

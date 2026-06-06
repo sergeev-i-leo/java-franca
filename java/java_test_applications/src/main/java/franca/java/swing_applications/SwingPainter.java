@@ -1,6 +1,6 @@
 package franca.java.swing_applications;
 
-import franca.java.step_gs.painter.Painter;
+import franca.java.graphics.painter.Painter;
 
 import java.awt.*;
 
