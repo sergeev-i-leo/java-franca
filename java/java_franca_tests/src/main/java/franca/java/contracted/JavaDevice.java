@@ -1,8 +1,8 @@
 package franca.java.contracted;
 
-import franca.java.graphics.contract.Device;
-import franca.java.graphics.contract.IntegerConsumer;
-import franca.java.graphics.contract.StringConsumer;
+import franca.java.graphics.device.Device;
+import franca.java.graphics.device.IntegerConsumer;
+import franca.java.graphics.device.StringConsumer;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

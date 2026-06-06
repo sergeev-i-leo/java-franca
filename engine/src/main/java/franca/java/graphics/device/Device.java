@@ -1,4 +1,4 @@
-package franca.java.graphics.contract;
+package franca.java.graphics.device;
 
 import franca.java.graphics.renderer.Page;
 

@@ -2,7 +2,7 @@ package franca.java.transpiler.data.json;
 
 public class JsonBooleanPrimitive extends JsonPrimitive {
 
-  private boolean value;
+  private final boolean value;
 
   public JsonBooleanPrimitive(boolean value) {
     this.value = value;

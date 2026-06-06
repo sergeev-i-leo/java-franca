@@ -10,9 +10,6 @@ public class JsonParser extends TranspilableClass {
   private String input = null;
   private int position = 0;
 
-  public JsonParser() {
-  }
-
   @Override
   public void destroy() {
     if (input != null) {
@@ -24,12 +21,14 @@ public class JsonParser extends TranspilableClass {
 
   public JsonElement parse(String input) {
     if (input == null) {
-      return new JsonStringPrimitive("404");
+      return new JsonObject();
     }
+
     if (this.input != null) {
       delete(this.input);
     }
-    this.input = input;
+    this.input = copyOf(input);
+
     position = 0;
     JsonElement jsonElement = parseJsonElement();
     if (jsonElement != null) {

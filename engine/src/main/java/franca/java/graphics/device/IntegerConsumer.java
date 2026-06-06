@@ -1,4 +1,4 @@
-package franca.java.graphics.contract;
+package franca.java.graphics.device;
 
 @FunctionalInterface
 public interface IntegerConsumer {

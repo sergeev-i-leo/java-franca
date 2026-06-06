@@ -4,7 +4,7 @@ import franca.java.transpiler.contracted.ContractedRuntime;
 
 public class JsonDoublePrimitive extends JsonPrimitive {
 
-  private double value;
+  private final double value;
 
   public JsonDoublePrimitive(double value) {
     this.value = value;

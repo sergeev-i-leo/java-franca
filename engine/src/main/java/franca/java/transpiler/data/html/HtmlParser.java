@@ -13,9 +13,10 @@ public class HtmlParser extends Parser {
   public int debuggingLevel = 0;
 
   public JsonArray parse(String input) {
-    if (input != null) {
-      this.input = input;
+    if (this.input != null) {
+      delete(this.input);
     }
+    this.input = copyOf(input);
 
     position = 0;
 

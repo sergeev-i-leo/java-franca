@@ -5,7 +5,7 @@ public class TranspilableClass {
   public void destroy() {
   }
 
-  public String clone(String string) {
+  public String copyOf(String string) {
     return string;
   }
 

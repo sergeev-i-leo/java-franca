@@ -5,7 +5,7 @@ public class JsonStringPrimitive extends JsonPrimitive {
   private String value;
 
   public JsonStringPrimitive(String value) {
-    this.value = value;
+    this.value = copyOf(value);
   }
 
   @Override

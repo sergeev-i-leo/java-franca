@@ -3,7 +3,7 @@ package franca.java.graphics.renderer;
 import franca.java.transpiler.contracted.TranspilableClass;
 import franca.java.graphics.animations.Animation;
 import franca.java.transpiler.contracted.ContractedArray;
-import franca.java.graphics.contract.Device;
+import franca.java.graphics.device.Device;
 import franca.java.graphics.painter.Painter;
 
 /**

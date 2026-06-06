@@ -1,7 +1,7 @@
 package franca.java.graphics.animations;
 
 import franca.java.graphics.renderer.Page;
-import franca.java.graphics.contract.Device;
+import franca.java.graphics.device.Device;
 
 public class LinearAnimation extends Animation {
 

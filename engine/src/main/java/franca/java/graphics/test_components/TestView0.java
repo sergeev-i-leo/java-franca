@@ -2,7 +2,7 @@ package franca.java.graphics.test_components;
 
 import java.util.Random;
 
-import franca.java.graphics.contract.Device;
+import franca.java.graphics.device.Device;
 import franca.java.graphics.renderer.Page;
 import franca.java.graphics.renderer.View;
 import franca.java.graphics.animations.LinearAnimation;
