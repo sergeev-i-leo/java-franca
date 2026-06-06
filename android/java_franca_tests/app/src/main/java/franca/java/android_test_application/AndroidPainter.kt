@@ -1,8 +1,8 @@
-package me.swift.android_test_application
+package franca.java.android_test_application
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import me.swift.step_gs.painter.Painter
+import franca.java.graphics.painter.Painter
 
 class AndroidPainter(
 ) : Painter() {

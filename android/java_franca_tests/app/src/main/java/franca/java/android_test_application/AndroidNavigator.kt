@@ -1,4 +1,4 @@
-package me.swift.android_test_application
+package franca.java.android_test_application
 
 import android.content.Context
 import android.graphics.Color
@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import franca.java.android_test_application.AndroidDevice
-import me.swift.step_gs.Page
-import me.swift.step_gs.test_components.TestView0
+import franca.java.graphics.renderer.Page
+import franca.java.graphics.test_components.TestView0
+import franca.java.java_franca_tests.R
 
 class AndroidNavigator(
   private val context: Context,
@@ -33,10 +33,10 @@ class AndroidNavigator(
   init {
 
     pageHome.setDevice(androidDevice)
-    pageHome.views.append(TestView0())
+    pageHome.views.add(TestView0())
 
     pageClone.setDevice(androidDevice)
-    pageClone.views.append(TestView0())
+    pageClone.views.add(TestView0())
 
     listOf(viewHome, viewHello, viewClone).forEach { view ->
       view.layoutParams = ViewGroup.LayoutParams(

@@ -1,4 +1,4 @@
-package me.swift.android_test_application
+package franca.java.android_test_application
 
 import android.content.Context
 import android.graphics.Canvas
@@ -7,13 +7,11 @@ import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import franca.java.android_test_application.AndroidDevice
+import franca.java.graphics.renderer.Page
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-
-import me.swift.step_gs.Page
 
 class AndroidDeviceView(
   context: Context,

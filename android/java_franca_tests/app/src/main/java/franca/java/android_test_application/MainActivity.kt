@@ -1,4 +1,4 @@
-package me.swift.android_test_application
+package franca.java.android_test_application
 
 import android.app.Activity
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import franca.java.java_franca_tests.R
 
 class MainActivity : Activity() {
 
