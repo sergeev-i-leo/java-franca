@@ -6,7 +6,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import franca.java.java_franca_tests.R
 
 class MainActivity : Activity() {
 

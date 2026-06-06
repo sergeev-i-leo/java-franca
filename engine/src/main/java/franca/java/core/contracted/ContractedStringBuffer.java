@@ -5,11 +5,11 @@ public class ContractedStringBuffer {
   private StringBuilder stringBuilder = new StringBuilder();
 
   public boolean isEmpty() {
-    return stringBuilder.isEmpty();
+    return stringBuilder.length() == 0;
   }
 
   public boolean isNotEmpty() {
-    return !stringBuilder.isEmpty();
+    return stringBuilder.length() > 0;
   }
 
   public void appendCharacter(char character) {

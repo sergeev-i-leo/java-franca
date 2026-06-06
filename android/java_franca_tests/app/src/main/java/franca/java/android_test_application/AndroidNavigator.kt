@@ -9,7 +9,6 @@ import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import franca.java.graphics.renderer.Page
 import franca.java.graphics.test_components.TestView0
-import franca.java.java_franca_tests.R
 
 class AndroidNavigator(
   private val context: Context,
