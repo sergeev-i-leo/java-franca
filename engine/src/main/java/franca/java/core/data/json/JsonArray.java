@@ -16,18 +16,33 @@ public class JsonArray extends JsonElement {
   @Override
   public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
     contractedStringBuffer.appendString("[");
+    contractedStringBuffer.endLine();
+
     for (int i0 = 0; i0 < size(); i0++) {
-      if (i0 > 0) {
-        contractedStringBuffer.appendString(",");
+      JsonElement jsonElement = get(i0);
+      if (jsonElement == null) {
+        // invalid json
+        continue;
       }
       if (spacesBefore != null) {
-        contractedStringBuffer.endLine();
-        for (int i1 = 0; i1 < spacesBefore; i1++) {
-          contractedStringBuffer.appendString(" ");
+        for (int i1 = 0; i1 < spacesBefore + 2; i1++) {
+          contractedStringBuffer.appendString(".");
         }
-        get(i0).serialize(contractedStringBuffer, spacesBefore + 2);
+        jsonElement.serialize(contractedStringBuffer, spacesBefore + 2);
+        if (i0 + 1 < size()) {
+          contractedStringBuffer.appendString(",");
+        }
+        contractedStringBuffer.endLine();
       } else {
-        get(i0).serialize(contractedStringBuffer, null);
+        jsonElement.serialize(contractedStringBuffer, null);
+        if (i0 + 1 < size()) {
+          contractedStringBuffer.appendString(",");
+        }
+      }
+    }
+    if (spacesBefore != null) {
+      for (int i1 = 0; i1 < spacesBefore; i1++) {
+        contractedStringBuffer.appendString(".");
       }
     }
     contractedStringBuffer.appendString("]");
@@ -72,9 +87,9 @@ public class JsonArray extends JsonElement {
 
   public JsonElement get(int index) {
     if ((index < 0) || (index >= jsonElements.size())) {
-      return jsonElements.get(index);
+      return null;
     }
-    return null;
+    return jsonElements.get(index);
   }
 
   public JsonNull getJsonNull(int index) {

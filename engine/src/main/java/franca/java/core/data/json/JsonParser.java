@@ -39,12 +39,13 @@ public class JsonParser extends TranspilableClass {
 
   private JsonElement parseJsonElement() {
     skipWhitespaces();
-    JsonElement jsonElement = parseJsonValue();
+    JsonElement jsonElement = parseJsonNode();
     skipWhitespaces();
     return jsonElement;
   }
 
-  private JsonElement parseJsonValue() {
+  private JsonElement parseJsonNode() {
+    skipWhitespaces();
     JsonElement jsonElement = parseJsonObject();
     if (jsonElement != null) {
       return jsonElement;
@@ -70,45 +71,40 @@ public class JsonParser extends TranspilableClass {
   }
 
   private JsonObject parseJsonObject() {
-    try {
-      if (input.charAt(position) != '{') {
-        return null;
-      }
-      position++;
-      JsonObject jsonObject0 = new JsonObject();
-      skipWhitespaces();
-      if (input.charAt(position) == '}') {
-        position++;
-        return jsonObject0;
-      }
-      while (true) {
-        parseJsonObjectMember(jsonObject0);
-        if (input.charAt(position) == ',') {
-          position++;
-          continue;
-        }
-        break;
-      }
-      String className = jsonObject0.getStringValue("$className");
-      if (className != null) {
-        JsonObject jsonObject1 = createJsonObjectByClassName(className);
-        ContractedArray<String> keys = jsonObject0.keys();
-        for (int i = 0; i < keys.size(); i++) {
-          String key = keys.get(i);
-          jsonObject1.put(key, jsonObject0.get(key));
-        }
-        jsonObject1.deserialize(jsonObject0);
-        jsonObject0 = jsonObject1;
-      }
-      skipWhitespaces();
-      if (input.charAt(position) == '}') {
-        position++;
-      }
-      return jsonObject0;
-    } catch (Exception e) {
-      System.out.println("End of input at " + position);
+    if (input.charAt(position) != '{') {
       return null;
     }
+    position++;
+    JsonObject jsonObject0 = new JsonObject();
+    skipWhitespaces();
+    if (input.charAt(position) == '}') {
+      position++;
+      return jsonObject0;
+    }
+    while (true) {
+      parseJsonObjectMember(jsonObject0);
+      if (input.charAt(position) == ',') {
+        position++;
+        continue;
+      }
+      break;
+    }
+    String className = jsonObject0.getStringValue("$className");
+    if (className != null) {
+      JsonObject jsonObject1 = createJsonObjectByClassName(className);
+      ContractedArray<String> keys = jsonObject0.keys();
+      for (int i = 0; i < keys.size(); i++) {
+        String key = keys.get(i);
+        jsonObject1.put(key, jsonObject0.get(key));
+      }
+      jsonObject1.deserialize(jsonObject0);
+      jsonObject0 = jsonObject1;
+    }
+    skipWhitespaces();
+    if (input.charAt(position) == '}') {
+      position++;
+    }
+    return jsonObject0;
   }
 
   protected JsonObject createJsonObjectByClassName(String className) {
@@ -221,7 +217,7 @@ public class JsonParser extends TranspilableClass {
             break;
           }
         }
-        String numberString = contractedStringBuffer.toString();
+        String numberString = contractedStringBuffer.getString();
 
         Integer parsedInteger = ContractedRuntime.parseInt(numberString);
         if (parsedInteger != null) {

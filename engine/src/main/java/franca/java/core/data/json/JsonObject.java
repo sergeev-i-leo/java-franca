@@ -17,28 +17,40 @@ public class JsonObject extends JsonElement {
   @Override
   public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
     contractedStringBuffer.appendString("{");
+    contractedStringBuffer.endLine();
+
     ContractedArray<String> keys = keys();
-    for (int i = 0; i < keys.size(); i++) {
-      if (i > 0) {
-        contractedStringBuffer.appendString(",");
-      }
-      contractedStringBuffer.appendString("\"");
-      contractedStringBuffer.appendString(keys.get(i));
-      contractedStringBuffer.appendString("\": ");
-      JsonElement member = get(keys.get(i));
-      if (member == null) {
-        // error
-        contractedStringBuffer.appendString("null");
+    for (int i0 = 0; i0 < keys.size(); i0++) {
+      JsonElement jsonElement = get(keys.get(i0));
+      if (jsonElement == null) {
+        // invalid json
         continue;
       }
       if (spacesBefore != null) {
-        contractedStringBuffer.endLine();
-        for (int i1 = 0; i1 < spacesBefore; i1++) {
-          contractedStringBuffer.appendString(" ");
+        for (int i1 = 0; i1 < spacesBefore + 2; i1++) {
+          contractedStringBuffer.appendString(".");
         }
-        member.serialize(contractedStringBuffer, spacesBefore + 2);
+      }
+      String name = keys.get(i0);
+      contractedStringBuffer.appendString("\"");
+      contractedStringBuffer.appendString(name);
+      contractedStringBuffer.appendString("\":.");
+      if (spacesBefore != null) {
+        jsonElement.serialize(contractedStringBuffer, spacesBefore + 2 + name.length() + 4);
+        if (i0 + 1 < keys.size()) {
+          contractedStringBuffer.appendString(",");
+        }
+        contractedStringBuffer.endLine();
       } else {
-        member.serialize(contractedStringBuffer, null);
+        jsonElement.serialize(contractedStringBuffer, null);
+        if (i0 + 1 < keys.size()) {
+          contractedStringBuffer.appendString(",");
+        }
+      }
+    }
+    if (spacesBefore != null) {
+      for (int i = 0; i < spacesBefore; i++) {
+        contractedStringBuffer.appendString(".");
       }
     }
     contractedStringBuffer.appendString("}");
