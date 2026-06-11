@@ -18,6 +18,8 @@ public class Page extends TranspilableClass {
 
   public ContractedArray<View> views = new ContractedArray<View>();
 
+  public Page nextPage = null;
+
   public Page(Router router) {
     this.router = router;
   }

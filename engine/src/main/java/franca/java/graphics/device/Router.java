@@ -7,7 +7,7 @@ import franca.java.graphics.views.Page;
 public class Router extends TranspilableClass {
 
   Device device = null;
-  Page page = null;
+  Page topPage = null;
 
   // animation orchestration
 
@@ -22,19 +22,30 @@ public class Router extends TranspilableClass {
     return device;
   }
 
+  public Page getTopPage() {
+    return topPage;
+  }
+
   public void pushPage(Page page) {
-    this.page = page;
+    page.nextPage = topPage;
+    topPage = page;
+  }
+
+  public void popPage() {
+    if (topPage != null) {
+      topPage = topPage.nextPage;
+    }
   }
 
   public void paint(Painter painter) {
-    if (page != null) {
-      page.paint(painter);
+    if (topPage != null) {
+      topPage.paint(painter);
     }
   }
 
   public void handlePointerDown(float pointedX, float pointedY, int buttonNumber) {
-    if (page != null) {
-      page.handlePointerDown(pointedX, pointedY, buttonNumber);
+    if (topPage != null) {
+      topPage.handlePointerDown(pointedX, pointedY, buttonNumber);
     }
   }
 

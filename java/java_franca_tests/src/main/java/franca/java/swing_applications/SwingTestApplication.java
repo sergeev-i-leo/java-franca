@@ -8,13 +8,16 @@ import javax.swing.*;
 public class SwingTestApplication {
 
   public static void main(String[] args) {
-    Page page = new Page();
+    SwingRouter swingRouter = new SwingRouter();
+    Page page = new Page(swingRouter);
     page.views.add(new TestView0());
+
+    swingRouter.pushPage(page);
 
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    SwingApplication swingApplication = new SwingApplication(page);
+    SwingApplication swingApplication = new SwingApplication(swingRouter);
     frame.add(swingApplication);
 
     frame.pack();
