@@ -2,6 +2,8 @@ package franca.java.swing_applications;
 
 import franca.java.graphics.views.Page;
 import franca.java.graphics.test_components.HtmlParserView;
+import franca.java.swing_applications.platform.SwingApplication;
+import franca.java.swing_applications.platform.SwingRouter;
 
 import javax.swing.*;
 

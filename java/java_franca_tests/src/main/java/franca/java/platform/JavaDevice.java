@@ -1,4 +1,4 @@
-package franca.java;
+package franca.java.platform;
 
 import franca.java.graphics.device.Device;
 import franca.java.graphics.device.IntegerConsumer;

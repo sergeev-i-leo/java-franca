@@ -4,6 +4,13 @@ import franca.java.core.contracted.TranspilableClass;
 import franca.java.graphics.animations.Tween;
 import franca.java.graphics.views.Page;
 
+/**
+ * Router manages all animations.
+ * Ownership rule: whoever creates the animation (via registerAnimation) does NOT own it — Page owns it.
+ * Page calls destroy() when removing animation from the chain.
+ * External code must NEVER call destroy() on animations directly.
+ */
+
 public class Router extends TranspilableClass {
 
   Device device = null;

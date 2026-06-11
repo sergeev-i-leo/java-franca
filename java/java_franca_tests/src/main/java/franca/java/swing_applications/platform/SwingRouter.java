@@ -1,4 +1,4 @@
-package franca.java.swing_applications;
+package franca.java.swing_applications.platform;
 
 import franca.java.graphics.device.Router;
 

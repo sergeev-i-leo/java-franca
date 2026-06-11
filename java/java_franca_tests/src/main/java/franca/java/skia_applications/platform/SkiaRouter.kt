@@ -1,4 +1,4 @@
-package franca.java.skia_applications
+package franca.java.skia_applications.platform
 
 import franca.java.graphics.device.Router
 

@@ -1,19 +1,38 @@
-import { Device, Painter } from './Device';
+import {View} from "./view";
+import {Router} from "../device/router";
+import {Painter} from "../device/painter";
 
-export abstract class Page {
-  protected router: Router;
+export class Page {
+  router: Router | null = null;
+  views: View[] = [];
+  nextPage: Page | null = null;
 
   constructor(router: Router) {
     this.router = router;
   }
 
-  abstract paint(device: Device, painter: Painter): void;
+  destroy(): void {
+    // очистка массива views
+    this.views = [];
+  }
 
-  abstract onTouchStart(x: number, y: number): void;
-  abstract onTouchMove(x: number, y: number): void;
-  abstract onTouchEnd(x: number, y: number): void;
+  paint(painter: Painter): void {
+    for (let i = 0; i < this.views.length; i++) {
+      this.views[i].paint(this.router!, painter, this);
+    }
+  }
 
-  protected requestRedraw(): void {
-    this.router.requestRedraw();
+  handlePointerDown(pointedX: number, pointedY: number, buttonNumber: number): void {
+    for (let i = 0; i < this.views.length; i++) {
+      this.views[i].handlePointerDown(
+        this.router!,
+        this,
+        0, // painterX
+        0, // painterY
+        pointedX,
+        pointedY,
+        buttonNumber
+      );
+    }
   }
 }

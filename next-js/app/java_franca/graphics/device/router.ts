@@ -1,74 +1,144 @@
-import { Device, Painter } from './Device';
-import { Page } from './Page';
+import {Page} from "../views/page";
+import {Device} from "./device";
+import {Tween} from "../animations/tween";
+import {Painter} from "./painter";
 
 export class Router {
-  private pages: Page[] = [];
-  private activePages: Page[] = [];
-  private device: Device;
-  private painter: Painter | null = null;
-  private animationFrameId: number | null = null;
-  private needRedraw = false;
+  device: Device | null = null;
+  topPage: Page | null = null;
 
-  constructor(device: Device) {
+  // animation orchestration
+  private lastTweenId: number = 0;
+  private firstTween: Tween | null = null;
+
+  setDevice(device: Device): void {
     this.device = device;
-    device.setRouter(this);
   }
 
-  addPage(page: Page): void {
-    this.pages.push(page);
+  getDevice(): Device | null {
+    return this.device;
   }
 
-  activatePage(page: Page): void {
-    if (!this.activePages.includes(page)) {
-      this.activePages.push(page);
-      this.requestRedraw();
+  getTopPage(): Page | null {
+    return this.topPage;
+  }
+
+  pushPage(page: Page): void {
+    page.nextPage = this.topPage;
+    this.topPage = page;
+  }
+
+  popPage(): void {
+    if (this.topPage !== null) {
+      this.topPage = this.topPage.nextPage;
     }
   }
 
-  deactivatePage(page: Page): void {
-    const index = this.activePages.indexOf(page);
-    if (index !== -1) {
-      this.activePages.splice(index, 1);
-      this.requestRedraw();
+  paint(painter: Painter): void {
+    if (this.topPage !== null) {
+      this.topPage.paint(painter);
     }
   }
 
-  requestRedraw(): void {
-    this.needRedraw = true;
-    this.startRenderLoop();
+  handlePointerDown(pointedX: number, pointedY: number, buttonNumber: number): void {
+    if (this.topPage !== null) {
+      this.topPage.handlePointerDown(pointedX, pointedY, buttonNumber);
+    }
   }
 
-  private startRenderLoop(): void {
-    if (this.animationFrameId !== null) return;
+  requestRepainting(): void {
+    // one-shot animation
+    const tween = new Tween(null, null, 0, 0);
+    this.registerTween(tween);
+  }
 
-    const loop = () => {
-      if (this.needRedraw && this.painter) {
-        this.needRedraw = false;
-        this.paint();
+  registerTween(tween: Tween): void {
+    // the new animation becomes the first in the chain because registerTween can be called from Tween.needsRepainting
+
+    this.lastTweenId++;
+    tween.tweenId = this.lastTweenId;
+    tween.registeredTime = this.getDevice()!.getTime();
+
+    tween.nextTween = this.firstTween;
+    if (this.firstTween !== null) {
+      this.firstTween.previousTween = tween;
+    }
+    this.firstTween = tween;
+
+    this.startRepainting();
+  }
+
+  startRepainting(): void {
+    // platform implementation will override
+  }
+
+  removeTween(tween: Tween): void {
+    let currentTween = this.firstTween;
+    while (currentTween !== null) {
+      if (currentTween.tweenId === tween.tweenId) {
+        const previousTween = currentTween.previousTween;
+        const nextTween = currentTween.nextTween;
+
+        if (previousTween !== null) {
+          previousTween.nextTween = nextTween;
+        }
+        if (nextTween !== null) {
+          nextTween.previousTween = previousTween;
+        }
+        if (currentTween === this.firstTween) {
+          this.firstTween = nextTween;
+        }
+        break;
       }
-      this.animationFrameId = requestAnimationFrame(loop);
-    };
-    this.animationFrameId = requestAnimationFrame(loop);
-  }
-
-  private paint(): void {
-    if (!this.painter) return;
-
-    for (const page of this.activePages) {
-      page.paint(this.device, this.painter);
+      currentTween = currentTween.nextTween;
     }
-    this.painter.flush();
-  }
-
-  setPainter(painter: Painter): void {
-    this.painter = painter;
-    this.requestRedraw();
-  }
-
-  stopRenderLoop(): void {
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
+    if (this.firstTween === null) {
+      this.lastTweenId = 0;
     }
+  }
+
+  needsRepainting(): boolean {
+    let result = false;
+
+    let currentTween = this.firstTween;
+    while (currentTween !== null) {
+      result = currentTween.needsRepainting(this) || result;
+      if (currentTween.getEase() === null) {
+        // it's one-shot tween
+        const previousTween = currentTween.previousTween;
+        const nextTween = currentTween.nextTween;
+        if (previousTween !== null) {
+          previousTween.nextTween = nextTween;
+        }
+        if (nextTween !== null) {
+          nextTween.previousTween = previousTween;
+        }
+        if (currentTween.tweenId === this.firstTween?.tweenId) {
+          this.firstTween = nextTween;
+        }
+        currentTween.destroy();
+        currentTween = nextTween;
+      } else {
+        currentTween = currentTween.nextTween;
+      }
+    }
+    return result;
+  }
+
+  needsNextRepainting(): boolean {
+    let result = false;
+
+    let currentTween = this.firstTween;
+    while (currentTween !== null) {
+      if (currentTween.getEase() === null) {
+        // wow! one-shot tween has been created during paint(), welcome to next needsRepainting
+        result = true;
+      } else {
+        // always run needsNextRepainting
+        result = currentTween.needsNextRepainting(this) || result;
+      }
+      currentTween = currentTween.nextTween;
+    }
+    return result;
   }
 }

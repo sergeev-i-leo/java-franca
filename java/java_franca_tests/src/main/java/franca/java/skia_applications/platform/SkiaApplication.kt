@@ -1,6 +1,6 @@
-package franca.java.skia_applications
+package franca.java.skia_applications.platform
 
-import franca.java.JavaDevice
+import franca.java.platform.JavaDevice
 import org.jetbrains.skiko.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent

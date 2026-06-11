@@ -1,4 +1,4 @@
-package franca.java.swing_applications;
+package franca.java.swing_applications.platform;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import franca.java.JavaDevice;
+import franca.java.platform.JavaDevice;
 
 public class SwingApplication extends JPanel {
 
