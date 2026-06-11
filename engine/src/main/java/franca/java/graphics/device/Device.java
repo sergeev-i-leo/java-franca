@@ -1,13 +1,15 @@
 package franca.java.graphics.device;
 
-import franca.java.graphics.animations.Animation;
+import franca.java.core.contracted.TranspilableClass;
+import franca.java.graphics.animations.Tween;
+import franca.java.graphics.animations.Tween;
 
-public class Device {
+public class Device extends TranspilableClass {
 
   // animation orchestration
 
-  private int lastAnimationId = 0;
-  private Animation firstAnimation = null;
+  private int lastTweenId = 0;
+  private Tween firstTween = null;
 
   public long getTime() {
     return 0L;
@@ -21,23 +23,23 @@ public class Device {
 
   public synchronized void requestRepainting() {
     // one-shot animation
-    Animation animation = new Animation(0f, 0f, 1L);
-    registerAnimation(animation);
+    Tween tween = new Tween(null, null, 0L, 0);
+    registerTween(tween);
   }
 
-  public synchronized void registerAnimation(Animation animation) {
+  public synchronized void registerTween(Tween tween) {
 
-    // the new animation becomes the first in the chain because registerAnimation can be called from Animation.needsRepainting
+    // the new animation becomes the first in the chain because registerTween can be called from Tween.needsRepainting
 
-    lastAnimationId++;
-    animation.animationId = lastAnimationId;
-    animation.registeredTime = getTime();
+    lastTweenId++;
+    tween.tweenId = lastTweenId;
+    tween.registeredTime = getTime();
 
-    animation.nextAnimation = firstAnimation;
-    if (firstAnimation != null) {
-      firstAnimation.previousAnimation = animation;
+    tween.nextTween = firstTween;
+    if (firstTween != null) {
+      firstTween.previousTween = tween;
     }
-    firstAnimation = animation;
+    firstTween = tween;
 
     startRepainting();
   }
@@ -45,29 +47,29 @@ public class Device {
   public void startRepainting() {
   }
 
-  public synchronized void removeAnimation(Animation animation) {
+  public synchronized void removeTween(Tween tween) {
 
-    Animation currentAnimation = firstAnimation;
-    while (currentAnimation != null) {
-      if (currentAnimation.animationId == animation.animationId) {
-        Animation previousAnimation = currentAnimation.previousAnimation;
-        Animation nextAnimation = currentAnimation.nextAnimation;
+    Tween currentTween = firstTween;
+    while (currentTween != null) {
+      if (currentTween.tweenId == tween.tweenId) {
+        Tween previousTween = currentTween.previousTween;
+        Tween nextTween = currentTween.nextTween;
 
-        if (previousAnimation != null) {
-          previousAnimation.nextAnimation = nextAnimation;
+        if (previousTween != null) {
+          previousTween.nextTween = nextTween;
         }
-        if (nextAnimation != null) {
-          nextAnimation.previousAnimation = previousAnimation;
+        if (nextTween != null) {
+          nextTween.previousTween = previousTween;
         }
-        if (currentAnimation == firstAnimation) {
-          firstAnimation = nextAnimation;
+        if (currentTween == firstTween) {
+          firstTween = nextTween;
         }
         break;
       }
-      currentAnimation = currentAnimation.nextAnimation;
+      currentTween = currentTween.nextTween;
     }
-    if (firstAnimation == null) {
-      lastAnimationId = 0;
+    if (firstTween == null) {
+      lastTweenId = 0;
     }
   }
 
@@ -75,28 +77,26 @@ public class Device {
 
     boolean result = false;
 
-    long time = getTime();
-
-    Animation currentAnimation = firstAnimation;
-    while (currentAnimation != null) {
-      result = currentAnimation.needsRepainting(this, time) || result;
-      if (currentAnimation.duration == 1L) {
-        // it's one-shot animation
-        Animation previousAnimation = currentAnimation.previousAnimation;
-        Animation nextAnimation = currentAnimation.nextAnimation;
-        if (previousAnimation != null) {
-          previousAnimation.nextAnimation = nextAnimation;
+    Tween currentTween = firstTween;
+    while (currentTween != null) {
+      result = currentTween.needsRepainting(this) || result;
+      if (currentTween.getTicker() == null) {
+        // it's one-shot tween
+        Tween previousTween = currentTween.previousTween;
+        Tween nextTween = currentTween.nextTween;
+        if (previousTween != null) {
+          previousTween.nextTween = nextTween;
         }
-        if (nextAnimation != null) {
-          nextAnimation.previousAnimation = previousAnimation;
+        if (nextTween != null) {
+          nextTween.previousTween = previousTween;
         }
-        if (currentAnimation.animationId == firstAnimation.animationId) {
-          firstAnimation = nextAnimation;
+        if (currentTween.tweenId == firstTween.tweenId) {
+          firstTween = nextTween;
         }
-        currentAnimation.destroy();
-        currentAnimation = nextAnimation;
+        currentTween.destroy();
+        currentTween = nextTween;
       } else {
-        currentAnimation = currentAnimation.nextAnimation;
+        currentTween = currentTween.nextTween;
       }
     }
     return result;
@@ -106,21 +106,18 @@ public class Device {
 
     boolean result = false;
 
-    long time = getTime();
-
-    Animation currentAnimation = firstAnimation;
-    while (currentAnimation != null) {
-      if (currentAnimation.duration == 1L) {
-        // wow! one-shot animation has been created during paint(), welcome to next needsRepainting
+    Tween currentTween = firstTween;
+    while (currentTween != null) {
+      if (currentTween.getTicker() == null) {
+        // wow! one-shot tween has been created during paint(), welcome to next needsRepainting
         result = true;
       } else {
         // always run needsNextRepainting
-        result = currentAnimation.needsNextRepainting(this, time) || result;
+        result = currentTween.needsNextRepainting(this) || result;
       }
-      currentAnimation = currentAnimation.nextAnimation;
+      currentTween = currentTween.nextTween;
     }
     return result;
   }
-
 }
 

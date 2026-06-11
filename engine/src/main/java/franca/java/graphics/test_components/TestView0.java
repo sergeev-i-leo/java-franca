@@ -5,7 +5,7 @@ import java.util.Random;
 import franca.java.graphics.device.Device;
 import franca.java.graphics.views.Page;
 import franca.java.graphics.views.View;
-import franca.java.graphics.animations.LinearAnimation;
+import franca.java.graphics.animations.LinearTicker;
 import franca.java.graphics.painter.Painter;
 
 public class TestView0 extends View {
@@ -43,7 +43,7 @@ public class TestView0 extends View {
     }
   }
 
-  static class ViewAnimation extends LinearAnimation {
+  static class ViewAnimation extends LinearTicker {
 
     TestView0 testView0;
 
