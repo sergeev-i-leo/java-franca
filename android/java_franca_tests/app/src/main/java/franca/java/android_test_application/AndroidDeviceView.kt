@@ -7,7 +7,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import franca.java.graphics.renderer.Page
+import franca.java.graphics.views.Page
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -135,11 +135,11 @@ class AndroidDeviceView(
 
     lastTickTime = tickTime
 
-    if ((!isPainting.get()) && (page.needsRepainting())) {
+    if ((!isPainting.get()) && (androidDevice.needsRepainting())) {
       mainHandler.post { invalidate() }
     }
 
-    if (!page.needsNextRepainting()) {
+    if (!androidDevice.needsNextRepainting()) {
       scheduledExecutorService?.shutdown()
       scheduledExecutorService = null
     }
