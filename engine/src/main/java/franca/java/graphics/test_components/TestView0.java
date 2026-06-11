@@ -2,7 +2,7 @@ package franca.java.graphics.test_components;
 
 import java.util.Random;
 
-import franca.java.graphics.animations.Ticker;
+import franca.java.graphics.animations.Ease;
 import franca.java.graphics.animations.Tween;
 import franca.java.graphics.device.Device;
 import franca.java.graphics.views.Page;
@@ -20,7 +20,7 @@ public class TestView0 extends View {
     float y = new Random().nextInt(50) + 50f;
 
     if (myTween != null) {
-      painter.paintText(String.valueOf(myTween.getTicker().currentValue), x, y, "", 255);
+      painter.paintText(String.valueOf(myTween.getEase().currentValue), x, y, "", 255);
     } else {
       painter.paintText("PAINT", x, y, "", 255);
     }
@@ -49,7 +49,7 @@ public class TestView0 extends View {
     TestView0 testView0;
 
     MyTween(Page page, TestView0 testView0) {
-      super(page, testView0, 500, Ticker.TICKER_TYPE_LINEAR);
+      super(page, testView0, 500, Ease.EASE_LINEAR);
 
       this.testView0 = testView0;
     }

@@ -2,7 +2,6 @@ package franca.java.graphics.device;
 
 import franca.java.core.contracted.TranspilableClass;
 import franca.java.graphics.animations.Tween;
-import franca.java.graphics.animations.Tween;
 
 public class Device extends TranspilableClass {
 
@@ -80,7 +79,7 @@ public class Device extends TranspilableClass {
     Tween currentTween = firstTween;
     while (currentTween != null) {
       result = currentTween.needsRepainting(this) || result;
-      if (currentTween.getTicker() == null) {
+      if (currentTween.getEase() == null) {
         // it's one-shot tween
         Tween previousTween = currentTween.previousTween;
         Tween nextTween = currentTween.nextTween;
@@ -108,7 +107,7 @@ public class Device extends TranspilableClass {
 
     Tween currentTween = firstTween;
     while (currentTween != null) {
-      if (currentTween.getTicker() == null) {
+      if (currentTween.getEase() == null) {
         // wow! one-shot tween has been created during paint(), welcome to next needsRepainting
         result = true;
       } else {

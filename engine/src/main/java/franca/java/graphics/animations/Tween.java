@@ -9,7 +9,7 @@ public class Tween extends TranspilableClass {
 
   Page page;
   View view;
-  Ticker ticker;
+  Ease ease;
 
   public int tweenId = 0;
   public long registeredTime = 0L;
@@ -20,36 +20,37 @@ public class Tween extends TranspilableClass {
     this.page = page;
     this.view = view;
     switch (tickerType) {
-      case Ticker.TICKER_TYPE_LINEAR:
-        ticker = new LinearTicker(0, 100, duration);
+      case Ease.EASE_LINEAR:
+        ease = new LinearEase(0, 100, duration);
         break;
       default:
-        ticker = null;
+        // repaint just once
+        ease = null;
         break;
     }
   }
 
-  public void setTicker(Ticker ticker) {
-    this.ticker = ticker;
+  public void setEase(Ease ease) {
+    this.ease = ease;
   }
 
-  public Ticker getTicker() {
-    return ticker;
+  public Ease getEase() {
+    return ease;
   }
 
   public boolean needsRepainting(Device device) {
-    if (ticker == null) {
+    if (ease == null) {
       // one shot animation
       return true;
     }
-    return ticker.tick(device, registeredTime);
+    return ease.tick(device, registeredTime);
   }
 
   public boolean needsNextRepainting(Device device) {
-    if (ticker == null) {
+    if (ease == null) {
       // one shot animation
       return false;
     }
-    return ticker.isTicking();
+    return ease.isRunning();
   }
 }
