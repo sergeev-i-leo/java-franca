@@ -19,17 +19,20 @@ public class LinearEase extends Ease {
     // returns true when needs repainting
 
     if (currentValue == targetValue) {
+      // was over
       return false;
     }
 
     long currentTime = router.getDevice().getTime();
 
     if (currentTime >= startedTime + duration) {
+      // is over
       currentValue = targetValue;
       return true;
     }
 
-    currentValue = (int) (initialValue + (targetValue - initialValue) * (currentTime - startedTime) / duration);
+    currentValue = initialValue + (int) ((double) (targetValue - initialValue) * (double) (currentTime - startedTime) / (double) duration);
+
     return true;
   }
 }

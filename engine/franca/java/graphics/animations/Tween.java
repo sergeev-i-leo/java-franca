@@ -38,6 +38,13 @@ public class Tween extends TranspilableClass {
     return ease;
   }
 
+  public boolean isRunning() {
+    if (ease == null) {
+      return false;
+    }
+    return ease.isRunning();
+  }
+
   public boolean needsRepainting(Router router) {
     if (ease == null) {
       // one shot animation
