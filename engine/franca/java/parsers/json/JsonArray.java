@@ -1,11 +1,12 @@
 package franca.java.parsers.json;
 
-import franca.java.contracted.ContractedStringBuffer;
-import franca.java.contracted.ContractedArray;
+import franca.java.expected.ExpectedStringBuilder;
+
+import java.util.ArrayList;
 
 public class JsonArray extends JsonElement {
 
-  private final ContractedArray<JsonElement> jsonElements = new ContractedArray<>();
+  private final ArrayList<JsonElement> jsonElements = new ArrayList<>();
 
   @Override
   public void destroy() {
@@ -14,9 +15,9 @@ public class JsonArray extends JsonElement {
   }
 
   @Override
-  public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
-    contractedStringBuffer.appendString("[");
-    contractedStringBuffer.endLine();
+  public void serialize(ExpectedStringBuilder expectedStringBuilder, Integer spacesBefore) {
+    expectedStringBuilder.appendString("[");
+    expectedStringBuilder.endLine();
 
     for (int i0 = 0; i0 < size(); i0++) {
       JsonElement jsonElement = get(i0);
@@ -26,26 +27,26 @@ public class JsonArray extends JsonElement {
       }
       if (spacesBefore != null) {
         for (int i1 = 0; i1 < spacesBefore + 2; i1++) {
-          contractedStringBuffer.appendString(" ");
+          expectedStringBuilder.appendString(" ");
         }
-        jsonElement.serialize(contractedStringBuffer, spacesBefore + 2);
+        jsonElement.serialize(expectedStringBuilder, spacesBefore + 2);
         if (i0 + 1 < size()) {
-          contractedStringBuffer.appendString(",");
+          expectedStringBuilder.appendString(",");
         }
-        contractedStringBuffer.endLine();
+        expectedStringBuilder.endLine();
       } else {
-        jsonElement.serialize(contractedStringBuffer, null);
+        jsonElement.serialize(expectedStringBuilder, null);
         if (i0 + 1 < size()) {
-          contractedStringBuffer.appendString(",");
+          expectedStringBuilder.appendString(",");
         }
       }
     }
     if (spacesBefore != null) {
       for (int i1 = 0; i1 < spacesBefore; i1++) {
-        contractedStringBuffer.appendString(" ");
+        expectedStringBuilder.appendString(" ");
       }
     }
-    contractedStringBuffer.appendString("]");
+    expectedStringBuilder.appendString("]");
   }
 
   @Override

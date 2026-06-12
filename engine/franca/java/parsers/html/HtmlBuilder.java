@@ -1,7 +1,7 @@
 package franca.java.parsers.html;
 
-import franca.java.contracted.ContractedStringBuffer;
-import franca.java.contracted.TranspilableClass;
+import franca.java.expected.ExpectedStringBuilder;
+import franca.java.expected.TranspilableClass;
 import franca.java.parsers.json.JsonArray;
 import franca.java.parsers.json.JsonElement;
 import franca.java.parsers.json.JsonObject;
@@ -9,84 +9,84 @@ import franca.java.parsers.json.JsonObject;
 public class HtmlBuilder extends TranspilableClass {
 
   public String build(JsonElement jsonElement) {
-    ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
-    buildFromJsonElement(jsonElement, contractedStringBuffer);
-    String string = contractedStringBuffer.getString();
-    delete(contractedStringBuffer);
+    ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
+    buildFromJsonElement(jsonElement, expectedStringBuilder);
+    String string = expectedStringBuilder.getString();
+    delete(expectedStringBuilder);
     return string;
   }
 
-  private void buildFromJsonElement(JsonElement jsonElement, ContractedStringBuffer contractedStringBuffer) {
+  private void buildFromJsonElement(JsonElement jsonElement, ExpectedStringBuilder expectedStringBuilder) {
     JsonArray jsonArray = jsonElement.asJsonArray();
     JsonObject jsonObject = jsonElement.asJsonObject();
     if (jsonArray != null) {
       for (int i = 0; i < jsonArray.size(); i++) {
         jsonElement = jsonArray.get(i);
-        buildFromJsonElement(jsonElement, contractedStringBuffer);
+        buildFromJsonElement(jsonElement, expectedStringBuilder);
       }
     } else if (jsonObject != null) {
-      buildFromJsonObject(jsonObject, contractedStringBuffer);
+      buildFromJsonObject(jsonObject, expectedStringBuilder);
       jsonArray = jsonObject.getJsonArray("views");
       if (jsonArray != null) {
-        buildFromJsonElement(jsonArray, contractedStringBuffer);
+        buildFromJsonElement(jsonArray, expectedStringBuilder);
       }
     }
   }
 
-  private void buildFromJsonObject(JsonObject jsonObject, ContractedStringBuffer contractedStringBuffer) {
+  private void buildFromJsonObject(JsonObject jsonObject, ExpectedStringBuilder expectedStringBuilder) {
     String className = jsonObject.getStringValue("className");
     if (className != null) {
       switch (className) {
         case "image-view":
-          contractedStringBuffer.appendString("<img ");
-          buildAttributes(jsonObject, contractedStringBuffer);
-          contractedStringBuffer.appendString("/>");
+          expectedStringBuilder.appendString("<img ");
+          buildAttributes(jsonObject, expectedStringBuilder);
+          expectedStringBuilder.appendString("/>");
           return;
         case "table-view":
-          contractedStringBuffer.appendString("<table ");
-          buildAttributes(jsonObject, contractedStringBuffer);
-          contractedStringBuffer.appendString("><tbody>");
-          buildFromJsonElement(jsonObject.getJsonArray("views"), contractedStringBuffer);
-          contractedStringBuffer.appendString("</tbody></table>");
+          expectedStringBuilder.appendString("<table ");
+          buildAttributes(jsonObject, expectedStringBuilder);
+          expectedStringBuilder.appendString("><tbody>");
+          buildFromJsonElement(jsonObject.getJsonArray("views"), expectedStringBuilder);
+          expectedStringBuilder.appendString("</tbody></table>");
           return;
         case "table-row-view":
-          contractedStringBuffer.appendString("<tr ");
-          buildAttributes(jsonObject, contractedStringBuffer);
-          buildFromJsonElement(jsonObject.getJsonArray("views"), contractedStringBuffer);
-          contractedStringBuffer.appendString("</tr>");
+          expectedStringBuilder.appendString("<tr ");
+          buildAttributes(jsonObject, expectedStringBuilder);
+          buildFromJsonElement(jsonObject.getJsonArray("views"), expectedStringBuilder);
+          expectedStringBuilder.appendString("</tr>");
           return;
         case "table-header-cell-view":
-          contractedStringBuffer.appendString("<th ");
-          buildAttributes(jsonObject, contractedStringBuffer);
-          buildFromJsonElement(jsonObject.getJsonArray("views"), contractedStringBuffer);
-          contractedStringBuffer.appendString("</th>");
+          expectedStringBuilder.appendString("<th ");
+          buildAttributes(jsonObject, expectedStringBuilder);
+          buildFromJsonElement(jsonObject.getJsonArray("views"), expectedStringBuilder);
+          expectedStringBuilder.appendString("</th>");
           return;
         case "table-cell-view":
-          contractedStringBuffer.appendString("<td ");
-          buildAttributes(jsonObject, contractedStringBuffer);
-          buildFromJsonElement(jsonObject.getJsonArray("views"), contractedStringBuffer);
-          contractedStringBuffer.appendString("</td>");
+          expectedStringBuilder.appendString("<td ");
+          buildAttributes(jsonObject, expectedStringBuilder);
+          buildFromJsonElement(jsonObject.getJsonArray("views"), expectedStringBuilder);
+          expectedStringBuilder.appendString("</td>");
           return;
         case "typography-h1-view":
-          buildTextElements(jsonObject, "h1", contractedStringBuffer);
+          buildTextElements(jsonObject, "h1", expectedStringBuilder);
           return;
         case "typography-h2-view":
-          buildTextElements(jsonObject, "h2", contractedStringBuffer);
+          buildTextElements(jsonObject, "h2", expectedStringBuilder);
           return;
         case "typography-h3-view":
-          buildTextElements(jsonObject, "h3", contractedStringBuffer);
+          buildTextElements(jsonObject, "h3", expectedStringBuilder);
           return;
         case "typography-h4-view":
-          buildTextElements(jsonObject, "h4", contractedStringBuffer);
+          buildTextElements(jsonObject, "h4", expectedStringBuilder);
           return;
         case "typography-h5-view":
-          buildTextElements(jsonObject, "h5", contractedStringBuffer);
+          buildTextElements(jsonObject, "h5", expectedStringBuilder);
           return;
         case "typography-h6-view":
-          buildTextElements(jsonObject, "h6", contractedStringBuffer);
+          buildTextElements(jsonObject, "h6", expectedStringBuilder);
           return;
         case "typography-paragraph-view":
-          buildTextElements(jsonObject, "p", contractedStringBuffer);
+          buildTextElements(jsonObject, "p", expectedStringBuilder);
           return;
       }
     }
@@ -94,33 +94,33 @@ public class HtmlBuilder extends TranspilableClass {
     if (tagName == null) {
       return;
     }
-    contractedStringBuffer.appendString("<");
-    contractedStringBuffer.appendString(tagName);
-    buildAttributes(jsonObject, contractedStringBuffer);
-    contractedStringBuffer.appendString(">");
-    buildFromJsonElement(jsonObject.getJsonArray("views"), contractedStringBuffer);
-    contractedStringBuffer.appendString("</");
-    contractedStringBuffer.appendString(tagName);
-    contractedStringBuffer.appendString(">");
+    expectedStringBuilder.appendString("<");
+    expectedStringBuilder.appendString(tagName);
+    buildAttributes(jsonObject, expectedStringBuilder);
+    expectedStringBuilder.appendString(">");
+    buildFromJsonElement(jsonObject.getJsonArray("views"), expectedStringBuilder);
+    expectedStringBuilder.appendString("</");
+    expectedStringBuilder.appendString(tagName);
+    expectedStringBuilder.appendString(">");
   }
 
-  private void buildAttributes(JsonObject jsonObject, ContractedStringBuffer contractedStringBuffer) {
+  private void buildAttributes(JsonObject jsonObject, ExpectedStringBuilder expectedStringBuilder) {
 
   }
 
-  private void buildTextElements(JsonObject jsonObject, String tagName, ContractedStringBuffer contractedStringBuffer) {
-    contractedStringBuffer.appendString("<");
-    contractedStringBuffer.appendString(tagName);
-    contractedStringBuffer.appendString(" ");
-    buildAttributes(jsonObject, contractedStringBuffer);
-    contractedStringBuffer.appendString(">");
+  private void buildTextElements(JsonObject jsonObject, String tagName, ExpectedStringBuilder expectedStringBuilder) {
+    expectedStringBuilder.appendString("<");
+    expectedStringBuilder.appendString(tagName);
+    expectedStringBuilder.appendString(" ");
+    buildAttributes(jsonObject, expectedStringBuilder);
+    expectedStringBuilder.appendString(">");
     String text = jsonObject.getStringValue("text");
     if (text != null) {
-      contractedStringBuffer.appendString(text);
+      expectedStringBuilder.appendString(text);
     }
-    contractedStringBuffer.appendString("</");
-    contractedStringBuffer.appendString(tagName);
-    contractedStringBuffer.appendString(">");
+    expectedStringBuilder.appendString("</");
+    expectedStringBuilder.appendString(tagName);
+    expectedStringBuilder.appendString(">");
   }
 
 }

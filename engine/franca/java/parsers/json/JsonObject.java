@@ -1,12 +1,13 @@
 package franca.java.parsers.json;
 
-import franca.java.contracted.ContractedArray;
-import franca.java.contracted.ContractedDictionary;
-import franca.java.contracted.ContractedStringBuffer;
+import franca.java.expected.ExpectedStringBuilder;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class JsonObject extends JsonElement {
 
-  private final ContractedDictionary<String, JsonElement> jsonElements = new ContractedDictionary<>();
+  private final HashMap<String, JsonElement> jsonElements = new HashMap<>();
 
   @Override
   public void destroy() {
@@ -15,11 +16,11 @@ public class JsonObject extends JsonElement {
   }
 
   @Override
-  public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
-    contractedStringBuffer.appendString("{");
-    contractedStringBuffer.endLine();
+  public void serialize(ExpectedStringBuilder expectedStringBuilder, Integer spacesBefore) {
+    expectedStringBuilder.appendString("{");
+    expectedStringBuilder.endLine();
 
-    ContractedArray<String> keys = keys();
+    ArrayList<String> keys = keys();
     for (int i0 = 0; i0 < keys.size(); i0++) {
       JsonElement jsonElement = get(keys.get(i0));
       if (jsonElement == null) {
@@ -28,32 +29,32 @@ public class JsonObject extends JsonElement {
       }
       if (spacesBefore != null) {
         for (int i1 = 0; i1 < spacesBefore + 2; i1++) {
-          contractedStringBuffer.appendString(" ");
+          expectedStringBuilder.appendString(" ");
         }
       }
       String name = keys.get(i0);
-      contractedStringBuffer.appendString("\"");
-      contractedStringBuffer.appendString(name);
-      contractedStringBuffer.appendString("\": ");
+      expectedStringBuilder.appendString("\"");
+      expectedStringBuilder.appendString(name);
+      expectedStringBuilder.appendString("\": ");
       if (spacesBefore != null) {
-        jsonElement.serialize(contractedStringBuffer, spacesBefore + 2 + name.length() + 4);
+        jsonElement.serialize(expectedStringBuilder, spacesBefore + 2 + name.length() + 4);
         if (i0 + 1 < keys.size()) {
-          contractedStringBuffer.appendString(",");
+          expectedStringBuilder.appendString(",");
         }
-        contractedStringBuffer.endLine();
+        expectedStringBuilder.endLine();
       } else {
-        jsonElement.serialize(contractedStringBuffer, null);
+        jsonElement.serialize(expectedStringBuilder, null);
         if (i0 + 1 < keys.size()) {
-          contractedStringBuffer.appendString(",");
+          expectedStringBuilder.appendString(",");
         }
       }
     }
     if (spacesBefore != null) {
       for (int i = 0; i < spacesBefore; i++) {
-        contractedStringBuffer.appendString(" ");
+        expectedStringBuilder.appendString(" ");
       }
     }
-    contractedStringBuffer.appendString("}");
+    expectedStringBuilder.appendString("}");
   }
 
   public String getClassName() {
@@ -68,8 +69,10 @@ public class JsonObject extends JsonElement {
     return this;
   }
 
-  public ContractedArray<String> keys() {
-    return jsonElements.keys();
+  public ArrayList<String> keys() {
+    ArrayList<String> result = new ArrayList<>();
+    result.addAll(jsonElements.keySet());
+    return result;
   }
 
   public void putBooleanValue(String memberName, boolean value) {

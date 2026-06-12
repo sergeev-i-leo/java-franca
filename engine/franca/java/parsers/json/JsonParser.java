@@ -1,9 +1,10 @@
 package franca.java.parsers.json;
 
-import franca.java.contracted.ContractedStringBuffer;
-import franca.java.contracted.ContractedArray;
-import franca.java.contracted.ContractedRuntime;
+import franca.java.expected.ExpectedStringBuilder;
+import franca.java.expected.ExpectedRuntime;
 import franca.java.parsers.Parser;
+
+import java.util.ArrayList;
 
 public class JsonParser extends Parser {
 
@@ -85,7 +86,7 @@ public class JsonParser extends Parser {
     String className = jsonObject0.getStringValue("$className");
     if (className != null) {
       JsonObject jsonObject1 = createJsonObjectByClassName(className);
-      ContractedArray<String> keys = jsonObject0.keys();
+      ArrayList<String> keys = jsonObject0.keys();
       for (int i = 0; i < keys.size(); i++) {
         String key = keys.get(i);
         jsonObject1.put(key, jsonObject0.get(key));
@@ -180,46 +181,46 @@ public class JsonParser extends Parser {
   }
 
   private JsonPrimitive parseNumber() {
-    ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+    ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
     try {
       char character = input.charAt(position);
       if (((character >= '0') && (character <= '9')) || (character == '-')) {
-        contractedStringBuffer.appendCharacter(character);
+        expectedStringBuilder.appendCharacter(character);
         position++;
         while (position < input.length()) {
           character = input.charAt(position);
           if (character >= '0' && character <= '9') {
-            contractedStringBuffer.appendCharacter(character);
+            expectedStringBuilder.appendCharacter(character);
             position++;
           } else if (character == '.') {
-            contractedStringBuffer.appendCharacter(character);
+            expectedStringBuilder.appendCharacter(character);
             position++;
           } else if (character == 'e') {
-            contractedStringBuffer.appendCharacter(character);
+            expectedStringBuilder.appendCharacter(character);
             position++;
           } else if (character == 'E') {
-            contractedStringBuffer.appendCharacter(character);
+            expectedStringBuilder.appendCharacter(character);
             position++;
           } else if (character == '+') {
-            contractedStringBuffer.appendCharacter(character);
+            expectedStringBuilder.appendCharacter(character);
             position++;
           } else if (character == '-') {
-            contractedStringBuffer.appendCharacter(character);
+            expectedStringBuilder.appendCharacter(character);
             position++;
           } else {
             break;
           }
         }
-        String numberString = contractedStringBuffer.getString();
+        String numberString = expectedStringBuilder.getString();
 
-        Integer parsedInteger = ContractedRuntime.parseInt(numberString);
+        Integer parsedInteger = ExpectedRuntime.parseInt(numberString);
         if (parsedInteger != null) {
           JsonIntegerPrimitive jsonIntegerPrimitive = new JsonIntegerPrimitive(parsedInteger);
           delete(parsedInteger);
           return jsonIntegerPrimitive;
         }
 
-        Double parsedDouble = ContractedRuntime.parseDouble(numberString);
+        Double parsedDouble = ExpectedRuntime.parseDouble(numberString);
         if (parsedDouble != null) {
           JsonDoublePrimitive jsonDoublePrimitive = new JsonDoublePrimitive(parsedDouble);
           delete(parsedDouble);

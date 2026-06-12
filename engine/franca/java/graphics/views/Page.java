@@ -1,15 +1,16 @@
 package franca.java.graphics.views;
 
-import franca.java.contracted.TranspilableClass;
-import franca.java.contracted.ContractedArray;
+import franca.java.expected.TranspilableClass;
 import franca.java.graphics.device.Painter;
 import franca.java.graphics.device.Router;
+
+import java.util.ArrayList;
 
 public class Page extends TranspilableClass {
 
   Router router = null;
 
-  public ContractedArray<View> views = new ContractedArray<View>();
+  public ArrayList<View> views = new ArrayList<>();
 
   public Page nextPage = null;
 

@@ -1,6 +1,6 @@
-package franca.java.contracted;
+package franca.java.expected;
 
-public class ContractedRuntime {
+public class ExpectedRuntime {
 
   public static Integer parseInt(String input) {
     if (input == null) {

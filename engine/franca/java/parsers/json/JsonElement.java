@@ -1,7 +1,7 @@
 package franca.java.parsers.json;
 
-import franca.java.contracted.ContractedStringBuffer;
-import franca.java.contracted.TranspilableClass;
+import franca.java.expected.ExpectedStringBuilder;
+import franca.java.expected.TranspilableClass;
 
 public class JsonElement extends TranspilableClass {
 
@@ -10,7 +10,7 @@ public class JsonElement extends TranspilableClass {
     super.destroy();
   }
 
-  public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
+  public void serialize(ExpectedStringBuilder expectedStringBuilder, Integer spacesBefore) {
   }
 
   public Boolean getBooleanValue() {

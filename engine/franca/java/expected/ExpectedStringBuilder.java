@@ -1,6 +1,6 @@
-package franca.java.contracted;
+package franca.java.expected;
 
-public class ContractedStringBuffer {
+public class ExpectedStringBuilder {
 
   private StringBuilder stringBuilder = new StringBuilder();
 

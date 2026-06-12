@@ -1,6 +1,6 @@
 package franca.java.parsers.json;
 
-import franca.java.contracted.ContractedStringBuffer;
+import franca.java.expected.ExpectedStringBuilder;
 
 public class JsonStringPrimitive extends JsonPrimitive {
 
@@ -17,13 +17,13 @@ public class JsonStringPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
+  public void serialize(ExpectedStringBuilder expectedStringBuilder, Integer spacesBefore) {
     String string = value;
     if (string == null) {
       string = "";
     }
     string = string.replace("\"", "\\\"");
-    contractedStringBuffer.appendString("\"" + string + "\"");
+    expectedStringBuilder.appendString("\"" + string + "\"");
   }
 
   @Override

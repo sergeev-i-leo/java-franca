@@ -1,6 +1,6 @@
 package franca.java.parsers;
 
-import franca.java.contracted.TranspilableClass;
+import franca.java.expected.TranspilableClass;
 
 public class Parser extends TranspilableClass {
 

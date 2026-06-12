@@ -1,6 +1,6 @@
 package franca.java.test_components;
 
-import franca.java.contracted.ContractedStringBuffer;
+import franca.java.expected.ExpectedStringBuilder;
 import franca.java.graphics.device.Painter;
 import franca.java.graphics.device.Router;
 import franca.java.graphics.views.Page;
@@ -51,10 +51,10 @@ public class HtmlParserView extends View {
           htmlParser.debuggingLevel = 1;
           jsonArray = htmlParser.parse(result);
           delete(htmlParser);
-          ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
-          htmlParser.toStringBuffer(jsonArray, contractedStringBuffer);
-          htmlOutput = contractedStringBuffer.getString();
-          delete(contractedStringBuffer);
+          ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
+          htmlParser.toStringBuffer(jsonArray, expectedStringBuilder);
+          htmlOutput = expectedStringBuilder.getString();
+          delete(expectedStringBuilder);
           router.getDevice().writeFile("test-output.html", htmlOutput, operationResult -> {
             if ((operationResult != null) && (operationResult == 200)) {
               state = 200;
@@ -73,9 +73,9 @@ public class HtmlParserView extends View {
       if (jsonArray != null) {
         state = 2;
         router.requestRepainting();
-        ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
-        jsonArray.serialize(contractedStringBuffer, null);
-        router.getDevice().writeFile("html-0.tmp", contractedStringBuffer.toString(), operationResult -> {
+        ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
+        jsonArray.serialize(expectedStringBuilder, null);
+        router.getDevice().writeFile("html-0.tmp", expectedStringBuilder.toString(), operationResult -> {
           if ((operationResult != null) && (operationResult == 200)) {
             state = 0;
           } else {

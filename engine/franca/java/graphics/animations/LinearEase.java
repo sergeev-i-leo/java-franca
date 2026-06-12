@@ -31,7 +31,7 @@ public class LinearEase extends Ease {
       return true;
     }
 
-    currentValue = initialValue + (int) ((double) (targetValue - initialValue) * (double) (currentTime - startedTime) / (double) duration);
+    currentValue = initialValue + (int) ((targetValue - initialValue) * (currentTime - startedTime) / (double) duration);
 
     return true;
   }

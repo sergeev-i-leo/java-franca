@@ -1,7 +1,7 @@
 package franca.java.parsers.html;
 
-import franca.java.contracted.ContractedStringBuffer;
-import franca.java.contracted.ContractedRuntime;
+import franca.java.expected.ExpectedStringBuilder;
+import franca.java.expected.ExpectedRuntime;
 import franca.java.parsers.Parser;
 import franca.java.parsers.json.JsonArray;
 import franca.java.parsers.json.JsonObject;
@@ -127,13 +127,13 @@ public class HtmlParser extends Parser {
   }
 
   private String parseTagName() {
-    ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+    ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
     while ((position < input.length()) && (Character.isLetterOrDigit(peekCharacter()))) {
       char c = consumeCharacter();
-      contractedStringBuffer.appendCharacter(c);
+      expectedStringBuilder.appendCharacter(c);
     }
-    String string = contractedStringBuffer.getLowerCaseString();
-    delete(contractedStringBuffer);
+    String string = expectedStringBuilder.getLowerCaseString();
+    delete(expectedStringBuilder);
     return string;
   }
 
@@ -174,17 +174,17 @@ public class HtmlParser extends Parser {
   }
 
   private String parseAttributeName() {
-    ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+    ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
     while ((position < input.length()) && (isAttributeNameCharacter(peekCharacter()))) {
       char c = consumeCharacter();
-      contractedStringBuffer.appendCharacter(c);
+      expectedStringBuilder.appendCharacter(c);
     }
-    if (contractedStringBuffer.isEmpty()) {
-      delete(contractedStringBuffer);
+    if (expectedStringBuilder.isEmpty()) {
+      delete(expectedStringBuilder);
       return null;
     }
-    String string = contractedStringBuffer.getLowerCaseString();
-    delete(contractedStringBuffer);
+    String string = expectedStringBuilder.getLowerCaseString();
+    delete(expectedStringBuilder);
     return string;
   }
 
@@ -197,36 +197,36 @@ public class HtmlParser extends Parser {
 
     char attributeValueDelimiter = peekCharacter();
     if ((attributeValueDelimiter != '\"') && (attributeValueDelimiter != '\'')) {
-      ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+      ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
       while (position < input.length()) {
         char c = peekCharacter();
         if ((c == '>') || (c == '/') || (isWhitespace(c))) {
           break;
         }
-        contractedStringBuffer.appendCharacter(consumeCharacter());
+        expectedStringBuilder.appendCharacter(consumeCharacter());
       }
       JsonObject attributeJsonObject = new JsonObject();
       attributesJsonArray.add(attributeJsonObject);
-      attributeJsonObject.putStringValue(attributeName, contractedStringBuffer.toString());
+      attributeJsonObject.putStringValue(attributeName, expectedStringBuilder.toString());
 
       if (debuggingLevel > 1) {
-        System.out.println("unquoted attribute found " + attributeName + " : " + contractedStringBuffer.getString());
+        System.out.println("unquoted attribute found " + attributeName + " : " + expectedStringBuilder.getString());
       }
 
-      delete(contractedStringBuffer);
+      delete(expectedStringBuilder);
       return;
     }
 
     skipCharacters(1);
 
     if (!attributeName.equals("style")) {
-      ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+      ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
       while (position < input.length()) {
         char c = peekCharacter();
         if (c == '\\') {
           skipCharacters(1);
           c = consumeCharacter();
-          contractedStringBuffer.appendCharacter(c);
+          expectedStringBuilder.appendCharacter(c);
           continue;
         }
         if (c == attributeValueDelimiter) {
@@ -236,22 +236,22 @@ public class HtmlParser extends Parser {
         if ((c == '>') || (c == '/')) {
           break;
         }
-        contractedStringBuffer.appendCharacter(c);
+        expectedStringBuilder.appendCharacter(c);
         skipCharacters(1);
       }
-      if (contractedStringBuffer.isEmpty()) {
-        delete(contractedStringBuffer);
+      if (expectedStringBuilder.isEmpty()) {
+        delete(expectedStringBuilder);
         return;
       }
       JsonObject attributeJsonObject = new JsonObject();
       attributesJsonArray.add(attributeJsonObject);
-      attributeJsonObject.putStringValue(attributeName, contractedStringBuffer.toString());
+      attributeJsonObject.putStringValue(attributeName, expectedStringBuilder.toString());
 
       if (debuggingLevel > 1) {
-        System.out.println("quoted attribute found " + attributeName + " : " + contractedStringBuffer.getString());
+        System.out.println("quoted attribute found " + attributeName + " : " + expectedStringBuilder.getString());
       }
 
-      delete(contractedStringBuffer);
+      delete(expectedStringBuilder);
       return;
     }
 
@@ -272,21 +272,21 @@ public class HtmlParser extends Parser {
       skipCharacters(1);
 
       skipWhitespaces();
-      ContractedStringBuffer contractedStringBuffer = parseStyleValue();
-      if (contractedStringBuffer == null) {
+      ExpectedStringBuilder expectedStringBuilder = parseStyleValue();
+      if (expectedStringBuilder == null) {
         delete(styleName);
         break;
       }
       JsonObject styleJsonObject = new JsonObject();
       styleJsonArray.add(styleJsonObject);
-      styleJsonObject.putStringValue(styleName, contractedStringBuffer.getString());
+      styleJsonObject.putStringValue(styleName, expectedStringBuilder.getString());
 
       if (debuggingLevel > 1) {
-        System.out.println("style found " + styleName + " : " + contractedStringBuffer.getString());
+        System.out.println("style found " + styleName + " : " + expectedStringBuilder.getString());
       }
 
       delete(styleName);
-      delete(contractedStringBuffer);
+      delete(expectedStringBuilder);
 
       skipWhitespaces();
       if (peekCharacter() != ';') {
@@ -298,24 +298,24 @@ public class HtmlParser extends Parser {
   }
 
   private String parseStyleName() {
-    ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+    ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
     while ((position < input.length()) && (isAttributeNameCharacter(peekCharacter()))) {
       char c = consumeCharacter();
-      contractedStringBuffer.appendCharacter(c);
+      expectedStringBuilder.appendCharacter(c);
     }
-    if (contractedStringBuffer.isEmpty()) {
-      delete(contractedStringBuffer);
+    if (expectedStringBuilder.isEmpty()) {
+      delete(expectedStringBuilder);
       return null;
     }
-    String string = contractedStringBuffer.getLowerCaseString();
-    delete(contractedStringBuffer);
+    String string = expectedStringBuilder.getLowerCaseString();
+    delete(expectedStringBuilder);
     return string;
   }
 
-  private ContractedStringBuffer parseStyleValue() {
+  private ExpectedStringBuilder parseStyleValue() {
     skipWhitespaces();
 
-    ContractedStringBuffer contractedStringBuffer = new ContractedStringBuffer();
+    ExpectedStringBuilder expectedStringBuilder = new ExpectedStringBuilder();
     boolean insideQuotes = false;
     char quoteCharacter = 0;
 
@@ -325,7 +325,7 @@ public class HtmlParser extends Parser {
       if (c == '\\') {
         skipCharacters(1);
         c = consumeCharacter();
-        contractedStringBuffer.appendCharacter(c);
+        expectedStringBuilder.appendCharacter(c);
         continue;
       }
 
@@ -333,19 +333,19 @@ public class HtmlParser extends Parser {
       if (((c == '"') || (c == '\'')) && (!insideQuotes)) {
         insideQuotes = true;
         quoteCharacter = c;
-        contractedStringBuffer.appendCharacter(consumeCharacter());
+        expectedStringBuilder.appendCharacter(consumeCharacter());
         continue;
       }
       if ((insideQuotes) && (c == quoteCharacter)) {
         insideQuotes = false;
         quoteCharacter = 0;
-        contractedStringBuffer.appendCharacter(consumeCharacter());
+        expectedStringBuilder.appendCharacter(consumeCharacter());
         continue;
       }
 
       // inside quotes
       if (insideQuotes) {
-        contractedStringBuffer.appendCharacter(consumeCharacter());
+        expectedStringBuilder.appendCharacter(consumeCharacter());
         continue;
       }
 
@@ -354,30 +354,30 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      contractedStringBuffer.appendCharacter(consumeCharacter());
+      expectedStringBuilder.appendCharacter(consumeCharacter());
     }
 
-    if (contractedStringBuffer.isEmpty()) {
-      delete(contractedStringBuffer);
+    if (expectedStringBuilder.isEmpty()) {
+      delete(expectedStringBuilder);
       return null;
     }
 
-    return contractedStringBuffer;
+    return expectedStringBuilder;
   }
 
   private void parseTextContents(JsonArray jsonArray) {
 
-    ContractedStringBuffer textContractedStringBuffer = new ContractedStringBuffer();
-    ContractedStringBuffer htmlLetterContractedStringBuffer = null;
+    ExpectedStringBuilder textExpectedStringBuilder = new ExpectedStringBuilder();
+    ExpectedStringBuilder htmlLetterExpectedStringBuilder = null;
 
     while (position < input.length()) {
       char c = peekCharacter();
       if (c == '<') {
         if (peekString("<br>")) {
-          if (textContractedStringBuffer.isNotEmpty()) {
-            appendTextJsonObject(jsonArray, textContractedStringBuffer.toString());
-            delete(textContractedStringBuffer);
-            textContractedStringBuffer = new ContractedStringBuffer();
+          if (textExpectedStringBuilder.isNotEmpty()) {
+            appendTextJsonObject(jsonArray, textExpectedStringBuilder.toString());
+            delete(textExpectedStringBuilder);
+            textExpectedStringBuilder = new ExpectedStringBuilder();
           }
           appendTextJsonObject(jsonArray, "<br>");
           skipCharacters(4);
@@ -397,181 +397,181 @@ public class HtmlParser extends Parser {
       }
 
       if ((peekNextCharacter(0) == '&') && ((peekNextCharacter(1) == '#'))) {
-        if (htmlLetterContractedStringBuffer != null) {
+        if (htmlLetterExpectedStringBuilder != null) {
           // html letter not finished
-          textContractedStringBuffer.appendString(htmlLetterContractedStringBuffer.getString());
-          delete(htmlLetterContractedStringBuffer);
+          textExpectedStringBuilder.appendString(htmlLetterExpectedStringBuilder.getString());
+          delete(htmlLetterExpectedStringBuilder);
         }
-        htmlLetterContractedStringBuffer = new ContractedStringBuffer();
+        htmlLetterExpectedStringBuilder = new ExpectedStringBuilder();
         skipCharacters(2);
         continue;
       }
-      if (htmlLetterContractedStringBuffer != null) {
+      if (htmlLetterExpectedStringBuilder != null) {
         c = peekCharacter();
         if (c == ';') {
           // try to convert to char
-          Integer parsedInteger = ContractedRuntime.parseHexInt(htmlLetterContractedStringBuffer.getString());
+          Integer parsedInteger = ExpectedRuntime.parseHexInt(htmlLetterExpectedStringBuilder.getString());
           if (parsedInteger == null) {
-            textContractedStringBuffer.appendString(htmlLetterContractedStringBuffer.getString());
+            textExpectedStringBuilder.appendString(htmlLetterExpectedStringBuilder.getString());
           } else {
-            textContractedStringBuffer.appendCharacter((char) parsedInteger.intValue());
+            textExpectedStringBuilder.appendCharacter((char) parsedInteger.intValue());
           }
-          delete(htmlLetterContractedStringBuffer);
-          htmlLetterContractedStringBuffer = null;
+          delete(htmlLetterExpectedStringBuilder);
+          htmlLetterExpectedStringBuilder = null;
           skipCharacters(1);
           continue;
         }
         if (Character.isLetterOrDigit(c)) {
-          htmlLetterContractedStringBuffer.appendCharacter(c);
+          htmlLetterExpectedStringBuilder.appendCharacter(c);
           skipCharacters(1);
           continue;
         }
         // error in html
-        textContractedStringBuffer.appendString(htmlLetterContractedStringBuffer.getString());
-        delete(htmlLetterContractedStringBuffer);
-        htmlLetterContractedStringBuffer = null;
+        textExpectedStringBuilder.appendString(htmlLetterExpectedStringBuilder.getString());
+        delete(htmlLetterExpectedStringBuilder);
+        htmlLetterExpectedStringBuilder = null;
       }
       if (peekString("&amp;")) {
-        textContractedStringBuffer.appendString("&");
+        textExpectedStringBuilder.appendString("&");
         skipCharacters(5);
         continue;
       }
       if (peekString("&lt;")) {
-        textContractedStringBuffer.appendString("<");
+        textExpectedStringBuilder.appendString("<");
         skipCharacters(4);
         continue;
       }
       if (peekString("&gt;")) {
-        textContractedStringBuffer.appendString(">");
+        textExpectedStringBuilder.appendString(">");
         skipCharacters(4);
         continue;
       }
       if (peekString("&quot;")) {
-        textContractedStringBuffer.appendString("\"");
+        textExpectedStringBuilder.appendString("\"");
         skipCharacters(6);
         continue;
       }
       if (peekString("&#39;")) {
-        textContractedStringBuffer.appendString("'");
+        textExpectedStringBuilder.appendString("'");
         skipCharacters(5);
         continue;
       }
       if (peekString("&nbsp;")) {
-        textContractedStringBuffer.appendString(" ");
+        textExpectedStringBuilder.appendString(" ");
         skipCharacters(6);
         continue;
       }
       if (peekString("&Aacute;")) {
-        textContractedStringBuffer.appendString("Á");
+        textExpectedStringBuilder.appendString("Á");
         position += 8;
         continue;
       }
       if (peekString("&aacute;")) {
-        textContractedStringBuffer.appendString("á");
+        textExpectedStringBuilder.appendString("á");
         position += 8;
         continue;
       }
       if (peekString("&Eacute;")) {
-        textContractedStringBuffer.appendString("É");
+        textExpectedStringBuilder.appendString("É");
         position += 8;
         continue;
       }
       if (peekString("&eacute;")) {
-        textContractedStringBuffer.appendString("é");
+        textExpectedStringBuilder.appendString("é");
         position += 8;
         continue;
       }
       if (peekString("&Iacute;")) {
-        textContractedStringBuffer.appendString("Í");
+        textExpectedStringBuilder.appendString("Í");
         position += 8;
         continue;
       }
       if (peekString("&iacute;")) {
-        textContractedStringBuffer.appendString("í");
+        textExpectedStringBuilder.appendString("í");
         position += 8;
         continue;
       }
       if (peekString("&Oacute;")) {
-        textContractedStringBuffer.appendString("Ó");
+        textExpectedStringBuilder.appendString("Ó");
         position += 8;
         continue;
       }
       if (peekString("&oacute;")) {
-        textContractedStringBuffer.appendString("ó");
+        textExpectedStringBuilder.appendString("ó");
         position += 8;
         continue;
       }
       if (peekString("&Uacute;")) {
-        textContractedStringBuffer.appendString("Ú");
+        textExpectedStringBuilder.appendString("Ú");
         position += 8;
         continue;
       }
       if (peekString("&uacute;")) {
-        textContractedStringBuffer.appendString("ú");
+        textExpectedStringBuilder.appendString("ú");
         position += 8;
         continue;
       }
       if (peekString("&Ntilde;")) {
-        textContractedStringBuffer.appendString("Ñ");
+        textExpectedStringBuilder.appendString("Ñ");
         position += 8;
         continue;
       }
       if (peekString("&ntilde;")) {
-        textContractedStringBuffer.appendString("ñ");
+        textExpectedStringBuilder.appendString("ñ");
         position += 8;
         continue;
       }
       if (peekString("&copy;")) {
-        textContractedStringBuffer.appendString("©");
+        textExpectedStringBuilder.appendString("©");
         skipCharacters(6);
         continue;
       }
       if (peekString("&reg;")) {
-        textContractedStringBuffer.appendString("®");
+        textExpectedStringBuilder.appendString("®");
         skipCharacters(5);
         continue;
       }
       if (peekString("&trade;")) {
-        textContractedStringBuffer.appendString("™");
+        textExpectedStringBuilder.appendString("™");
         position += 7;
         continue;
       }
       if (peekString("&euro;")) {
-        textContractedStringBuffer.appendString("€");
+        textExpectedStringBuilder.appendString("€");
         skipCharacters(6);
         continue;
       }
       if (peekString("&pound;")) {
-        textContractedStringBuffer.appendString("£");
+        textExpectedStringBuilder.appendString("£");
         position += 7;
         continue;
       }
       if (peekString("&cent;")) {
-        textContractedStringBuffer.appendString("¢");
+        textExpectedStringBuilder.appendString("¢");
         skipCharacters(6);
         continue;
       }
       if (peekString("&yen;")) {
-        textContractedStringBuffer.appendString("¥");
+        textExpectedStringBuilder.appendString("¥");
         skipCharacters(5);
         continue;
       }
 
-      textContractedStringBuffer.appendCharacter(consumeCharacter());
+      textExpectedStringBuilder.appendCharacter(consumeCharacter());
     }
 
-    if (htmlLetterContractedStringBuffer != null) {
+    if (htmlLetterExpectedStringBuilder != null) {
       // not completed html character
-      textContractedStringBuffer.appendString(htmlLetterContractedStringBuffer.getString());
-      delete(htmlLetterContractedStringBuffer);
+      textExpectedStringBuilder.appendString(htmlLetterExpectedStringBuilder.getString());
+      delete(htmlLetterExpectedStringBuilder);
     }
 
-    if (textContractedStringBuffer.isNotEmpty()) {
+    if (textExpectedStringBuilder.isNotEmpty()) {
       if (debuggingLevel > 1) {
-        System.out.println("text found " + textContractedStringBuffer.getString());
+        System.out.println("text found " + textExpectedStringBuilder.getString());
       }
-      appendTextJsonObject(jsonArray, textContractedStringBuffer.getString());
-      delete(textContractedStringBuffer);
+      appendTextJsonObject(jsonArray, textExpectedStringBuilder.getString());
+      delete(textExpectedStringBuilder);
     }
   }
 
@@ -596,7 +596,7 @@ public class HtmlParser extends Parser {
     return super.peekCharacter();
   }
 
-  public void toStringBuffer(JsonArray jsonArray, ContractedStringBuffer contractedStringBuffer) {
+  public void toStringBuffer(JsonArray jsonArray, ExpectedStringBuilder expectedStringBuilder) {
     for (int i = 0; i < jsonArray.size(); i++) {
       JsonObject jsonObject = jsonArray.getJsonObject(i);
       if (jsonObject == null) {
@@ -605,12 +605,12 @@ public class HtmlParser extends Parser {
       String tagName = jsonObject.getStringValue("tagName");
       JsonArray contentsJsonArray = jsonObject.getJsonArray("contents");
       if (tagName != null) {
-        contractedStringBuffer.appendCharacter('<');
-        contractedStringBuffer.appendString(tagName);
-        contractedStringBuffer.appendCharacter('>');
+        expectedStringBuilder.appendCharacter('<');
+        expectedStringBuilder.appendString(tagName);
+        expectedStringBuilder.appendCharacter('>');
       }
       if (contentsJsonArray != null) {
-        toStringBuffer(contentsJsonArray, contractedStringBuffer);
+        toStringBuffer(contentsJsonArray, expectedStringBuilder);
       }
     }
   }

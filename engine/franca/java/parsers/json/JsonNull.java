@@ -1,6 +1,6 @@
 package franca.java.parsers.json;
 
-import franca.java.contracted.ContractedStringBuffer;
+import franca.java.expected.ExpectedStringBuilder;
 
 public class JsonNull extends JsonElement {
 
@@ -10,8 +10,8 @@ public class JsonNull extends JsonElement {
   }
 
   @Override
-  public void serialize(ContractedStringBuffer contractedStringBuffer, Integer spacesBefore) {
-    contractedStringBuffer.appendString("null");
+  public void serialize(ExpectedStringBuilder expectedStringBuilder, Integer spacesBefore) {
+    expectedStringBuilder.appendString("null");
   }
 
   @Override
