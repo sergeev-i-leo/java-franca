@@ -34,8 +34,8 @@ sourceSets {
   }
 }
 
-task swing_test_application(type: JavaExec) {
-  mainClass = 'franca.java.swing_applications.SwingTestApplication'
+task graphics_test_application(type: JavaExec) {
+  mainClass = 'franca.java.graphics_applications.GraphicsTestApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 
@@ -46,7 +46,7 @@ task swing_test_application(type: JavaExec) {
 }
 
 task html_parser_application(type: JavaExec) {
-  mainClass = 'franca.java.swing_applications.HtmlParserApplication'
+  mainClass = 'franca.java.graphics_applications.HtmlParserApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 
@@ -57,7 +57,7 @@ task html_parser_application(type: JavaExec) {
 }
 
 task flavoured_markdown_parser_application(type: JavaExec) {
-  mainClass = 'franca.java.swing_applications.FlavouredMarkdownParserApplication'
+  mainClass = 'franca.java.graphics_applications.FlavouredMarkdownParserApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 
