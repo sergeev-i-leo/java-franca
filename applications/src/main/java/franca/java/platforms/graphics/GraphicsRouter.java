@@ -1,6 +1,6 @@
 package franca.java.platforms.graphics;
 
-import java.franca.graphics.device.Router;
+import franca.java.graphics.device.Router;
 
 public class GraphicsRouter extends Router {
 

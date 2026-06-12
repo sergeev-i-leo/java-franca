@@ -1,6 +1,6 @@
 package franca.java.platforms.graphics;
 
-import java.franca.graphics.device.Painter;
+import franca.java.graphics.device.Painter;
 
 import java.awt.*;
 

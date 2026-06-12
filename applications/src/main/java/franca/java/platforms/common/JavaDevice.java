@@ -1,10 +1,12 @@
 package franca.java.platforms.common;
 
+import franca.java.graphics.device.Device;
+import franca.java.graphics.device.IntegerConsumer;
+import franca.java.graphics.device.StringConsumer;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import java.franca.graphics.device.*;
 
 public class JavaDevice extends Device {
 

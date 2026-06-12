@@ -1,6 +1,5 @@
 package franca.java.platforms.skia
 
-import franca.java.platforms.common.JavaDevice
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
 import java.awt.event.MouseAdapter
@@ -10,6 +9,8 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.JFrame
 import javax.swing.SwingUtilities
+
+import franca.java.platforms.common.JavaDevice
 
 class SkiaApplication(private val skiaRouter: SkiaRouter) {
 

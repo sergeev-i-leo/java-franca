@@ -4,8 +4,8 @@ import franca.java.platforms.graphics.GraphicsApplication;
 import franca.java.platforms.graphics.GraphicsRouter;
 
 import javax.swing.*;
-import java.franca.graphics.test_components.TestView0;
-import java.franca.graphics.views.Page;
+import franca.java.graphics.test_components.TestView0;
+import franca.java.graphics.views.Page;
 
 public class GraphicsTestApplication {
 
@@ -19,8 +19,8 @@ public class GraphicsTestApplication {
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    GraphicsApplication swingApplication = new GraphicsApplication(graphicsRouter);
-    frame.add(swingApplication);
+    GraphicsApplication graphicsApplication = new GraphicsApplication(graphicsRouter);
+    frame.add(graphicsApplication);
 
     frame.pack();
     frame.setLocationRelativeTo(null);

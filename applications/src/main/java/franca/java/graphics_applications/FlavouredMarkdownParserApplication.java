@@ -4,8 +4,8 @@ import franca.java.platforms.graphics.GraphicsApplication;
 import franca.java.platforms.graphics.GraphicsRouter;
 
 import javax.swing.*;
-import java.franca.graphics.test_components.FlavouredMarkdownParserView;
-import java.franca.graphics.views.Page;
+import franca.java.graphics.test_components.FlavouredMarkdownParserView;
+import franca.java.graphics.views.Page;
 
 public class FlavouredMarkdownParserApplication {
 

@@ -1,6 +1,6 @@
 package franca.java.platforms.skia
 
-import java.franca.graphics.device.Router
+import franca.java.graphics.device.Router
 
 class SkiaRouter : Router() {
 

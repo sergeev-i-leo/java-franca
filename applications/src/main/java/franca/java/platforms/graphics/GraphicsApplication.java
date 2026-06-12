@@ -1,7 +1,5 @@
 package franca.java.platforms.graphics;
 
-import franca.java.platforms.common.JavaDevice;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import franca.java.platforms.common.JavaDevice;
 
 public class GraphicsApplication extends JPanel {
 
