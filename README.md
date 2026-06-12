@@ -17,8 +17,9 @@ Write your code once using Typescript, and Typescript France transpiles it to:
 - **Animation system** — declarative animations with automatic repaint scheduling
 - **Memory-safe design** — clear ownership rules, `destroy()` semantics (ready for hardcore manual memory management when transpiled to C++)
 
-## Target
+## Design Principles
 
-## Architecture
-
-
+* Simplicity first — if a feature makes the transpiler complex, leave it out initially
+* Observability — generated code must be traceable and debuggable
+* No magic — every transformation must be traceable from source to target
+* Iterative — start with minimal subset, expand gradually
