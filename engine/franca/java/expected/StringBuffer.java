@@ -20,7 +20,14 @@ public class StringBuffer {
     stringBuilder.append(string);
   }
 
-  public void endLine() {
+  public void appendSpaces(int number) {
+    while (number > 0) {
+      appendChar(' ');
+      number--;
+    }
+  }
+
+  public void appendEndLine() {
     appendString("\r\n");
   }
 

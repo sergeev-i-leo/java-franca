@@ -10,10 +10,12 @@ import franca.java.parsers.json.JsonStringPrimitive;
 public class HtmlParser extends Parser {
 
   // 0 for nothing, 1 for nothing with input flag, 2 for debugging
-  public int debuggingLevel = 0;
+  public StringBuffer outputStringBuffer;
+  private int outputSpacesNumber = 0;
 
-  public JsonArray parse(String input) {
+  public JsonArray parse(String input, StringBuffer outputStringBuffer) {
     this.input = input;
+    this.outputStringBuffer = outputStringBuffer;
 
     position = 0;
 
@@ -44,6 +46,13 @@ public class HtmlParser extends Parser {
         JsonObject jsonObject = new JsonObject();
         jsonArray.add(jsonObject);
         jsonObject.putStringValue("#comment", literalStringBuffer.getString());
+
+        if (outputStringBuffer != null) {
+          outputStringBuffer.appendSpaces(outputSpacesNumber);
+          outputStringBuffer.appendString(literalStringBuffer.getString());
+          outputStringBuffer.appendEndLine();
+        }
+
         continue;
       }
 
@@ -64,8 +73,10 @@ public class HtmlParser extends Parser {
           skipChars(1);
         }
 
-        if (debuggingLevel > 1) {
-          System.out.println("</" + closingTagName + ">");
+        if (outputStringBuffer != null) {
+          outputStringBuffer.appendSpaces(outputSpacesNumber);
+          outputStringBuffer.appendString("</ " + closingTagName + " >");
+          outputStringBuffer.appendEndLine();
         }
 
         if (tagName == null) {
@@ -95,12 +106,17 @@ public class HtmlParser extends Parser {
 
     String tagName = parseTagName();
 
-    if (debuggingLevel > 1) {
-      System.out.println("<" + tagName + ">");
+    if (outputStringBuffer != null) {
+      outputStringBuffer.appendSpaces(outputSpacesNumber);
+      outputStringBuffer.appendString("< " + tagName);
+      outputStringBuffer.appendEndLine();
     }
 
     jsonObject.putStringValue("tagName", tagName);
+
+    outputSpacesNumber += 2;
     parseHtmlAttributes(jsonObject);
+    outputSpacesNumber -= 2;
 
     // self-closing tags
 
@@ -113,7 +129,10 @@ public class HtmlParser extends Parser {
 
     JsonArray jsonArray = new JsonArray();
     jsonObject.put("contents", jsonArray);
+
+    outputSpacesNumber += 2;
     parseHtmlNodeContents(tagName, jsonArray);
+    outputSpacesNumber -= 2;
   }
 
   private String parseTagName() {
@@ -131,8 +150,10 @@ public class HtmlParser extends Parser {
     if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
       // self-closing
       skipChars(2);
-      if (debuggingLevel > 1) {
-        System.out.println("</" + tagName + ">");
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendSpaces(outputSpacesNumber);
+        outputStringBuffer.appendString("/>");
+        outputStringBuffer.appendEndLine();
       }
       return true;
     }
@@ -148,8 +169,10 @@ public class HtmlParser extends Parser {
     }
     if (peekChar() == '>') {
       skipChars(1);
-      if (debuggingLevel > 1) {
-        System.out.println("</" + tagName + ">");
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendSpaces(outputSpacesNumber);
+        outputStringBuffer.appendString("/>");
+        outputStringBuffer.appendEndLine();
       }
       return true;
     }
@@ -177,8 +200,10 @@ public class HtmlParser extends Parser {
 
       if (peekChar() != '=') {
         attributesJsonArray.add(new JsonStringPrimitive(attributeName));
-        if (debuggingLevel > 1) {
-          System.out.println("Boolean attribute " + attributeName);
+        if (outputStringBuffer != null) {
+          outputStringBuffer.appendSpaces(outputSpacesNumber);
+          outputStringBuffer.appendString(attributeName);
+          outputStringBuffer.appendEndLine();
         }
         continue;
       }
@@ -223,9 +248,12 @@ public class HtmlParser extends Parser {
       attributesJsonArray.add(attributeJsonObject);
       attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
 
-      if (debuggingLevel > 1) {
-        System.out.println("Unquoted attribute value " + attributeName + " = " + literalStringBuffer.getString());
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendSpaces(outputSpacesNumber);
+        outputStringBuffer.appendString(attributeName + " = " + literalStringBuffer.getString());
+        outputStringBuffer.appendEndLine();
       }
+
       return;
     }
 
@@ -258,8 +286,10 @@ public class HtmlParser extends Parser {
       attributesJsonArray.add(attributeJsonObject);
       attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
 
-      if (debuggingLevel > 1) {
-        System.out.println("Quoted attribute value " + attributeName + " = " + literalStringBuffer.getString());
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendSpaces(outputSpacesNumber);
+        outputStringBuffer.appendString(attributeName + " = " + literalStringBuffer.getString());
+        outputStringBuffer.appendEndLine();
       }
 
       return;
@@ -289,8 +319,10 @@ public class HtmlParser extends Parser {
       styleJsonArray.add(styleJsonObject);
       styleJsonObject.putStringValue(styleName, literalStringBuffer.getString());
 
-      if (debuggingLevel > 1) {
-        System.out.println("Style found " + styleName + " : " + literalStringBuffer.getString());
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendSpaces(outputSpacesNumber);
+        outputStringBuffer.appendString("style." + styleName + " : " + literalStringBuffer.getString());
+        outputStringBuffer.appendEndLine();
       }
 
       skipWhitespaces();

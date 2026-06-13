@@ -12,7 +12,7 @@ public class JsonObject extends JsonElement {
   @Override
   public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
     stringBuffer.appendString("{");
-    stringBuffer.endLine();
+    stringBuffer.appendEndLine();
 
     ArrayList<String> keys = keys();
     for (int i0 = 0; i0 < keys.size(); i0++) {
@@ -35,7 +35,7 @@ public class JsonObject extends JsonElement {
         if (i0 + 1 < keys.size()) {
           stringBuffer.appendString(",");
         }
-        stringBuffer.endLine();
+        stringBuffer.appendEndLine();
       } else {
         jsonElement.serialize(stringBuffer, null);
         if (i0 + 1 < keys.size()) {

@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 public class MainFrame extends JFrame {
@@ -81,15 +82,11 @@ public class MainFrame extends JFrame {
       File selectedFile = fileSystemPanel.getSelectedFile();
       if (selectedFile != null && selectedFile.getName().endsWith(".html")) {
         try {
-          String content = new String(Files.readAllBytes(selectedFile.toPath()));
+          String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           HtmlParser parser = new HtmlParser();
-          parser.debuggingLevel = 2;
-          JsonArray rawRoot = parser.parse(content);
-
-          // Обновляем среднюю панель (сырой JSON)
-          StringBuffer sb = new StringBuffer();
-          rawRoot.serialize(sb, 0);
-          jsonTextPanel.setJsonText(sb.getString());
+          StringBuffer outputStringBuffer = new StringBuffer();
+          JsonArray rawRoot = parser.parse(content, outputStringBuffer);
+          jsonTextPanel.setJsonText(outputStringBuffer.getString());
 
           // TODO: конвертация rawRoot → document
           // document.loadFromJson(rawRoot);

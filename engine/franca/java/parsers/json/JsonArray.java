@@ -11,7 +11,7 @@ public class JsonArray extends JsonElement {
   @Override
   public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
     stringBuffer.appendString("[");
-    stringBuffer.endLine();
+    stringBuffer.appendEndLine();
 
     for (int i0 = 0; i0 < size(); i0++) {
       JsonElement jsonElement = get(i0);
@@ -27,7 +27,7 @@ public class JsonArray extends JsonElement {
         if (i0 + 1 < size()) {
           stringBuffer.appendString(",");
         }
-        stringBuffer.endLine();
+        stringBuffer.appendEndLine();
       } else {
         jsonElement.serialize(stringBuffer, null);
         if (i0 + 1 < size()) {
