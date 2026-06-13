@@ -2,7 +2,7 @@ plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.8.0'
 }
 
-group = 'java_france_tests'
+group = 'java_franca_tests'
 version = '1.0-SNAPSHOT'
 
 repositories {

@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'franca.java.content_viewer'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs("src/main/java",
+                    "../../../engine",
+                    "../platforms"
+            )
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
+    implementation("io.ktor:ktor-client-java:2.3.7")
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.16")
+    implementation("org.apache.xmlgraphics:batik-codec:1.16")
+    implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.80")
+}
+
+task java_franca_content_viewer(type: JavaExec) {
+    mainClass = 'franca.java.MainFrame'
+    classpath = sourceSets.main.runtimeClasspath
+    debug = true
+
+    jvmArgs = [
+            '-Xdebug',
+            '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
+    ]
+}
