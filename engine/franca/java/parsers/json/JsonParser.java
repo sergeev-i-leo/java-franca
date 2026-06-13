@@ -1,7 +1,5 @@
 package franca.java.parsers.json;
 
-import franca.java.expected.StringBuffer;
-import franca.java.expected.Runtime;
 import franca.java.parsers.Parser;
 
 import java.util.ArrayList;
@@ -33,13 +31,10 @@ public class JsonParser extends Parser {
 
   private JsonElement parseJsonElement() {
     skipWhitespaces();
-    JsonElement jsonElement = parseJsonNode();
-    skipWhitespaces();
-    return jsonElement;
-  }
-
-  private JsonElement parseJsonNode() {
-    skipWhitespaces();
+    if (input.startsWith("null", position)) {
+      position += 4;
+      return new JsonNull();
+    }
     JsonElement jsonElement = parseJsonObject();
     if (jsonElement != null) {
       return jsonElement;
@@ -48,76 +43,87 @@ public class JsonParser extends Parser {
     if (jsonElement != null) {
       return jsonElement;
     }
-    String string = parseString();
-    if (string != null) {
-      return new JsonStringPrimitive(string);
+    String literalType = parseLiteral();
+    if (literalType.equals("boolean-literal")) {
+      return new JsonBooleanPrimitive(booleanLiteral);
     }
-    JsonPrimitive numberJsonPrimitive = parseNumber();
-    if (numberJsonPrimitive != null) {
-      return numberJsonPrimitive;
+    if (literalType.equals("integer-literal")) {
+      return new JsonIntegerPrimitive(integerLiteral);
     }
-    jsonElement = parseLiteral();
-    if (jsonElement != null) {
-      return jsonElement;
+    if (literalType.equals("hex-integer-literal")) {
+      return new JsonIntegerPrimitive(integerLiteral);
     }
-    System.out.println("Invalid Json element at " + position);
+    if (literalType.equals("double-literal")) {
+      return new JsonDoublePrimitive(doubleLiteral);
+    }
+    if (literalType.equals("string-literal")) {
+      String literal = literalStringBuffer.getString();
+      JsonStringPrimitive jsonStringPrimitive = new JsonStringPrimitive(literal);
+      delete(literal);
+      return jsonStringPrimitive;
+    }
+    System.out.println("Invalid JsonElement at " + position);
     return null;
   }
 
   private JsonObject parseJsonObject() {
-    if (input.charAt(position) != '{') {
+    if (peekCharacter() != '{') {
       return null;
     }
-    position++;
-    JsonObject jsonObject0 = new JsonObject();
+    skipCharacters(1);
+    JsonObject jsonObject = new JsonObject();
     skipWhitespaces();
-    if (input.charAt(position) == '}') {
-      position++;
-      return jsonObject0;
+    if (peekCharacter() == '}') {
+      skipCharacters(1);
+      return jsonObject;
     }
     while (true) {
-      parseJsonObjectMember(jsonObject0);
-      if (input.charAt(position) == ',') {
-        position++;
-        continue;
+      parseJsonObjectMember(jsonObject);
+      skipWhitespaces();
+      if (peekCharacter() != ',') {
+        break;
       }
-      break;
+      skipCharacters(1);
     }
-    String className = jsonObject0.getStringValue("$className");
-    if (className != null) {
-      JsonObject jsonObject1 = createJsonObjectByClassName(className);
-      ArrayList<String> keys = jsonObject0.keys();
-      for (int i = 0; i < keys.size(); i++) {
-        String key = keys.get(i);
-        jsonObject1.put(key, jsonObject0.get(key));
-      }
-      jsonObject1.deserialize(jsonObject0);
-      jsonObject0 = jsonObject1;
+    if (peekCharacter() != '}') {
+      System.out.println("Missing '}' at " + position);
+      skipCharacters(1);
+      return null;
     }
-    skipWhitespaces();
-    if (input.charAt(position) == '}') {
-      position++;
-    }
-    return jsonObject0;
+    skipCharacters(1);
+    return recreateJsonObjectByClassName(jsonObject);
   }
 
-  protected JsonObject createJsonObjectByClassName(String className) {
-    return new JsonObject();
+  protected JsonObject recreateJsonObjectByClassName(JsonObject jsonObject) {
+    // for creating specific classes by $className
+    return jsonObject;
+  }
+
+  private void cloneJsonObject(JsonObject sourceJsonObject, JsonObject targetJsonObject) {
+    ArrayList<String> keys = sourceJsonObject.keys();
+    for (int i = 0; i < keys.size(); i++) {
+      String key = keys.get(i);
+      targetJsonObject.put(key, sourceJsonObject.get(key));
+    }
   }
 
   private void parseJsonObjectMember(JsonObject jsonObject) {
     try {
       skipWhitespaces();
-      String name = parseString();
-      if (name == null) {
+      String literalType = parseStringLiteral();
+      if (!literalType.equals("string")) {
+        // error
+        skipCharacters(1);
         System.out.println("JsonObject name expected at " + position);
         return;
       }
       skipWhitespaces();
-      if (input.charAt(position) == ':') {
-        position++;
+      if (peekCharacter() == ':') {
+        skipCharacters(1);
         JsonElement jsonElement = parseJsonElement();
-        jsonObject.put(name, jsonElement);
+        String literal = literalStringBuffer.getString();
+        jsonObject.put(literal, jsonElement);
+        delete(literal);
       }
     } catch (Exception e) {
       System.out.println("End of input at " + position);
@@ -125,41 +131,29 @@ public class JsonParser extends Parser {
   }
 
   private JsonArray parseJsonArray() {
-    try {
-      if (input.charAt(position) != '[') {
-        return null;
-      }
-      position++;
-      JsonArray jsonArray = new JsonArray();
-      skipWhitespaces();
-      while (position < input.length()) {
-        if (input.charAt(position) == ']') {
-          break;
-        }
-        JsonElement jsonElement = parseJsonElement();
-        jsonArray.add(jsonElement);
-        if (input.charAt(position) != ',') {
-          break;
-        }
-        position++;
-      }
-      position++;
-      return jsonArray;
-    } catch (Exception e) {
-      System.out.println("End of input at " + position);
+    if (peekCharacter() != '[') {
       return null;
     }
-  }
-
-  private JsonElement parseLiteral() {
-    try {
-      if (input.startsWith("null", position)) {
-        position += 4;
-        return new JsonNull();
+    skipCharacters(1);
+    JsonArray jsonArray = new JsonArray();
+    while (position < input.length()) {
+      skipWhitespaces();
+      if (peekCharacter() == ']') {
+        break;
       }
-    } catch (Exception e) {
-      System.out.println("End of input at " + position);
+      JsonElement jsonElement = parseJsonElement();
+      jsonArray.add(jsonElement);
+      if (peekCharacter() != ',') {
+        break;
+      }
+      skipCharacters(1);
     }
-    return null;
+    if (peekCharacter() != ']') {
+      System.out.println("Missing ']' at " + position);
+      skipCharacters(1);
+      return null;
+    }
+    skipCharacters(1);
+    return jsonArray;
   }
 }
