@@ -28,10 +28,6 @@ public class HtmlParser extends Parser {
     while (position < input.length()) {
       skipWhitespaces();
 
-      if (debuggingLevel > 1) {
-        printInput("parseHtmlNodeContents");
-      }
-
       if ((peekChar() == '<') && (peekNextChar(1) == '!')) {
         literalStringBuffer = new StringBuffer();
         literalStringBuffer.appendString("<!");
@@ -54,14 +50,8 @@ public class HtmlParser extends Parser {
       // can be part of inline element <span>, <strong>, <em>
       parseTextContents(jsonArray);
 
-      if (position >= input.length()) {
-        // html is broken
-        skipChars(1);
-        return;
-      }
-
       if (peekChar() != '<') {
-        // oops, tag is missing
+        // error, tag is missing
         skipChars(1);
         return;
       }
@@ -87,8 +77,13 @@ public class HtmlParser extends Parser {
         }
       }
 
+      JsonObject jsonObject = new JsonObject();
+      jsonArray.add(jsonObject);
+
+      skipChars(1);
+
       int storedPosition = position;
-      parseHtmlNode(jsonArray);
+      parseHtmlNode(jsonObject);
       if (storedPosition == position) {
         // avoid cycling
         return;
@@ -96,12 +91,7 @@ public class HtmlParser extends Parser {
     }
   }
 
-  public void parseHtmlNode(JsonArray jsonArray) {
-    if (consumeChar() != '<') {
-      // avoid cycling
-      skipChars(1);
-      return;
-    }
+  public void parseHtmlNode(JsonObject jsonObject) {
 
     String tagName = parseTagName();
 
@@ -109,33 +99,20 @@ public class HtmlParser extends Parser {
       System.out.println("<" + tagName + ">");
     }
 
-    JsonObject jsonObject = new JsonObject();
-    jsonArray.add(jsonObject);
     jsonObject.putStringValue("tagName", tagName);
     parseHtmlAttributes(jsonObject);
 
-    if (tagName.equals("img")) {
-      // self-closing
-      if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
-        skipChars(2);
-      } else if (peekChar() == '>') {
-        skipChars(1);
-      }
-      return;
-    }
+    // self-closing tags
 
-    if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
-      // self-closing
-      skipChars(2);
+    if (isSelfClosingTag(tagName)) {
       return;
     }
 
     // '>'
     skipChars(1);
 
-    jsonArray = new JsonArray();
+    JsonArray jsonArray = new JsonArray();
     jsonObject.put("contents", jsonArray);
-    skipWhitespaces();
     parseHtmlNodeContents(tagName, jsonArray);
   }
 
@@ -146,6 +123,37 @@ public class HtmlParser extends Parser {
       stringBuffer.appendChar(c);
     }
     return stringBuffer.getLowerCaseString();
+  }
+
+  private boolean isSelfClosingTag(String tagName) {
+    skipWhitespaces();
+
+    if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
+      // self-closing
+      skipChars(2);
+      if (debuggingLevel > 1) {
+        System.out.println("</" + tagName + ">");
+      }
+      return true;
+    }
+
+    if (tagName.equals("area")) {
+    } else if (tagName.equals("img")) {
+    } else if (tagName.equals("input")) {
+    } else if (tagName.equals("hr")) {
+    } else if (tagName.equals("link")) {
+    } else if (tagName.equals("meta")) {
+    } else {
+      return false;
+    }
+    if (peekChar() == '>') {
+      skipChars(1);
+      if (debuggingLevel > 1) {
+        System.out.println("</" + tagName + ">");
+      }
+      return true;
+    }
+    return false;
   }
 
   private void parseHtmlAttributes(JsonObject jsonObject) {
@@ -176,10 +184,6 @@ public class HtmlParser extends Parser {
       }
 
       skipChars(1);
-
-      if (debuggingLevel > 1) {
-        System.out.println("Valued attribute " + attributeName);
-      }
 
       parseAttributeValue(attributeName, attributesJsonArray, styleJsonArray);
     }
@@ -220,7 +224,7 @@ public class HtmlParser extends Parser {
       attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
 
       if (debuggingLevel > 1) {
-        System.out.println("Unquoted attribute value " + literalStringBuffer.getString());
+        System.out.println("Unquoted attribute value " + attributeName + " = " + literalStringBuffer.getString());
       }
       return;
     }
@@ -241,7 +245,7 @@ public class HtmlParser extends Parser {
           skipChars(1);
           break;
         }
-        if ((c == '>') || (c == '/')) {
+        if ((c == '>') || ((c == '/') && (peekNextChar(1) == '>'))) {
           break;
         }
         literalStringBuffer.appendChar(c);
@@ -255,7 +259,7 @@ public class HtmlParser extends Parser {
       attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
 
       if (debuggingLevel > 1) {
-        System.out.println("Quoted attribute value " + literalStringBuffer.getString());
+        System.out.println("Quoted attribute value " + attributeName + " = " + literalStringBuffer.getString());
       }
 
       return;
