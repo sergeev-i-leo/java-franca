@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test-0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="crammers_components.css">
+</head>
+<body>
+<body>
+  <div class="container" data-name="main-container">
+    <h1 id="main-title">Заголовок &lt;первого&gt; уровня</h1>
+    
+    <p>Это обычный параграф с <strong>жирным текстом</strong> и <em>курсивом</em>.</p>
+    
+    <p>А вот параграф с <span class="highlight" data-name="highlighted-span">выделенным фрагментом</span> и продолжением.</p>
+    
+    <ul class="list" data-name="test-list">
+      <li>Первый пункт <strong>списка</strong></li>
+      <li>Второй пункт <em>списка</em> с <a href="https://example.com" data-link-type="external">ссылкой</a></li>
+      <li data-name="third-item">Третий пункт &amp; с HTML-сущностью</li>
+    </ul>
+    
+    <div class="nested" data-depth="1">
+      <div class="nested" data-depth="2">
+        <p>Глубоко <strong>вложенный</strong> текст с <em>разными <span data-color="red">уровнями</span> вложенности</em>.</p>
+      </div>
+    </div>
+    
+    <table border="1" data-name="test-table">
+      <thead>
+        <tr><th>Имя</th><th>Возраст</th><th>Город</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Анна</td><td>25</td><td>Москва</td></tr>
+        <tr><td>Пётр</td><td>30</td><td>Санкт-Петербург</td></tr>
+        <tr><td data-name="third-row">Иван</td><td>&#51;&#48;</td><td>Казань</td></tr>
+      </tbody>
+    </table>
+    
+    <p>Параграф с <img src="image.png" alt="Пример изображения" data-image-id="123"> изображением внутри.</p>
+    
+    <p>А здесь &nbsp; неразрывный &nbsp; пробел.</p>
+    
+    <pre data-name="code-block">
+      function test() {
+        console.log("Hello, world!");
+      }
+    </pre>
+    
+    <footer data-name="page-footer">
+      <p>&copy; 2025 Тестовый документ. Все права защищены.</p>
+    </footer>
+  </div>
+</body>
+</html>

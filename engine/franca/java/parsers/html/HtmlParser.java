@@ -74,18 +74,23 @@ public class HtmlParser extends Parser {
           skipChars(1);
         }
 
-        if (outputStringBuffer != null) {
-          outputSpacesNumber -= 2;
-          outputStringBuffer.appendChars('.', outputSpacesNumber);
-          outputStringBuffer.appendString("</ " + closingTagName + " >");
-          outputStringBuffer.appendEndLine();
-        }
-
         if (tagName == null) {
           // root of the document
+          if (outputStringBuffer != null) {
+            outputStringBuffer.appendChars('.', outputSpacesNumber);
+            outputStringBuffer.appendString("</ " + closingTagName + " >");
+            outputStringBuffer.appendEndLine();
+          }
           return;
         }
+
         if (closingTagName.equals(tagName)) {
+          if (outputStringBuffer != null) {
+            outputSpacesNumber -= 2;
+            outputStringBuffer.appendChars('.', outputSpacesNumber);
+            outputStringBuffer.appendString("</ " + closingTagName + " >");
+            outputStringBuffer.appendEndLine();
+          }
           return;
         }
       }
@@ -123,7 +128,6 @@ public class HtmlParser extends Parser {
     // self-closing tags
 
     if (isSelfClosingTag(tagName)) {
-      outputSpacesNumber -= 2;
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
         outputStringBuffer.appendString("/>");
@@ -180,8 +184,6 @@ public class HtmlParser extends Parser {
 
     JsonArray attributesJsonArray = new JsonArray();
     jsonObject.put("attributes", attributesJsonArray);
-    JsonArray styleJsonArray = new JsonArray();
-    jsonObject.put("style", styleJsonArray);
 
     while ((position < input.length()) && (peekChar() != '>') && (peekChar() != '/')) {
       skipWhitespaces();
@@ -207,7 +209,17 @@ public class HtmlParser extends Parser {
 
       skipChars(1);
 
-      parseAttributeValue(attributeName, attributesJsonArray, styleJsonArray);
+      if (attributeName.equals("class")) {
+        JsonArray jsonArray = new JsonArray();
+        jsonObject.put("class", jsonArray);
+        parseClassAttribute(jsonArray);
+      } else if (attributeName.equals("style")) {
+        JsonArray jsonArray = new JsonArray();
+        jsonObject.put("style", jsonArray);
+        parseStyleAttribute(jsonArray);
+      } else {
+        parseAttributeValue(attributeName, attributesJsonArray);
+      }
     }
   }
 
@@ -228,72 +240,53 @@ public class HtmlParser extends Parser {
     return (c != '=') && (c != '>') && (c != '/') && (!Character.isWhitespace(c));
   }
 
-  private void parseAttributeValue(String attributeName, JsonArray attributesJsonArray, JsonArray styleJsonArray) {
+  private void parseClassAttribute(JsonArray jsonArray) {
     skipWhitespaces();
 
-    char attributeValueDelimiter = peekChar();
-    if ((attributeValueDelimiter != '\"') && (attributeValueDelimiter != '\'')) {
-      literalStringBuffer = new StringBuffer();
-      while (position < input.length()) {
-        char c = peekChar();
-        if ((c == '>') || (c == '/') || (isWhitespace(c))) {
-          break;
+    literalStringBuffer = new StringBuffer();
+
+    char classValueDelimiter = peekChar();
+    skipChars(1);
+
+    while (position < input.length()) {
+      if (peekChar() == classValueDelimiter) {
+        if (literalStringBuffer.isNotEmpty()) {
+          jsonArray.add(new JsonStringPrimitive(literalStringBuffer.getLowerCaseString()));
+          if (outputStringBuffer != null) {
+            outputStringBuffer.appendChars('.', outputSpacesNumber);
+            outputStringBuffer.appendString("class." + literalStringBuffer.getString());
+            outputStringBuffer.appendEndLine();
+          }
         }
+        break;
+      }
+      if (peekChar() == ' ') {
+        if (literalStringBuffer.isNotEmpty()) {
+          jsonArray.add(new JsonStringPrimitive(literalStringBuffer.getLowerCaseString()));
+          if (outputStringBuffer != null) {
+            outputStringBuffer.appendChars('.', outputSpacesNumber);
+            outputStringBuffer.appendString("class." + literalStringBuffer.getString());
+            outputStringBuffer.appendEndLine();
+          }
+        }
+        literalStringBuffer = new StringBuffer();
+        skipChars(1);
+      } else {
         literalStringBuffer.appendChar(consumeChar());
       }
-      JsonObject attributeJsonObject = new JsonObject();
-      attributesJsonArray.add(attributeJsonObject);
-      attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
-
-      if (outputStringBuffer != null) {
-        outputStringBuffer.appendChars('.', outputSpacesNumber);
-        outputStringBuffer.appendString(attributeName + " = " + literalStringBuffer.getString());
-        outputStringBuffer.appendEndLine();
-      }
-
-      return;
     }
 
     skipChars(1);
+  }
 
-    if (!attributeName.equals("style")) {
-      literalStringBuffer = new StringBuffer();
-      while (position < input.length()) {
-        char c = peekChar();
-        if (c == '\\') {
-          skipChars(1);
-          c = consumeChar();
-          literalStringBuffer.appendChar(c);
-          continue;
-        }
-        if (c == attributeValueDelimiter) {
-          skipChars(1);
-          break;
-        }
-        if ((c == '>') || ((c == '/') && (peekNextChar(1) == '>'))) {
-          break;
-        }
-        literalStringBuffer.appendChar(c);
-        skipChars(1);
-      }
-      if (literalStringBuffer.isEmpty()) {
-        return;
-      }
-      JsonObject attributeJsonObject = new JsonObject();
-      attributesJsonArray.add(attributeJsonObject);
-      attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
+  private void parseStyleAttribute(JsonArray jsonArray) {
+    skipWhitespaces();
 
-      if (outputStringBuffer != null) {
-        outputStringBuffer.appendChars('.', outputSpacesNumber);
-        outputStringBuffer.appendString(attributeName + " = " + literalStringBuffer.getString());
-        outputStringBuffer.appendEndLine();
-      }
-
-      return;
-    }
+    char styleValueDelimiter = peekChar();
+    skipChars(1);
 
     while (position < input.length()) {
-      if (peekChar() == attributeValueDelimiter) {
+      if (peekChar() == styleValueDelimiter) {
         break;
       }
 
@@ -312,9 +305,9 @@ public class HtmlParser extends Parser {
       if (literalStringBuffer.isEmpty()) {
         break;
       }
-      JsonObject styleJsonObject = new JsonObject();
-      styleJsonArray.add(styleJsonObject);
-      styleJsonObject.putStringValue(styleName, literalStringBuffer.getString());
+      JsonObject jsonObject = new JsonObject();
+      jsonArray.add(jsonObject);
+      jsonObject.putStringValue(styleName, literalStringBuffer.getString());
 
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -329,9 +322,12 @@ public class HtmlParser extends Parser {
 
       skipChars(1);
     }
+
+    skipChars(1);
   }
 
   private String parseStyleName() {
+    skipWhitespaces();
 
     literalStringBuffer = new StringBuffer();
     while ((position < input.length()) && (isAttributeNameCharacter(peekChar()))) {
@@ -387,6 +383,67 @@ public class HtmlParser extends Parser {
       }
 
       literalStringBuffer.appendChar(consumeChar());
+    }
+  }
+
+  private void parseAttributeValue(String attributeName, JsonArray jsonArray) {
+    skipWhitespaces();
+
+    char attributeValueDelimiter = peekChar();
+    if ((attributeValueDelimiter != '\"') && (attributeValueDelimiter != '\'')) {
+      literalStringBuffer = new StringBuffer();
+      while (position < input.length()) {
+        char c = peekChar();
+        if ((c == '>') || (c == '/') || (isWhitespace(c))) {
+          break;
+        }
+        literalStringBuffer.appendChar(consumeChar());
+      }
+      JsonObject jsonObject = new JsonObject();
+      jsonArray.add(jsonObject);
+      jsonObject.putStringValue(attributeName, literalStringBuffer.toString());
+
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendChars('.', outputSpacesNumber);
+        outputStringBuffer.appendString(attributeName + " = " + literalStringBuffer.getString());
+        outputStringBuffer.appendEndLine();
+      }
+
+      return;
+    }
+
+    skipChars(1);
+
+    literalStringBuffer = new StringBuffer();
+    while (position < input.length()) {
+      char c = peekChar();
+      if (c == '\\') {
+        skipChars(1);
+        c = consumeChar();
+        literalStringBuffer.appendChar(c);
+        continue;
+      }
+      if (c == attributeValueDelimiter) {
+        skipChars(1);
+        break;
+      }
+      if ((c == '>') || ((c == '/') && (peekNextChar(1) == '>'))) {
+        break;
+      }
+      literalStringBuffer.appendChar(c);
+      skipChars(1);
+    }
+    if (literalStringBuffer.isEmpty()) {
+      return;
+    }
+    JsonObject attributeJsonObject = new JsonObject();
+    jsonArray.add(attributeJsonObject);
+    attributeJsonObject.putStringValue(attributeName, literalStringBuffer.toString());
+
+    if (outputStringBuffer != null) {
+      outputStringBuffer.appendChars('.', outputSpacesNumber);
+      outputStringBuffer.appendString(attributeName + " = " + literalStringBuffer.getString());
+      outputStringBuffer.appendEndLine();
     }
   }
 
@@ -679,13 +736,14 @@ public class HtmlParser extends Parser {
         literalStringBuffer = new StringBuffer();
       }
       literalStringBuffer.appendChar(consumeChar());
+      skipSpaces = false;
     }
 
     if (literalStringBuffer != null) {
       // text found
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
-        outputStringBuffer.appendString("#text " + literalStringBuffer.getString());
+        outputStringBuffer.appendString("#text \"" + literalStringBuffer.getString() + "\"");
         outputStringBuffer.appendEndLine();
       }
       appendTextJsonObject(jsonArray, literalStringBuffer.getString());
