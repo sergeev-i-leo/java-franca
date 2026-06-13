@@ -67,7 +67,7 @@ public class JsonArray extends JsonElement {
   }
 
   public void addIntegerValue(int value) {
-    jsonElements.add(new JsonIntegerPrimitive(value));
+    jsonElements.add(new JsonIntPrimitive(value));
   }
 
   public void addDoubleItem(double value) {

@@ -5,11 +5,6 @@ import franca.java.expected.TranspilableClass;
 
 public class JsonElement extends TranspilableClass {
 
-  @Override
-  public void destroy() {
-    super.destroy();
-  }
-
   public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
   }
 

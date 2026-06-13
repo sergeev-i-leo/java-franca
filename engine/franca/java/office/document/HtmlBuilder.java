@@ -11,7 +11,7 @@ public class HtmlBuilder extends TranspilableClass {
   public String build(JsonElement jsonElement) {
     StringBuffer stringBuffer = new StringBuffer();
     buildFromJsonElement(jsonElement, stringBuffer);
-    String string = stringBuffer.getString();
+    String string = copyOf(stringBuffer.getString());
     delete(stringBuffer);
     return string;
   }

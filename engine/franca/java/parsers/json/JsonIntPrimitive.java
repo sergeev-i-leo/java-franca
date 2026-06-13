@@ -3,11 +3,11 @@ package franca.java.parsers.json;
 import franca.java.expected.Runtime;
 import franca.java.expected.StringBuffer;
 
-public class JsonIntegerPrimitive extends JsonPrimitive {
+public class JsonIntPrimitive extends JsonPrimitive {
 
   private final int value;
 
-  public JsonIntegerPrimitive(int value) {
+  public JsonIntPrimitive(int value) {
     this.value = value;
   }
 

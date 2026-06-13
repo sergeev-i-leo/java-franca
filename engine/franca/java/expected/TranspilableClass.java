@@ -9,9 +9,6 @@ public class TranspilableClass {
     id = Runtime.getId();
   }
 
-  public void destroy() {
-  }
-
   public long getId() {
     return id;
   }
@@ -22,13 +19,5 @@ public class TranspilableClass {
 
   public String getDataName() {
     return dataName;
-  }
-
-  public String copyOf(String string) {
-    return string;
-  }
-
-  public void delete(Object value) {
-
   }
 }

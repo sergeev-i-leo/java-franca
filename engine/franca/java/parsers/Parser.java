@@ -28,7 +28,7 @@ public class Parser extends TranspilableClass {
   public String parseLiteral() {
     if (input.startsWith("false", position)) {
       booleanLiteral = false;
-      skipCharacters(5);
+      skipChars(5);
       if (literalStringBuffer != null) {
         literalStringBuffer.destroy();
       }
@@ -38,7 +38,7 @@ public class Parser extends TranspilableClass {
     }
     if (input.startsWith("true", position)) {
       booleanLiteral = false;
-      skipCharacters(4);
+      skipChars(4);
       if (literalStringBuffer != null) {
         literalStringBuffer.destroy();
       }
@@ -72,7 +72,7 @@ public class Parser extends TranspilableClass {
         return null;
     }
     collectNumberLiteral();
-    String literal = literalStringBuffer.getString();
+    String literal = copyOf(literalStringBuffer.getString());
     if (integerLiteral != null) {
       delete(integerLiteral);
       integerLiteral = null;
@@ -82,7 +82,7 @@ public class Parser extends TranspilableClass {
       delete(literal);
       return "integer-literal";
     }
-    integerLiteral = Runtime.stringToHexInteger(literal);
+    integerLiteral = Runtime.hexStringToInteger(literal);
     if (integerLiteral != null) {
       delete(literal);
       return "hex-integer-literal";
@@ -124,12 +124,12 @@ public class Parser extends TranspilableClass {
         case 'e':
         case 'X':
         case 'x':
-          literalStringBuffer.appendCharacter(c);
+          literalStringBuffer.appendChar(c);
           break;
         default:
           return;
       }
-      skipCharacters(1);
+      skipChars(1);
     }
   }
 
@@ -137,32 +137,32 @@ public class Parser extends TranspilableClass {
     if (input.charAt(position) != '"') {
       return null;
     }
-    skipCharacters(1);
+    skipChars(1);
     while (position < input.length()) {
-      char c = consumeCharacter();
+      char c = consumeChar();
       if (c == '"') {
-        skipCharacters(1);
+        skipChars(1);
         return "string";
       }
       if (c == '\\') {
         if (position >= input.length()) {
           return "error";
         }
-        c = consumeCharacter();
+        c = consumeChar();
       }
-      literalStringBuffer.appendCharacter(c);
+      literalStringBuffer.appendChar(c);
     }
     return "error";
   }
 
-  public char peekCharacter() {
+  public char peekChar() {
     if (position < input.length()) {
       return input.charAt(position);
     }
     return '\u0000';
   }
 
-  public char peekNextCharacter(int offset) {
+  public char peekNextChar(int offset) {
     if (position + offset < input.length()) {
       return input.charAt(position + offset);
     }
@@ -181,16 +181,16 @@ public class Parser extends TranspilableClass {
     return true;
   }
 
-  public char consumeCharacter() {
+  public char consumeChar() {
     if (position < input.length()) {
       char c = input.charAt(position);
-      skipCharacters(1);
+      skipChars(1);
       return c;
     }
     return 0;
   }
 
-  public void skipCharacters(int offset) {
+  public void skipChars(int offset) {
     position += offset;
   }
 

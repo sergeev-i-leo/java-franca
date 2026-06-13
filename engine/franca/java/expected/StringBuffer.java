@@ -16,7 +16,7 @@ public class StringBuffer {
     return stringBuilder.length() > 0;
   }
 
-  public void appendCharacter(char c) {
+  public void appendChar(char c) {
     stringBuilder.append(c);
   }
 

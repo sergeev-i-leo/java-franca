@@ -28,12 +28,31 @@ public class HtmlParser extends Parser {
 
   private void parseHtmlNodeContents(String tagName, JsonArray jsonArray) {
 
-    while (true) {
+    while (position < input.length()) {
+      skipWhitespaces();
 
-      while ((peekCharacter() == '<') && (peekNextCharacter(1) == '!')) {
-        appendTextJsonObject(jsonArray, "<!");
-        parseTextContents(jsonArray);
-        skipWhitespaces();
+      if ((peekChar() == '<') && (peekNextChar(1) == '!')) {
+        if (literalStringBuffer != null) {
+          literalStringBuffer.destroy();
+        }
+        literalStringBuffer = new StringBuffer();
+        literalStringBuffer.appendString("<!");
+        skipChars(2);
+        while (position < input.length()) {
+          // html comment mustn't contain >
+          char c = consumeChar();
+          if (c == '>') {
+            literalStringBuffer.appendChar(c);
+            break;
+          }
+          literalStringBuffer.appendChar(c);
+        }
+        JsonObject jsonObject = new JsonObject();
+        jsonArray.add(jsonObject);
+        String literal = copyOf(literalStringBuffer.getString());
+        jsonObject.putStringValue("#comment", literal);
+        delete(literal);
+        continue;
       }
 
       // can be part of inline element <span>, <strong>, <em>
@@ -41,22 +60,22 @@ public class HtmlParser extends Parser {
 
       if (position >= input.length()) {
         // html is broken
-        skipCharacters(1);
+        skipChars(1);
         return;
       }
 
-      if (peekCharacter() != '<') {
+      if (peekChar() != '<') {
         // oops, tag is missing
-        skipCharacters(1);
+        skipChars(1);
         return;
       }
 
-      if (peekNextCharacter(1) == '/') {
+      if (peekNextChar(1) == '/') {
         // closing tag
-        skipCharacters(2);
+        skipChars(2);
         String closingTagName = parseTagName();
-        if ((position < input.length()) && (peekCharacter() == '>')) {
-          skipCharacters(1);
+        if ((position < input.length()) && (peekChar() == '>')) {
+          skipChars(1);
         }
 
         if (debuggingLevel > 1) {
@@ -84,9 +103,9 @@ public class HtmlParser extends Parser {
   }
 
   public void parseHtmlNode(JsonArray jsonArray) {
-    if (consumeCharacter() != '<') {
+    if (consumeChar() != '<') {
       // avoid cycling
-      skipCharacters(1);
+      skipChars(1);
       return;
     }
 
@@ -103,22 +122,22 @@ public class HtmlParser extends Parser {
 
     if (tagName.equals("img")) {
       // self-closing
-      if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
-        skipCharacters(2);
-      } else if (peekCharacter() == '>') {
-        skipCharacters(1);
+      if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
+        skipChars(2);
+      } else if (peekChar() == '>') {
+        skipChars(1);
       }
       return;
     }
 
-    if ((peekCharacter() == '/') && (peekNextCharacter(1) == '>')) {
+    if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
       // self-closing
-      skipCharacters(2);
+      skipChars(2);
       return;
     }
 
     // '>'
-    skipCharacters(1);
+    skipChars(1);
 
     jsonArray = new JsonArray();
     jsonObject.put("contents", jsonArray);
@@ -128,9 +147,9 @@ public class HtmlParser extends Parser {
 
   private String parseTagName() {
     StringBuffer stringBuffer = new StringBuffer();
-    while ((position < input.length()) && (Character.isLetterOrDigit(peekCharacter()))) {
-      char c = consumeCharacter();
-      stringBuffer.appendCharacter(c);
+    while ((position < input.length()) && (Character.isLetterOrDigit(peekChar()))) {
+      char c = consumeChar();
+      stringBuffer.appendChar(c);
     }
     String string = stringBuffer.getLowerCaseString();
     delete(stringBuffer);
@@ -144,7 +163,7 @@ public class HtmlParser extends Parser {
     JsonArray styleJsonArray = new JsonArray();
     jsonObject.put("style", styleJsonArray);
 
-    while ((position < input.length()) && (peekCharacter() != '>') && (peekCharacter() != '/')) {
+    while ((position < input.length()) && (peekChar() != '>') && (peekChar() != '/')) {
 
       skipWhitespaces();
 
@@ -157,7 +176,7 @@ public class HtmlParser extends Parser {
 
       skipWhitespaces();
 
-      if (peekCharacter() != '=') {
+      if (peekChar() != '=') {
         attributesJsonArray.add(new JsonStringPrimitive(attributeName));
         if (debuggingLevel > 1) {
           System.out.println("boolean attribute found " + attributeName);
@@ -166,7 +185,7 @@ public class HtmlParser extends Parser {
         continue;
       }
 
-      skipCharacters(1);
+      skipChars(1);
 
       parseAttributeValue(attributeName, attributesJsonArray, styleJsonArray);
       delete(attributeName);
@@ -175,9 +194,9 @@ public class HtmlParser extends Parser {
 
   private String parseAttributeName() {
     StringBuffer stringBuffer = new StringBuffer();
-    while ((position < input.length()) && (isAttributeNameCharacter(peekCharacter()))) {
-      char c = consumeCharacter();
-      stringBuffer.appendCharacter(c);
+    while ((position < input.length()) && (isAttributeNameCharacter(peekChar()))) {
+      char c = consumeChar();
+      stringBuffer.appendChar(c);
     }
     if (stringBuffer.isEmpty()) {
       delete(stringBuffer);
@@ -195,15 +214,15 @@ public class HtmlParser extends Parser {
   private void parseAttributeValue(String attributeName, JsonArray attributesJsonArray, JsonArray styleJsonArray) {
     skipWhitespaces();
 
-    char attributeValueDelimiter = peekCharacter();
+    char attributeValueDelimiter = peekChar();
     if ((attributeValueDelimiter != '\"') && (attributeValueDelimiter != '\'')) {
       StringBuffer stringBuffer = new StringBuffer();
       while (position < input.length()) {
-        char c = peekCharacter();
+        char c = peekChar();
         if ((c == '>') || (c == '/') || (isWhitespace(c))) {
           break;
         }
-        stringBuffer.appendCharacter(consumeCharacter());
+        stringBuffer.appendChar(consumeChar());
       }
       JsonObject attributeJsonObject = new JsonObject();
       attributesJsonArray.add(attributeJsonObject);
@@ -217,27 +236,27 @@ public class HtmlParser extends Parser {
       return;
     }
 
-    skipCharacters(1);
+    skipChars(1);
 
     if (!attributeName.equals("style")) {
       StringBuffer stringBuffer = new StringBuffer();
       while (position < input.length()) {
-        char c = peekCharacter();
+        char c = peekChar();
         if (c == '\\') {
-          skipCharacters(1);
-          c = consumeCharacter();
-          stringBuffer.appendCharacter(c);
+          skipChars(1);
+          c = consumeChar();
+          stringBuffer.appendChar(c);
           continue;
         }
         if (c == attributeValueDelimiter) {
-          skipCharacters(1);
+          skipChars(1);
           break;
         }
         if ((c == '>') || (c == '/')) {
           break;
         }
-        stringBuffer.appendCharacter(c);
-        skipCharacters(1);
+        stringBuffer.appendChar(c);
+        skipChars(1);
       }
       if (stringBuffer.isEmpty()) {
         delete(stringBuffer);
@@ -256,7 +275,7 @@ public class HtmlParser extends Parser {
     }
 
     while (position < input.length()) {
-      if (peekCharacter() == attributeValueDelimiter) {
+      if (peekChar() == attributeValueDelimiter) {
         break;
       }
 
@@ -265,11 +284,11 @@ public class HtmlParser extends Parser {
         return;
       }
       skipWhitespaces();
-      if (peekCharacter() != ':') {
+      if (peekChar() != ':') {
         delete(styleName);
         break;
       }
-      skipCharacters(1);
+      skipChars(1);
 
       skipWhitespaces();
       StringBuffer stringBuffer = parseStyleValue();
@@ -289,19 +308,19 @@ public class HtmlParser extends Parser {
       delete(stringBuffer);
 
       skipWhitespaces();
-      if (peekCharacter() != ';') {
+      if (peekChar() != ';') {
         break;
       }
 
-      skipCharacters(1);
+      skipChars(1);
     }
   }
 
   private String parseStyleName() {
     StringBuffer stringBuffer = new StringBuffer();
-    while ((position < input.length()) && (isAttributeNameCharacter(peekCharacter()))) {
-      char c = consumeCharacter();
-      stringBuffer.appendCharacter(c);
+    while ((position < input.length()) && (isAttributeNameCharacter(peekChar()))) {
+      char c = consumeChar();
+      stringBuffer.appendChar(c);
     }
     if (stringBuffer.isEmpty()) {
       delete(stringBuffer);
@@ -320,12 +339,12 @@ public class HtmlParser extends Parser {
     char quoteCharacter = 0;
 
     while (position < input.length()) {
-      char c = peekCharacter();
+      char c = peekChar();
 
       if (c == '\\') {
-        skipCharacters(1);
-        c = consumeCharacter();
-        stringBuffer.appendCharacter(c);
+        skipChars(1);
+        c = consumeChar();
+        stringBuffer.appendChar(c);
         continue;
       }
 
@@ -333,19 +352,19 @@ public class HtmlParser extends Parser {
       if (((c == '"') || (c == '\'')) && (!insideQuotes)) {
         insideQuotes = true;
         quoteCharacter = c;
-        stringBuffer.appendCharacter(consumeCharacter());
+        stringBuffer.appendChar(consumeChar());
         continue;
       }
       if ((insideQuotes) && (c == quoteCharacter)) {
         insideQuotes = false;
         quoteCharacter = 0;
-        stringBuffer.appendCharacter(consumeCharacter());
+        stringBuffer.appendChar(consumeChar());
         continue;
       }
 
       // inside quotes
       if (insideQuotes) {
-        stringBuffer.appendCharacter(consumeCharacter());
+        stringBuffer.appendChar(consumeChar());
         continue;
       }
 
@@ -354,7 +373,7 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      stringBuffer.appendCharacter(consumeCharacter());
+      stringBuffer.appendChar(consumeChar());
     }
 
     if (stringBuffer.isEmpty()) {
@@ -367,197 +386,294 @@ public class HtmlParser extends Parser {
 
   private void parseTextContents(JsonArray jsonArray) {
 
-    StringBuffer textStringBuffer = new StringBuffer();
-    StringBuffer htmlLetterStringBuffer = null;
+    if (literalStringBuffer != null) {
+      literalStringBuffer.destroy();
+      literalStringBuffer = null;
+    }
+
+    boolean acceptSpaces = false;
 
     while (position < input.length()) {
-      char c = peekCharacter();
-      if (c == '<') {
-        if (peekString("<br>")) {
-          if (textStringBuffer.isNotEmpty()) {
-            appendTextJsonObject(jsonArray, textStringBuffer.toString());
-            delete(textStringBuffer);
-            textStringBuffer = new StringBuffer();
-          }
-          appendTextJsonObject(jsonArray, "<br>");
-          skipCharacters(4);
-          continue;
-        } else if (peekNextCharacter(1) != '!') {
-          break;
-        }
-      }
-
-      if (c == '\r') {
-        skipCharacters(1);
-        if (peekCharacter() == '\n') {
-          skipCharacters(1);
+      if (peekChar() == '\r') {
+        skipChars(1);
+        if (peekChar() == '\n') {
+          skipChars(1);
         }
         skipWhitespaces();
         continue;
       }
-
-      if ((peekNextCharacter(0) == '&') && ((peekNextCharacter(1) == '#'))) {
-        if (htmlLetterStringBuffer != null) {
-          // html letter not finished
-          textStringBuffer.appendString(htmlLetterStringBuffer.getString());
-          delete(htmlLetterStringBuffer);
-        }
-        htmlLetterStringBuffer = new StringBuffer();
-        skipCharacters(2);
-        continue;
-      }
-      if (htmlLetterStringBuffer != null) {
-        c = peekCharacter();
-        if (c == ';') {
-          // try to convert to char
-          Integer parsedInteger = Runtime.stringToHexInteger(htmlLetterStringBuffer.getString());
-          if (parsedInteger == null) {
-            textStringBuffer.appendString(htmlLetterStringBuffer.getString());
-          } else {
-            textStringBuffer.appendCharacter((char) parsedInteger.intValue());
-          }
-          delete(htmlLetterStringBuffer);
-          htmlLetterStringBuffer = null;
-          skipCharacters(1);
-          continue;
-        }
-        if (Character.isLetterOrDigit(c)) {
-          htmlLetterStringBuffer.appendCharacter(c);
-          skipCharacters(1);
-          continue;
-        }
-        // error in html
-        textStringBuffer.appendString(htmlLetterStringBuffer.getString());
-        delete(htmlLetterStringBuffer);
-        htmlLetterStringBuffer = null;
-      }
       if (peekString("&amp;")) {
-        textStringBuffer.appendString("&");
-        skipCharacters(5);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("&");
+        acceptSpaces = true;
+        skipChars(5);
         continue;
       }
       if (peekString("&lt;")) {
-        textStringBuffer.appendString("<");
-        skipCharacters(4);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("<");
+        acceptSpaces = true;
+        skipChars(4);
         continue;
       }
       if (peekString("&gt;")) {
-        textStringBuffer.appendString(">");
-        skipCharacters(4);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString(">");
+        acceptSpaces = true;
+        skipChars(4);
         continue;
       }
       if (peekString("&quot;")) {
-        textStringBuffer.appendString("\"");
-        skipCharacters(6);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("\"");
+        acceptSpaces = true;
+        skipChars(6);
         continue;
       }
       if (peekString("&#39;")) {
-        textStringBuffer.appendString("'");
-        skipCharacters(5);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("'");
+        acceptSpaces = true;
+        skipChars(5);
         continue;
       }
       if (peekString("&nbsp;")) {
-        textStringBuffer.appendString(" ");
-        skipCharacters(6);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString(" ");
+        acceptSpaces = true;
+        skipChars(6);
         continue;
       }
       if (peekString("&Aacute;")) {
-        textStringBuffer.appendString("Á");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("Á");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&aacute;")) {
-        textStringBuffer.appendString("á");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("á");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&Eacute;")) {
-        textStringBuffer.appendString("É");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("É");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&eacute;")) {
-        textStringBuffer.appendString("é");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("é");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&Iacute;")) {
-        textStringBuffer.appendString("Í");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("Í");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&iacute;")) {
-        textStringBuffer.appendString("í");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("í");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&Oacute;")) {
-        textStringBuffer.appendString("Ó");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("Ó");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&oacute;")) {
-        textStringBuffer.appendString("ó");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("ó");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&Uacute;")) {
-        textStringBuffer.appendString("Ú");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("Ú");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&uacute;")) {
-        textStringBuffer.appendString("ú");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("ú");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&Ntilde;")) {
-        textStringBuffer.appendString("Ñ");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("Ñ");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&ntilde;")) {
-        textStringBuffer.appendString("ñ");
-        position += 8;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("ñ");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&copy;")) {
-        textStringBuffer.appendString("©");
-        skipCharacters(6);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("©");
+        acceptSpaces = true;
+        skipChars(8);
         continue;
       }
       if (peekString("&reg;")) {
-        textStringBuffer.appendString("®");
-        skipCharacters(5);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("®");
+        acceptSpaces = true;
+        skipChars(5);
         continue;
       }
       if (peekString("&trade;")) {
-        textStringBuffer.appendString("™");
-        position += 7;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("™");
+        acceptSpaces = true;
+        skipChars(7);
         continue;
       }
       if (peekString("&euro;")) {
-        textStringBuffer.appendString("€");
-        skipCharacters(6);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("€");
+        skipChars(6);
         continue;
       }
       if (peekString("&pound;")) {
-        textStringBuffer.appendString("£");
-        position += 7;
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("£");
+        acceptSpaces = true;
+        skipChars(7);
         continue;
       }
       if (peekString("&cent;")) {
-        textStringBuffer.appendString("¢");
-        skipCharacters(6);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("¢");
+        skipChars(6);
         continue;
       }
       if (peekString("&yen;")) {
-        textStringBuffer.appendString("¥");
-        skipCharacters(5);
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+        literalStringBuffer.appendString("¥");
+        skipChars(5);
         continue;
       }
+      if (peekString("&#")) {
+        skipChars(2);
 
-      textStringBuffer.appendCharacter(consumeCharacter());
+        if (literalStringBuffer == null) {
+          literalStringBuffer = new StringBuffer();
+        }
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        while (position < input.length()) {
+          if (peekChar() == ';') {
+            skipChars(1);
+            break;
+          }
+          stringBuffer.appendChar(consumeChar());
+        }
+        Integer integer = Runtime.hexStringToInteger(stringBuffer.getString());
+        if (integer != null) {
+          literalStringBuffer.appendChar((char) integer.intValue());
+        } else {
+          integer = Runtime.stringToInteger(stringBuffer.getString());
+          if (integer != null) {
+            literalStringBuffer.appendChar((char) integer.intValue());
+          } else {
+            literalStringBuffer.appendString(stringBuffer.getString());
+          }
+        }
+        continue;
+      }
+      if (peekString("<br>")) {
+        if (literalStringBuffer.isNotEmpty()) {
+          appendTextJsonObject(jsonArray, literalStringBuffer.toString());
+          literalStringBuffer = null;
+        }
+        appendTextJsonObject(jsonArray, "<br>");
+        acceptSpaces = false;
+        skipChars(4);
+        continue;
+      }
+      char c = peekChar();
+      if (c == '<') {
+        if (peekString("<br>")) {
+        } else if (peekNextChar(1) != '!') {
+          break;
+        }
+      }
+
+
+
+      textStringBuffer.appendCharacter(consumeChar());
     }
 
     if (htmlLetterStringBuffer != null) {
@@ -578,12 +694,11 @@ public class HtmlParser extends Parser {
   private void appendTextJsonObject(JsonArray jsonArray, String text) {
     JsonObject jsonObject = new JsonObject();
     jsonArray.add(jsonObject);
-    jsonObject.putStringValue("tagName", "#text");
-    jsonObject.putStringValue("value", text);
+    jsonObject.putStringValue("#text", text);
   }
 
   @Override
-  public char peekCharacter() {
+  public char peekChar() {
     if (debuggingLevel > 0) {
       if (peekString("<!-- debuggingLevel = 0")) {
         debuggingLevel = 0;
@@ -593,6 +708,6 @@ public class HtmlParser extends Parser {
         debuggingLevel = 2;
       }
     }
-    return super.peekCharacter();
+    return super.peekChar();
   }
 }

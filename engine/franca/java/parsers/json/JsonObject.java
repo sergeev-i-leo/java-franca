@@ -10,12 +10,6 @@ public class JsonObject extends JsonElement {
   private final HashMap<String, JsonElement> jsonElements = new HashMap<>();
 
   @Override
-  public void destroy() {
-    delete(jsonElements);
-    super.destroy();
-  }
-
-  @Override
   public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
     stringBuffer.appendString("{");
     stringBuffer.endLine();
@@ -80,7 +74,7 @@ public class JsonObject extends JsonElement {
   }
 
   public void putIntegerValue(String memberName, int value) {
-    jsonElements.put(memberName, new JsonIntegerPrimitive(value));
+    jsonElements.put(memberName, new JsonIntPrimitive(value));
   }
 
   public void putDoubleValue(String memberName, double value) {

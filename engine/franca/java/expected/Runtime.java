@@ -19,7 +19,7 @@ public class Runtime {
     }
   }
 
-  public static Integer stringToHexInteger(String input) {
+  public static Integer hexStringToInteger(String input) {
     if (input == null) {
       return null;
     }
