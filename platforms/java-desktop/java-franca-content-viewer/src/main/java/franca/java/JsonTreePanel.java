@@ -20,7 +20,6 @@ public class JsonTreePanel extends JPanel {
   public JsonTreePanel() {
     setLayout(new BorderLayout());
     tree = new JTree();
-    tree.setFont(FontLoader.getOswaldBold(14));
     tree.setCellRenderer(new JsonTreeCellRenderer());
     add(new JScrollPane(tree), BorderLayout.CENTER);
   }
@@ -144,8 +143,7 @@ public class JsonTreePanel extends JPanel {
     private static final Color COLOR_SELECTION_BG = new Color(220, 220, 220); // светло-серый
 
     @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                  boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       setIcon(null);
@@ -173,7 +171,7 @@ public class JsonTreePanel extends JPanel {
             String val = parts.length > 1 ? parts[1] : "";
 
             String html = String.format(
-              "<html><span style='color:#808080'>%s:</span> <span style='color:#000000'>%s</span></html>",
+              "<html><span style='color:#808080;'>%s:</span> <span style='color:#000000;'>%s</span></html>",
               key, escapeHtml(val)
             );
             setText(html);

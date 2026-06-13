@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()));
           HtmlParser parser = new HtmlParser();
-          parser.debuggingLevel = 0;
+          parser.debuggingLevel = 2;
           JsonArray rawRoot = parser.parse(content);
 
           // Обновляем среднюю панель (сырой JSON)
