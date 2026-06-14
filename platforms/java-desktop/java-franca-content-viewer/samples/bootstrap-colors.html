@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap Theme Test</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="bootstrap-colors.css">
+</head>
+<body class="bg-body text-body">
+  <div class="container-fluid">
+    <div class="text-center my-3">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary" onclick="setTheme('light')">Light</button>
+        <button type="button" class="btn btn-outline-primary" onclick="setTheme('dark')">Dark</button>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Left column: text colors -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Text Colors</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-sm">
+              <thead>
+                <tr><th>Variable</th><th>Sample</th><th>HEX</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="var-name">--bs-body-color</td><td class="text-body">Body text</td><td class="hex-value" id="body-color"></td></tr>
+                <tr><td class="var-name">--bs-secondary-color</td><td class="text-secondary">Secondary text</td><td class="hex-value" id="secondary-color"></td></tr>
+                <tr><td class="var-name">--bs-tertiary-color</td><td class="text-tertiary">Tertiary text</td><td class="hex-value" id="tertiary-color"></td></tr>
+                <tr><td class="var-name">--bs-emphasis-color</td><td class="text-emphasis">Emphasis text</td><td class="hex-value" id="emphasis-color"></td></tr>
+                <tr><td class="var-name">--bs-link-color</td><td><a href="#" class="link-primary">Link</a></td><td class="hex-value" id="link-color"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">Semantic Colors (text)</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-sm">
+              <thead><tr><th>Variable</th><th>Sample</th><th>HEX</th></tr></thead>
+              <tbody>
+                <tr><td class="var-name">--bs-primary</td><td class="text-primary">primary text</td><td class="hex-value" id="primary-text"></td></tr>
+                <tr><td class="var-name">--bs-secondary</td><td class="text-secondary">secondary text</td><td class="hex-value" id="secondary-text"></td></tr>
+                <tr><td class="var-name">--bs-success</td><td class="text-success">success text</td><td class="hex-value" id="success-text"></td></tr>
+                <tr><td class="var-name">--bs-danger</td><td class="text-danger">danger text</td><td class="hex-value" id="danger-text"></td></tr>
+                <tr><td class="var-name">--bs-warning</td><td class="text-warning">warning text</td><td class="hex-value" id="warning-text"></td></tr>
+                <tr><td class="var-name">--bs-info</td><td class="text-info">info text</td><td class="hex-value" id="info-text"></td></tr>
+                <tr><td class="var-name">--bs-light</td><td class="text-light bg-dark p-1">light text</td><td class="hex-value" id="light-text"></td></tr>
+                <tr><td class="var-name">--bs-dark</td><td class="text-dark">dark text</td><td class="hex-value" id="dark-text"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: background colors -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Background Colors</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-sm">
+              <thead><tr><th>Variable</th><th>Sample</th><th>HEX</th></tr></thead>
+              <tbody>
+                <tr><td class="var-name">--bs-body-bg</td><td class="bg-body p-2">Body background</td><td class="hex-value" id="body-bg"></td></tr>
+                <tr><td class="var-name">--bs-secondary-bg</td><td class="bg-secondary p-2">Secondary background</td><td class="hex-value" id="secondary-bg"></td></tr>
+                <tr><td class="var-name">--bs-tertiary-bg</td><td class="bg-tertiary p-2">Tertiary background</td><td class="hex-value" id="tertiary-bg"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="mb-0">Semantic Colors (background)</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-sm">
+              <thead><tr><th>Variable</th><th>Sample</th><th>HEX</th></tr></thead>
+              <tbody>
+                <tr><td class="var-name">--bs-primary</td><td class="bg-primary text-white p-1">primary background</td><td class="hex-value" id="primary-bg"></td></tr>
+                <tr><td class="var-name">--bs-secondary</td><td class="bg-secondary text-white p-1">secondary background</td><td class="hex-value" id="secondary-bg-color"></td></tr>
+                <tr><td class="var-name">--bs-success</td><td class="bg-success text-white p-1">success background</td><td class="hex-value" id="success-bg"></td></tr>
+                <tr><td class="var-name">--bs-danger</td><td class="bg-danger text-white p-1">danger background</td><td class="hex-value" id="danger-bg"></td></tr>
+                <tr><td class="var-name">--bs-warning</td><td class="bg-warning p-1">warning background</td><td class="hex-value" id="warning-bg"></td></tr>
+                <tr><td class="var-name">--bs-info</td><td class="bg-info p-1">info background</td><td class="hex-value" id="info-bg"></td></tr>
+                <tr><td class="var-name">--bs-light</td><td class="bg-light p-1">light background</td><td class="hex-value" id="light-bg"></td></tr>
+                <tr><td class="var-name">--bs-dark</td><td class="bg-dark text-white p-1">dark background</td><td class="hex-value" id="dark-bg"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="bootstrap-colors.js"></script>
+</body>
+</html>

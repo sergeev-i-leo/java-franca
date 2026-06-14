@@ -518,15 +518,6 @@ public class HtmlParser extends Parser {
         skipChars(5);
         continue;
       }
-      if (peekString("&nbsp;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString(" ");
-        skipSpaces = false;
-        skipChars(6);
-        continue;
-      }
       if (peekString("&Aacute;")) {
         if (literalStringBuffer == null) {
           literalStringBuffer = new StringBuffer();
@@ -724,16 +715,37 @@ public class HtmlParser extends Parser {
         }
         continue;
       }
-      if (peekString("<br>")) {
+      if (peekString("&nbsp;")) {
         if (literalStringBuffer.isNotEmpty()) {
-          appendTextJsonObject(jsonArray, literalStringBuffer.toString());
+          appendTextJsonObject(literalStringBuffer.toString(), "#text", jsonArray);
           literalStringBuffer = null;
         }
-        appendTextJsonObject(jsonArray, "<br>");
+        appendTextJsonObject("&nbsp;", "#non-breakable-space", jsonArray);
+        skipSpaces = false;
+        skipChars(6);
+        continue;
+      }
+      if (peekString("<br>")) {
+        if (literalStringBuffer.isNotEmpty()) {
+          appendTextJsonObject(literalStringBuffer.toString(), "#text", jsonArray);
+          literalStringBuffer = null;
+        }
+        appendTextJsonObject("<br>", "#line-break", jsonArray);
         skipSpaces = true;
         skipChars(4);
         continue;
       }
+      if (peekChar() == ' ') {
+        if (literalStringBuffer.isNotEmpty()) {
+          appendTextJsonObject(literalStringBuffer.toString(), "#text", jsonArray);
+          literalStringBuffer = null;
+        }
+        appendTextJsonObject(" ", "#space", jsonArray);
+        skipSpaces = false;
+        skipChars(1);
+        continue;
+      }
+
       char c = peekChar();
       if (c == '<') {
         break;
@@ -748,18 +760,18 @@ public class HtmlParser extends Parser {
 
     if (literalStringBuffer != null) {
       // text found
-      if (outputStringBuffer != null) {
-        outputStringBuffer.appendChars('.', outputSpacesNumber);
-        outputStringBuffer.appendString("#text \"" + literalStringBuffer.getString() + "\"");
-        outputStringBuffer.appendEndLine();
-      }
-      appendTextJsonObject(jsonArray, literalStringBuffer.getString());
+      appendTextJsonObject(literalStringBuffer.getString(), "#text", jsonArray);
     }
   }
 
-  private void appendTextJsonObject(JsonArray jsonArray, String text) {
+  private void appendTextJsonObject(String text, String memberName, JsonArray jsonArray) {
     JsonObject jsonObject = new JsonObject();
     jsonArray.add(jsonObject);
-    jsonObject.putStringValue("#text", text);
+    jsonObject.putStringValue(memberName, text);
+    if (outputStringBuffer != null) {
+      outputStringBuffer.appendChars('.', outputSpacesNumber);
+      outputStringBuffer.appendString(memberName + " \"" + literalStringBuffer.getString() + "\"");
+      outputStringBuffer.appendEndLine();
+    }
   }
 }
