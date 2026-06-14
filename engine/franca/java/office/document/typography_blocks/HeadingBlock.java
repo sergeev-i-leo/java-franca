@@ -1,11 +1,8 @@
 package franca.java.office.document.typography_blocks;
 
-import franca.java.office.document.Block;
-
-public class HeadingBlock extends Block {
+public class HeadingBlock extends TextBlock {
 
   public int level;
-  private String text = "";
 
   public HeadingBlock(int level) {
     super();
@@ -18,13 +15,5 @@ public class HeadingBlock extends Block {
 
   public String getClassName() {
     return "HeadingBlock";
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
   }
 }

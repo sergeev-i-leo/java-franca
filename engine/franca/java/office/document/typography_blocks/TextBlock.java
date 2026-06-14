@@ -1,27 +1,34 @@
 package franca.java.office.document.typography_blocks;
 
+import franca.java.expected.StringBuffer;
 import franca.java.office.document.Block;
 
 public class TextBlock extends Block {
-  public static final String TYPE_TEXT = "text";
-  public static final String TYPE_SPACE = "space";
-  public static final String TYPE_NON_BREAKABLE_SPACE = "non-breakable-space";
-  public static final String TYPE_LINE_BREAK = "line-break";
-
-  public String type = TextBlock.TYPE_TEXT;
-
-  private String text = "";
 
   public String getClassName() {
     return "TextBlock";
   }
 
   public String getText() {
-    return text;
+    if (getBlocks() == null) {
+      return "";
+    }
+    StringBuffer stringBuffer = new StringBuffer();
+    for (Block block : getBlocks()) {
+      if (block instanceof LettersBlock) {
+        stringBuffer.appendString(((LettersBlock) block).getText());
+      }
+    }
+    return stringBuffer.getString();
   }
 
   public void setText(String text) {
-    this.text = text;
-  }
+    if (getBlocks() != null) {
+      getBlocks().clear();
+    }
 
+    LettersBlock letters = new LettersBlock();
+    letters.setText(text);
+    addBlock(letters);
+  }
 }

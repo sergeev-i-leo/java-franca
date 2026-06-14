@@ -61,7 +61,7 @@ public class MainFrame extends JFrame {
     inner.classes.addStringItem("row");
     inner.attributes.addStringItem("data-name=inner-row");
 
-    root.blocks.add(inner);
+    root.addBlock(inner);
     DocumentModel.blocks.clear();
     DocumentModel.blocks.add(root);
 
@@ -109,7 +109,7 @@ public class MainFrame extends JFrame {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           HtmlParser parser = new HtmlParser();
           StringBuffer outputStringBuffer = new StringBuffer();
-          DocumentModel.blocks = parser.parse(content, outputStringBuffer);
+          DocumentModel.blocks = parser.parse(content, outputStringBuffer).getBlocks();
           documentTreePanel.refresh();
 
           // TODO: конвертация raw → Block

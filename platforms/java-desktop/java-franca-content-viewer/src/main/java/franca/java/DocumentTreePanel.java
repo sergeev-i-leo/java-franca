@@ -3,7 +3,7 @@ package franca.java;
 import franca.java.office.document.Block;
 import franca.java.office.document.typography_blocks.HeadingBlock;
 import franca.java.office.document.typography_blocks.ParagraphBlock;
-import franca.java.office.document.typography_blocks.TextBlock;
+import franca.java.office.document.typography_blocks.LettersBlock;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -44,9 +44,9 @@ public class DocumentTreePanel extends JPanel {
     } else if (block instanceof ParagraphBlock) {
       ParagraphBlock paragraphBlock = (ParagraphBlock) block;
       nodeText = paragraphBlock.getClassName() + " = \"" + paragraphBlock.getText() + "\"";
-    } else if (block instanceof TextBlock) {
-      TextBlock textBlock = (TextBlock) block;
-      nodeText = textBlock.getClassName() + " [" + textBlock.type + "] = \"" + textBlock.getText() + "\"";
+    } else if (block instanceof LettersBlock) {
+      LettersBlock lettersBlock = (LettersBlock) block;
+      nodeText = lettersBlock.getClassName() + " [" + lettersBlock.type + "] = \"" + lettersBlock.getText() + "\"";
     } else {
       nodeText = block.getClassName();
     }

@@ -9,6 +9,7 @@ import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
 import franca.java.office.document.typography_blocks.HeadingBlock;
 import franca.java.office.document.typography_blocks.ParagraphBlock;
+import franca.java.office.document.typography_blocks.LettersBlock;
 import franca.java.office.document.typography_blocks.TextBlock;
 
 public class HtmlParser extends Parser {
@@ -48,9 +49,9 @@ public class HtmlParser extends Parser {
           literalStringBuffer.appendChar(c);
         }
 
-        TextBlock textBlock = new TextBlock();
-        parentBlock.addBlock(textBlock);
-        textBlock.setText(literalStringBuffer.getString());
+        LettersBlock lettersBlock = new LettersBlock();
+        parentBlock.addBlock(lettersBlock);
+        lettersBlock.setText(literalStringBuffer.getString());
 
         if (outputStringBuffer != null) {
           outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -99,7 +100,6 @@ public class HtmlParser extends Parser {
         }
       }
 
-
       String childTagName = parseTagName();
       Block childBlock;
       if (childTagName.equals("h1")) {
@@ -129,7 +129,7 @@ public class HtmlParser extends Parser {
       skipChars(1);
 
       int storedPosition = position;
-      parseHtmlNode(tagName, childBlock);
+      parseHtmlNode(childTagName, childBlock);
       if (storedPosition == position) {
         // avoid cycling
         return;
@@ -470,6 +470,12 @@ public class HtmlParser extends Parser {
 
   private void parseTextContents(Block parentBlock) {
 
+    if (!(parentBlock instanceof TextBlock)) {
+      TextBlock textBlock = new TextBlock();
+      parentBlock.addBlock(textBlock);
+      parentBlock = textBlock;
+    }
+
     literalStringBuffer = null;
 
     boolean skipSpaces = true;
@@ -731,30 +737,30 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&nbsp;")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          appendTextBlock(parentBlock, TextBlock.TYPE_TEXT, literalStringBuffer.getString());
+          appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        appendTextBlock(parentBlock, TextBlock.TYPE_NON_BREAKABLE_SPACE, " ");
+        appendTextBlock(parentBlock, LettersBlock.TYPE_NON_BREAKABLE_SPACE, " ");
         skipSpaces = false;
         skipChars(6);
         continue;
       }
       if (peekString("<br>")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          appendTextBlock(parentBlock, TextBlock.TYPE_TEXT, literalStringBuffer.getString());
+          appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        appendTextBlock(parentBlock, TextBlock.TYPE_LINE_BREAK, "");
+        appendTextBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "");
         skipSpaces = true;
         skipChars(4);
         continue;
       }
       if (peekChar() == ' ') {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          appendTextBlock(parentBlock, TextBlock.TYPE_TEXT, literalStringBuffer.getString());
+          appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        appendTextBlock(parentBlock, TextBlock.TYPE_SPACE, " ");
+        appendTextBlock(parentBlock, LettersBlock.TYPE_SPACE, " ");
         skipSpaces = false;
         skipChars(1);
         continue;
@@ -774,15 +780,15 @@ public class HtmlParser extends Parser {
 
     if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
       // text found
-      appendTextBlock(parentBlock, TextBlock.TYPE_TEXT, literalStringBuffer.getString());
+      appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
     }
   }
 
   private void appendTextBlock(Block parentBlock, String textType, String text) {
-    TextBlock textBlock = new TextBlock();
-    parentBlock.addBlock(textBlock);
-    textBlock.type = textType;
-    textBlock.setText(text);
+    LettersBlock lettersBlock = new LettersBlock();
+    parentBlock.addBlock(lettersBlock);
+    lettersBlock.type = textType;
+    lettersBlock.setText(text);
     if (outputStringBuffer != null) {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
       outputStringBuffer.appendString(textType + " \"" + text + "\"");
