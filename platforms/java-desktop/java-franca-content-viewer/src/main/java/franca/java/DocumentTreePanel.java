@@ -1,5 +1,8 @@
 package franca.java;
 
+import franca.java.data.json.JsonArray;
+import franca.java.office.document.Block;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
@@ -9,23 +12,55 @@ import java.util.Enumeration;
 public class DocumentTreePanel extends JPanel {
 
   private JTree tree;
-  private DocumentModel document;
 
-  public DocumentTreePanel(DocumentModel document) {
-    this.document = document;
+  public DocumentTreePanel() {
     setLayout(new BorderLayout());
-
-    tree = new JTree(document.getDocumentRoot());
-    tree.setCellRenderer(new HighlightTreeRenderer());
-    tree.setSelectionRow(0);
-
+    tree = new JTree();
+    tree.setCellRenderer(new BlockTreeCellRenderer());
     add(new JScrollPane(tree), BorderLayout.CENTER);
   }
 
   public void refresh() {
-    tree.setModel(new DefaultTreeModel(document.getDocumentRoot()));
-    tree.repaint();
-    expandAll(); // если нужно
+    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Document");
+
+    for (Block block : DocumentModel.blocks) {
+      rootNode.add(buildTree(block));
+    }
+
+    tree.setModel(new DefaultTreeModel(rootNode));
+    expandAll(tree, new TreePath(rootNode));
+    repaint();
+  }
+
+  private DefaultMutableTreeNode buildTree(Block block) {
+    String nodeText = block.getClassName();
+
+    if (block.classes.size() > 0) {
+      nodeText += " [classes: " + joinArray(block.classes) + "]";
+    }
+    if (block.attributes.size() > 0) {
+      nodeText += " [attrs: " + joinArray(block.attributes) + "]";
+    }
+    if (block.style.size() > 0) {
+      nodeText += " [style: " + joinArray(block.style) + "]";
+    }
+
+    DefaultMutableTreeNode node = new DefaultMutableTreeNode(nodeText);
+
+    for (Block child : block.blocks) {
+      node.add(buildTree(child));
+    }
+
+    return node;
+  }
+
+  private String joinArray(JsonArray array) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < array.size(); i++) {
+      if (i > 0) sb.append(", ");
+      sb.append(array.getStringValue(i));
+    }
+    return sb.toString();
   }
 
   public void addTreeSelectionListener(javax.swing.event.TreeSelectionListener listener) {
@@ -45,57 +80,13 @@ public class DocumentTreePanel extends JPanel {
     return null;
   }
 
-  public void setSelectedValue(Object value) {
-    // Получаем ID из переданного объекта
-    String targetId = null;
-    if (value instanceof DefaultMutableTreeNode) {
-      Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
-      if (userObject instanceof DocumentModel.NodeData) {
-        targetId = ((DocumentModel.NodeData) userObject).id;
-      }
-    } else {
-      targetId = document.getId(value);
-    }
-
-    if (targetId == null) {
-      System.err.println("Cannot find ID for value: " + value);
-      return;
-    }
-
-    DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-    TreeNode root = (TreeNode) model.getRoot();
-
-    DefaultMutableTreeNode node = findNodeById(root, targetId);
+  public void setSelectedValue(DefaultMutableTreeNode node) {
     if (node != null) {
       expandAllParents(node);
       TreePath path = new TreePath(node.getPath());
       tree.setSelectionPath(path);
       tree.scrollPathToVisible(path);
-    } else {
-      System.err.println("Node not found for ID: " + targetId);
     }
-  }
-
-  private DefaultMutableTreeNode findNodeById(TreeNode node, String targetId) {
-    if (node instanceof DefaultMutableTreeNode) {
-      DefaultMutableTreeNode mutableTreeNode = (DefaultMutableTreeNode) node;
-      Object userObject = mutableTreeNode.getUserObject();
-
-      String nodeId = null;
-      if (userObject instanceof DocumentModel.NodeData) {
-        nodeId = ((DocumentModel.NodeData) userObject).id;
-      }
-
-      if (targetId != null && targetId.equals(nodeId)) {
-        return mutableTreeNode;
-      }
-    }
-
-    for (int i = 0; i < node.getChildCount(); i++) {
-      DefaultMutableTreeNode found = findNodeById(node.getChildAt(i), targetId);
-      if (found != null) return found;
-    }
-    return null;
   }
 
   private void expandAllParents(DefaultMutableTreeNode node) {
@@ -122,20 +113,11 @@ public class DocumentTreePanel extends JPanel {
     tree.expandPath(parent);
   }
 
-  class HighlightTreeRenderer extends DefaultTreeCellRenderer {
+  class BlockTreeCellRenderer extends DefaultTreeCellRenderer {
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 
-      Object userObj = ((DefaultMutableTreeNode) value).getUserObject();
-      String displayText;
-
-      if (userObj instanceof DocumentModel.NodeData) {
-        DocumentModel.NodeData data = (DocumentModel.NodeData) userObj;
-        displayText = data.text + " [" + data.id + "]";
-      } else {
-        displayText = userObj.toString();
-      }
-
+      String displayText = value.toString();
       super.getTreeCellRendererComponent(tree, displayText, sel, expanded, leaf, row, hasFocus);
 
       if (sel) {

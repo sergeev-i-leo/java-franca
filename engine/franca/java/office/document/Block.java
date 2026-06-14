@@ -11,7 +11,7 @@ public class Block extends TranspilableClass {
   public JsonArray style = new JsonArray();
   public JsonArray attributes = new JsonArray();
 
-  ArrayList<Block> blocks = new ArrayList<>();
+  public ArrayList<Block> blocks = new ArrayList<>();
 
   public String getClassName() {
     return "Block";

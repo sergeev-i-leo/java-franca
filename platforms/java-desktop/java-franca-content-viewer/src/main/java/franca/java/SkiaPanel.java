@@ -1,38 +1,15 @@
 package franca.java;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SkiaPanel extends JPanel {
 
   private DocumentTreePanel rightTree;
-  private DocumentModel document;
-  private Object highlightedElement;
-  private Map<Object, Rectangle> elementBounds; // локальный кэш координат
+  private java.util.List<ElementSelectionListener> listeners = new java.util.ArrayList<>();
 
-  public SkiaPanel(DocumentModel document) {
-    this.document = document;
-    this.elementBounds = new HashMap<>();
+  public SkiaPanel() {
     setBackground(Color.WHITE);
-
-    // Обработка кликов мыши
-    addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        Object clicked = getElementAt(e.getX(), e.getY());
-        if (clicked != null) {
-          setHighlightedElement(clicked);
-          // Уведомляем слушателей о выборе элемента
-          fireElementSelected(clicked);
-        }
-      }
-    });
   }
 
   public void setRightTree(DocumentTreePanel tree) {
@@ -40,34 +17,13 @@ public class SkiaPanel extends JPanel {
   }
 
   public void refresh() {
-    if (rightTree != null) {
-      rightTree.refresh();  // обновляем дерево справа
-    }
     repaint();
   }
 
-  public Object getElementAt(int x, int y) {
-    for (Map.Entry<Object, Rectangle> entry : elementBounds.entrySet()) {
-      if (entry.getValue().contains(x, y)) {
-        return entry.getKey();
-      }
-    }
-    return null;
-  }
-
-  // Установить подсвеченный элемент
   public void highlightElement(Object element) {
-    this.highlightedElement = element;
+    // TODO: реализовать подсветку
     repaint();
   }
-
-  private void setHighlightedElement(Object element) {
-    this.highlightedElement = element;
-    repaint();
-  }
-
-  // Слушатели для синхронизации с деревом
-  private java.util.List<ElementSelectionListener> listeners = new java.util.ArrayList<>();
 
   public void addElementSelectionListener(ElementSelectionListener listener) {
     listeners.add(listener);
@@ -89,58 +45,9 @@ public class SkiaPanel extends JPanel {
     Graphics2D g2d = (Graphics2D) g;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    elementBounds.clear();
-
-    // Рисуем дерево документа
-    int y = 50;
-    drawTree(g2d, document.getDocumentRoot(), 50, y);
-
-    // Подсветка выбранного элемента
-    if (highlightedElement != null) {
-      Rectangle bounds = elementBounds.get(highlightedElement);
-      if (bounds != null) {
-        g2d.setColor(new Color(255, 255, 0, 100));
-        g2d.fill(bounds);
-        g2d.setColor(Color.YELLOW);
-        g2d.draw(bounds);
-      }
-    }
-  }
-
-  private void drawTree(Graphics2D g2d, DefaultMutableTreeNode node, int x, int y) {
-    // Получаем текст и ID
-    Object userObj = node.getUserObject();
-    String text;
-    String id;
-
-    if (userObj instanceof DocumentModel.NodeData) {
-      DocumentModel.NodeData data = (DocumentModel.NodeData) userObj;
-      text = data.text;
-      id = data.id;
-    } else {
-      text = userObj.toString();
-      id = document.getId(node);
-    }
-
-    // Рисуем с ID (можно в скобках)
-    String displayText = text + " [" + id + "]";
-
-    FontMetrics fm = g2d.getFontMetrics();
-    Rectangle2D rect = fm.getStringBounds(displayText, g2d);
-    Rectangle bounds = new Rectangle(x, y, (int)rect.getWidth() + 20, (int)rect.getHeight() + 10);
-
-    elementBounds.put(node, bounds);
-    document.setElementBounds(node, bounds);
-
     g2d.setColor(Color.BLACK);
-    g2d.drawString(displayText, x + 10, y + fm.getAscent());
-    g2d.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-    int childY = y + (int)rect.getHeight() + 30;
-    for (int i = 0; i < node.getChildCount(); i++) {
-      drawTree(g2d, (DefaultMutableTreeNode) node.getChildAt(i), x + 20, childY);
-      childY += 40;
-    }
+    g2d.setFont(new Font("Arial", Font.BOLD, 24));
+    g2d.drawString("Hello World", 50, 100);
   }
 
   public interface ElementSelectionListener {
