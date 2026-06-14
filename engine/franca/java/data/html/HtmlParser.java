@@ -122,11 +122,7 @@ public class HtmlParser extends Parser {
 
       parentBlock.addBlock(childBlock);
 
-      JsonObject jsonObject = new JsonObject();
-      childBlock.attributes.add(jsonObject);
-      jsonObject.putStringValue("tag-name", tagName);
-
-      skipChars(1);
+      skipChars(1 + childTagName.length());
 
       int storedPosition = position;
       parseHtmlNode(childTagName, childBlock);
@@ -144,6 +140,11 @@ public class HtmlParser extends Parser {
       outputStringBuffer.appendString("< " + targetBlock.getClassName());
       outputStringBuffer.appendEndLine();
     }
+
+    JsonObject jsonObject = new JsonObject();
+    targetBlock.attributes.add(jsonObject);
+    jsonObject.putStringValue("name", "tag-name");
+    jsonObject.putStringValue("value", tagName);
 
     outputSpacesNumber += 2;
     parseHtmlAttributes(targetBlock);
@@ -422,7 +423,8 @@ public class HtmlParser extends Parser {
       }
       JsonObject jsonObject = new JsonObject();
       jsonArray.add(jsonObject);
-      jsonObject.putStringValue(attributeName, literalStringBuffer.getString());
+      jsonObject.putStringValue("name", attributeName);
+      jsonObject.putStringValue("value", literalStringBuffer.getString());
 
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -457,9 +459,10 @@ public class HtmlParser extends Parser {
     if (literalStringBuffer.isEmpty()) {
       return;
     }
-    JsonObject attributeJsonObject = new JsonObject();
-    jsonArray.add(attributeJsonObject);
-    attributeJsonObject.putStringValue(attributeName, literalStringBuffer.getString());
+    JsonObject jsonObject = new JsonObject();
+    jsonArray.add(jsonObject);
+    jsonObject.putStringValue("name", attributeName);
+    jsonObject.putStringValue("string-value", literalStringBuffer.getString());
 
     if (outputStringBuffer != null) {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -469,12 +472,6 @@ public class HtmlParser extends Parser {
   }
 
   private void parseTextContents(Block parentBlock) {
-
-    if (!(parentBlock instanceof TextBlock)) {
-      TextBlock textBlock = new TextBlock();
-      parentBlock.addBlock(textBlock);
-      parentBlock = textBlock;
-    }
 
     literalStringBuffer = null;
 
@@ -737,30 +734,30 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&nbsp;")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+          parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        appendTextBlock(parentBlock, LettersBlock.TYPE_NON_BREAKABLE_SPACE, " ");
+        parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_NON_BREAKABLE_SPACE, " ");
         skipSpaces = false;
         skipChars(6);
         continue;
       }
       if (peekString("<br>")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+          parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        appendTextBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "");
+        parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "");
         skipSpaces = true;
         skipChars(4);
         continue;
       }
       if (peekChar() == ' ') {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+          parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        appendTextBlock(parentBlock, LettersBlock.TYPE_SPACE, " ");
+        parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_SPACE, " ");
         skipSpaces = false;
         skipChars(1);
         continue;
@@ -784,7 +781,13 @@ public class HtmlParser extends Parser {
     }
   }
 
-  private void appendTextBlock(Block parentBlock, String textType, String text) {
+  private Block appendTextBlock(Block parentBlock, String textType, String text) {
+    // <tag>#text</tag> convert to <tag><text>#text</text></tag>
+    if (!(parentBlock instanceof TextBlock)) {
+      TextBlock textBlock = new TextBlock();
+      parentBlock.addBlock(textBlock);
+      parentBlock = textBlock;
+    }
     LettersBlock lettersBlock = new LettersBlock();
     parentBlock.addBlock(lettersBlock);
     lettersBlock.type = textType;
@@ -794,5 +797,6 @@ public class HtmlParser extends Parser {
       outputStringBuffer.appendString(textType + " \"" + text + "\"");
       outputStringBuffer.appendEndLine();
     }
+    return parentBlock;
   }
 }

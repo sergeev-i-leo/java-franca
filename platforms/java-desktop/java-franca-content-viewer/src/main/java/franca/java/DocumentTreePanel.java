@@ -1,9 +1,12 @@
 package franca.java;
 
+import franca.java.data.json.JsonElement;
+import franca.java.data.json.JsonObject;
 import franca.java.office.document.Block;
 import franca.java.office.document.typography_blocks.HeadingBlock;
 import franca.java.office.document.typography_blocks.ParagraphBlock;
 import franca.java.office.document.typography_blocks.LettersBlock;
+import franca.java.office.document.typography_blocks.TextBlock;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -44,6 +47,9 @@ public class DocumentTreePanel extends JPanel {
     } else if (block instanceof ParagraphBlock) {
       ParagraphBlock paragraphBlock = (ParagraphBlock) block;
       nodeText = paragraphBlock.getClassName() + " = \"" + paragraphBlock.getText() + "\"";
+    } else if (block instanceof TextBlock) {
+      TextBlock textBlock = (TextBlock) block;
+      nodeText = textBlock.getClassName() + " = \"" + textBlock.getText() + "\"";
     } else if (block instanceof LettersBlock) {
       LettersBlock lettersBlock = (LettersBlock) block;
       nodeText = lettersBlock.getClassName() + " [" + lettersBlock.type + "] = \"" + lettersBlock.getText() + "\"";
@@ -66,7 +72,30 @@ public class DocumentTreePanel extends JPanel {
     if (block.attributes.size() > 0) {
       DefaultMutableTreeNode attrsNode = new DefaultMutableTreeNode("attributes");
       for (int i = 0; i < block.attributes.size(); i++) {
-        attrsNode.add(new DefaultMutableTreeNode(block.attributes.getStringValue(i)));
+        JsonElement jsonElement = block.attributes.get(i);
+        JsonObject jsonObject = jsonElement.asJsonObject();
+        if (jsonObject != null) {
+          String name = jsonObject.getStringValue("name");
+          if (name == null) {
+            attrsNode.add(new DefaultMutableTreeNode("ATTRIBUTE ERROR"));
+          } else {
+            String value = jsonObject.getStringValue("value");
+            if (value != null) {
+              attrsNode.add(new DefaultMutableTreeNode(name + " = " + value));
+            } else {
+              value = jsonObject.getStringValue("string-value");
+              if (value != null) {
+                attrsNode.add(new DefaultMutableTreeNode(name + " = \"" + value + "\""));
+              } else {
+                attrsNode.add(new DefaultMutableTreeNode(name + " = ATTRIBUTE ERROR"));
+              }
+            }
+          }
+        } else if (jsonElement.getStringValue() != null) {
+          attrsNode.add(new DefaultMutableTreeNode(jsonElement.getStringValue()));
+        } else {
+          attrsNode.add(new DefaultMutableTreeNode("ATTRIBUTE ERROR"));
+        }
       }
       blockNode.add(attrsNode);
     }
