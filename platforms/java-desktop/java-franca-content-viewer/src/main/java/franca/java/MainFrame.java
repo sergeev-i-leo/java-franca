@@ -110,6 +110,7 @@ public class MainFrame extends JFrame {
           HtmlParser parser = new HtmlParser();
           StringBuffer outputStringBuffer = new StringBuffer();
           DocumentModel.blocks = parser.parse(content, outputStringBuffer).getBlocks();
+          jsonTextPanel.setJsonText(outputStringBuffer.getString());
           documentTreePanel.refresh();
 
           // TODO: конвертация raw → Block

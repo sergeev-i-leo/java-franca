@@ -1,4 +1,4 @@
-package franca.java.office.document.typography_blocks;
+package franca.java.office.document.typography;
 
 import franca.java.expected.StringBuffer;
 import franca.java.office.document.Block;
@@ -15,8 +15,8 @@ public class TextBlock extends Block {
     }
     StringBuffer stringBuffer = new StringBuffer();
     for (Block block : getBlocks()) {
-      if (block instanceof LettersBlock) {
-        stringBuffer.appendString(((LettersBlock) block).getText());
+      if (block instanceof TextRun) {
+        stringBuffer.appendString(((TextRun) block).getText());
       }
     }
     return stringBuffer.getString();
@@ -27,7 +27,7 @@ public class TextBlock extends Block {
       getBlocks().clear();
     }
 
-    LettersBlock letters = new LettersBlock();
+    TextRun letters = new TextRun();
     letters.setText(text);
     addBlock(letters);
   }

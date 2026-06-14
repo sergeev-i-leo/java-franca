@@ -1,10 +1,10 @@
-package franca.java.office.document.typography_blocks;
+package franca.java.office.document.typography;
 
-public class HeadingBlock extends TextBlock {
+public class Heading extends TextBlock {
 
   public int level;
 
-  public HeadingBlock(int level) {
+  public Heading(int level) {
     super();
     if ((level >= 1) && (level <= 6)) {
       this.level = level;
@@ -14,6 +14,6 @@ public class HeadingBlock extends TextBlock {
   }
 
   public String getClassName() {
-    return "HeadingBlock";
+    return "Heading";
   }
 }
