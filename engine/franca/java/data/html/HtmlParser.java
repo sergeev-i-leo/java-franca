@@ -27,12 +27,12 @@ public class HtmlParser extends Parser {
     position = 0;
 
     Block block = new Block();
-    parseHtmlNodeContents(null, block);
+    parseHtmlNodeContents(block);
 
     return block;
   }
 
-  private void parseHtmlNodeContents(String tagName, Block parentBlock) {
+  private void parseHtmlNodeContents(Block parentBlock) {
 
     while (position < input.length()) {
       skipWhitespaces();
@@ -65,93 +65,55 @@ public class HtmlParser extends Parser {
       }
 
       // can be part of inline element <span>, <strong>, <em>
-      parseTextContents(parentBlock);
+      parseTextContents(parentBlock, new JsonArray());
 
       if (peekChar() != '<') {
-        // error, tag is missing
+        // corrupted html
         skipChars(1);
         return;
       }
 
-      if (peekNextChar(1) == '/') {
-        // closing tag
-        skipChars(2);
-        String closingTagName = parseTagName();
-        if ((position < input.length()) && (peekChar() == '>')) {
-          skipChars(1);
-        }
-
-        if (tagName == null) {
-          // root of the document
-          if (outputStringBuffer != null) {
-            outputStringBuffer.appendChars('.', outputSpacesNumber);
-            outputStringBuffer.appendString("</ " + parentBlock.getClassName() + " >");
-            outputStringBuffer.appendEndLine();
-          }
-          return;
-        }
-
-        if (closingTagName.equals(tagName)) {
-          if (outputStringBuffer != null) {
-            outputSpacesNumber -= 2;
-            outputStringBuffer.appendChars('.', outputSpacesNumber);
-            outputStringBuffer.appendString("</ " + parentBlock.getClassName() + " >");
-            outputStringBuffer.appendEndLine();
-          }
-          return;
-        }
-      }
-
       skipChars(1);
 
-      String childTagName = parseTagName();
-      Block childBlock;
-      if (childTagName.equals("h1")) {
-        childBlock = new HeadingBlock(1);
-      } else if (childTagName.equals("h2")) {
-        childBlock = new HeadingBlock(2);
-      } else if (childTagName.equals("h3")) {
-        childBlock = new HeadingBlock(3);
-      } else if (childTagName.equals("h4")) {
-        childBlock = new HeadingBlock(4);
-      } else if (childTagName.equals("h5")) {
-        childBlock = new HeadingBlock(5);
-      } else if (childTagName.equals("h6")) {
-        childBlock = new HeadingBlock(6);
-      } else if (childTagName.equals("p")) {
-        childBlock = new ParagraphBlock();
-      } else {
-        childBlock = new Block();
+      if (parseClosingTag()) {
+        return;
       }
 
-      parentBlock.addBlock(childBlock);
-
-      int storedPosition = position;
-      parseHtmlNode(childTagName, childBlock);
-      if (storedPosition == position) {
-        // avoid cycling
-        return;
+      Block block = parseHtmlNode();
+      if (block != null) {
+        parentBlock.addBlock(block);
       }
     }
   }
 
-  public void parseHtmlNode(String tagName, Block targetBlock) {
+  public Block parseHtmlNode() {
+
+    if (peekChar() != '<') {
+      // not a node tag is missing
+      skipChars(1);
+      return null;
+    }
+
+    skipChars(1);
 
     skipWhitespaces();
 
+    String tagName = parseTagName();
+    Block block = createBlockByTagName(tagName);
+
     if (outputStringBuffer != null) {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
-      outputStringBuffer.appendString("< " + targetBlock.getClassName() + ", tagName = " + tagName);
+      outputStringBuffer.appendString("< " + block.getClassName() + ", tagName = " + tagName);
       outputStringBuffer.appendEndLine();
     }
 
     JsonObject jsonObject = new JsonObject();
-    targetBlock.attributesJsonArray.add(jsonObject);
+    block.attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", "tag-name");
     jsonObject.putStringValue("value", tagName);
 
     outputSpacesNumber += 2;
-    parseHtmlAttributes(targetBlock);
+    parseHtmlAttributes(block);
     outputSpacesNumber -= 2;
 
     // self-closing tags
@@ -162,14 +124,17 @@ public class HtmlParser extends Parser {
         outputStringBuffer.appendString("/>");
         outputStringBuffer.appendEndLine();
       }
-      return;
+      return block;
     }
 
     // '>'
     skipChars(1);
 
     outputSpacesNumber += 2;
-    parseHtmlNodeContents(tagName, targetBlock);
+    parseHtmlNodeContents(block);
+    outputSpacesNumber -= 2;
+
+    return block;
   }
 
   private String parseTagName() {
@@ -181,13 +146,43 @@ public class HtmlParser extends Parser {
     return stringBuffer.getLowerCaseString();
   }
 
+  public Block createBlockByTagName(String tagName) {
+    if (tagName.equals("h1")) {
+      return new HeadingBlock(1);
+    }
+    if (tagName.equals("h2")) {
+      return new HeadingBlock(2);
+    }
+    if (tagName.equals("h3")) {
+      return new HeadingBlock(3);
+    }
+    if (tagName.equals("h4")) {
+      return new HeadingBlock(4);
+    }
+    if (tagName.equals("h5")) {
+      return new HeadingBlock(5);
+    }
+    if (tagName.equals("h6")) {
+      return new HeadingBlock(6);
+    }
+    if (tagName.equals("p")) {
+      return new ParagraphBlock();
+    }
+    return new Block();
+  }
+
   private boolean isSelfClosingTag(String tagName) {
     skipWhitespaces();
 
-    if ((peekChar() == '/') && (peekNextChar(1) == '>')) {
-      // self-closing
-      skipChars(2);
-      return true;
+    if (peekChar() == '/') {
+      skipChars(1);
+      skipWhitespaces();
+    }
+
+    if (peekChar() != '>') {
+      // corrupted html
+      skipChars(1);
+      return false;
     }
 
     if (tagName.equals("area")) {
@@ -199,11 +194,35 @@ public class HtmlParser extends Parser {
     } else {
       return false;
     }
-    if (peekChar() == '>') {
+    return true;
+  }
+
+  private boolean parseClosingTag() {
+
+    skipWhitespaces();
+
+    if (peekChar() != '/') {
+      return false;
+    }
+
+    String closingTagName = parseTagName();
+
+    skipWhitespaces();
+
+    if (peekChar() != '>') {
+      // corrupted html
       skipChars(1);
       return true;
     }
-    return false;
+
+    skipChars(1);
+
+    if (outputStringBuffer != null) {
+      outputStringBuffer.appendChars('.', outputSpacesNumber);
+      outputStringBuffer.appendString("</ " + closingTagName + " >");
+      outputStringBuffer.appendEndLine();
+    }
+    return true;
   }
 
   private void parseHtmlAttributes(Block targetBlock) {
@@ -476,10 +495,9 @@ public class HtmlParser extends Parser {
     }
   }
 
-  public void parseTextContents(Block parentBlock) {
+  public void parseTextContents(Block parentBlock, JsonArray stylesStackJsonArray) {
 
     literalStringBuffer = null;
-    JsonArray stylesStackJsonArray = new JsonArray();
 
     // for trailing spaces
     int spacesCount = -1;
@@ -502,7 +520,7 @@ public class HtmlParser extends Parser {
         styleJsonArray = stylesStackJsonArray.get(stylesStackJsonArray.size() - 1).asJsonArray();
       }
 
-      if (parseStyle(stylesStackJsonArray)) {
+      if (parseStyleJsonArray(stylesStackJsonArray)) {
         if (spacesCount > 0) {
           // we accumulated spaces
           parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonArray);
@@ -591,7 +609,7 @@ public class HtmlParser extends Parser {
     }
   }
 
-  public boolean parseStyle(JsonArray stylesStackJsonArray) {
+  public boolean parseStyleJsonArray(JsonArray stylesStackJsonArray) {
     // returns true if style stack changed or else returns false
     if (peekChar() != '<') {
       return false;
