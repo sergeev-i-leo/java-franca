@@ -205,6 +205,8 @@ public class HtmlParser extends Parser {
       return false;
     }
 
+    skipChars(1);
+
     String closingTagName = parseTagName();
 
     skipWhitespaces();

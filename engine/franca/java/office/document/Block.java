@@ -16,10 +16,27 @@ public class Block extends TranspilableClass {
   // single attributes, non-quoted attributes, quoted attributes
   public JsonArray attributesJsonArray = new JsonArray();
 
+  public BlockStyle blockStyle = null;
+
   private ArrayList<Block> blocks = null;
 
   public String getClassName() {
     return "Block";
+  }
+
+  public void createBlockStyle() {
+    int i = 0;
+    while (i < styleJsonArray.size()) {
+      String styleName = styleJsonArray.get(i).getStringValue();
+      i++;
+      if (i < styleJsonArray.size()) {
+        String styleValue = styleJsonArray.get(i).getStringValue();
+        if ((styleName != null) && (styleValue != null)) {
+          if (styleName
+        }
+      }
+      i++;
+    }
   }
 
   public void addBlock(Block block) {
