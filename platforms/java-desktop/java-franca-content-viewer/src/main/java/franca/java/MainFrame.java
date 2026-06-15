@@ -54,12 +54,12 @@ public class MainFrame extends JFrame {
 
   private void initTestData() {
     Block root = new Block();
-    root.classes.addStringItem("container");
-    root.classes.addStringItem("main-container");
+    root.classes.addStringValue("container");
+    root.classes.addStringValue("main-container");
 
     Block inner = new Block();
-    inner.classes.addStringItem("row");
-    inner.attributes.addStringItem("data-name=inner-row");
+    inner.classes.addStringValue("row");
+    inner.attributes.addStringValue("data-name=inner-row");
 
     root.addBlock(inner);
     DocumentModel.blocks.clear();

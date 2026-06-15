@@ -14,7 +14,9 @@ import franca.java.office.document.typography.TextBlock;
 
 public class HtmlParser extends Parser {
 
-  // 0 for nothing, 1 for nothing with input flag, 2 for debugging
+  // true for HTML, false for MARKDOWN
+  public boolean skipLeadingSpaces = true;
+
   public StringBuffer outputStringBuffer;
   private int outputSpacesNumber = 0;
 
@@ -322,8 +324,9 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      jsonArray.addStringItem(styleName);
-      jsonArray.addStringItem(literalStringBuffer.getString());
+      // style array contain pairs: styleName, styleValue, styleName, styleValue ...
+      jsonArray.addStringValue(styleName);
+      jsonArray.addStringValue(literalStringBuffer.getString());
 
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -473,84 +476,97 @@ public class HtmlParser extends Parser {
     }
   }
 
-  private void parseTextContents(Block parentBlock) {
+  public void parseTextContents(Block parentBlock) {
 
     literalStringBuffer = null;
+    JsonArray styles = new JsonArray();
 
-    // don't
+    // for trailing spaces
     int spacesCount = -1;
 
     while (position < input.length()) {
+      if (peekChar() == '<') {
+        break;
+      }
+
       if (peekChar() == '\r') {
         skipChars(1);
         if (peekChar() == '\n') {
           skipChars(1);
         }
-        skipWhitespaces();
+        // set spaces to leading
+        spacesCount = -1;
         continue;
       }
-      if ((peekChar() == ' ') && (skipSpaces)) {
-        skipWhitespaces();
-        continue;
-      }
-      String encodedLetter = parseEncodedChar();
-      if (encodedLetter != null) {
-        if (spacesCount > 0) {
 
-        }
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-
-        skipSpaces = false;
-        continue;
-      }
-      if (peekString("&nbsp;")) {
-        if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
-          literalStringBuffer = null;
-        }
-        parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ");
-        skipSpaces = false;
-        skipChars(6);
-        continue;
-      }
-      if (peekString("<br>")) {
-        if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
-          literalStringBuffer = null;
-        }
-        parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "");
-        skipSpaces = true;
-        skipChars(4);
-        continue;
-      }
       if (peekChar() == ' ') {
-        if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
+        if (spacesCount < 0) {
+          // leading space
+          if (!skipLeadingSpaces) {
+            spacesCount = 1;
+          }
+          skipChars(1);
+          continue;
+        }
+        if (literalStringBuffer != null) {
+          // there are accumulated chars
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styles);
+          literalStringBuffer = null;
+          spacesCount = 0;
+        }
+        spacesCount++;
+        continue;
+      } else if (spacesCount > 0) {
+        // literalStringBuffer must be null
+        if (literalStringBuffer != null) {
+          System.out.println("Accumulated chars at position " + position);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styles);
           literalStringBuffer = null;
         }
-        parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_SPACE, " ");
-        skipSpaces = false;
-        skipChars(1);
-        continue;
+        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styles);
       }
 
-      char c = peekChar();
-      if (c == '<') {
-        break;
+      // not space char found
+
+      if (parseStyle(styles)) {
+        // format found
       }
 
       if (literalStringBuffer == null) {
         literalStringBuffer = new StringBuffer();
       }
+      spacesCount = 0;
+
+      char encodedChar = parseEncodedChar();
+      if (encodedChar != (char) 0) {
+        literalStringBuffer.appendChar(encodedChar);
+        continue;
+      }
+      if (peekString("&nbsp;")) {
+        if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styles);
+          literalStringBuffer = null;
+        }
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", styles);
+        skipChars(6);
+        continue;
+      }
+      if (peekString("<br>")) {
+        if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styles);
+          literalStringBuffer = null;
+        }
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styles);
+        skipChars(4);
+        continue;
+      }
+
       literalStringBuffer.appendChar(consumeChar());
-      skipSpaces = false;
     }
 
     if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-      // text found
-      appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
+      // chars found
+      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styles);
     }
   }
 
@@ -676,12 +692,12 @@ public class HtmlParser extends Parser {
       }
       // wrong char, rewind
       position = storedPosition;
-      return 0;
+      return (char) 0;
     }
-    return 0;
+    return (char) 0;
   }
 
-  private Block appendTextBlock(Block parentBlock, String textType, String text) {
+  private Block appendCharsBlock(Block parentBlock, String charsType, String chars, JsonArray styles) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
@@ -695,17 +711,27 @@ public class HtmlParser extends Parser {
     }
     CharsBlock charsBlock = new CharsBlock();
     parentBlock.addBlock(charsBlock);
-    charsBlock.type = textType;
-    charsBlock.setChars(text);
+    charsBlock.type = charsType;
+    charsBlock.setChars(chars);
+    if (styles.isNotEmpty()) {
+      JsonArray styleArray = styles.get(styles.size() - 1).asJsonArray();
+      // styleArray contain pairs: styleName, styleValue, styleName, styleValue ...
+      for (int i = 0; i < styleArray.size(); i++) {
+        String string = styleArray.get(i).getStringValue();
+        if (string != null) {
+          charsBlock.style.addStringValue(string);
+        }
+      }
+    }
     if (outputStringBuffer != null) {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
-      outputStringBuffer.appendString(textType + " \"" + text + "\"");
+      outputStringBuffer.appendString(charsType + " \"" + chars + "\"");
       outputStringBuffer.appendEndLine();
     }
     return parentBlock;
   }
 
-  private Block appendSpaceBlocks(Block parentBlock, int spacesCount) {
+  private Block appendSpaceBlocks(Block parentBlock, int spacesCount, JsonArray styles) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
@@ -717,11 +743,26 @@ public class HtmlParser extends Parser {
         outputStringBuffer.appendEndLine();
       }
     }
-    for (int i = 0; i < spacesCount; i++) {
+    JsonArray styleArray;
+    if (styles.isEmpty()) {
+      styleArray = null;
+    } else {
+      styleArray = styles.get(styles.size() - 1).asJsonArray();
+    }
+    for (int i0 = 0; i0 < spacesCount; i0++) {
       CharsBlock charsBlock = new CharsBlock();
       parentBlock.addBlock(charsBlock);
       charsBlock.type = CharsBlock.TYPE_SPACE;
       charsBlock.setChars(" ");
+      if (styleArray != null) {
+        // styleArray contain pairs: styleName, styleValue, styleName, styleValue ...
+        for (int i1 = 0; i1 < styleArray.size(); i1++) {
+          String string = styleArray.get(i1).getStringValue();
+          if (string != null) {
+            charsBlock.style.addStringValue(string);
+          }
+        }
+      }
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
         outputStringBuffer.appendString("space" + " \" \"");

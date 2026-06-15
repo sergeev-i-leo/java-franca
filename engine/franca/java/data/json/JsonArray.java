@@ -60,6 +60,10 @@ public class JsonArray extends JsonElement {
     return jsonElements.size() == 0;
   }
 
+  public boolean isNotEmpty() {
+    return jsonElements.size() > 0;
+  }
+
   public void addBooleanValue(boolean value) {
     jsonElements.add(new JsonBooleanPrimitive(value));
   }
@@ -68,11 +72,11 @@ public class JsonArray extends JsonElement {
     jsonElements.add(new JsonIntPrimitive(value));
   }
 
-  public void addDoubleItem(double value) {
+  public void addDoubleValue(double value) {
     jsonElements.add(new JsonDoublePrimitive(value));
   }
 
-  public void addStringItem(String value) {
+  public void addStringValue(String value) {
     jsonElements.add(new JsonStringPrimitive(value));
   }
 
