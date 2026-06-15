@@ -9,7 +9,7 @@ import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
-import franca.java.office.document.typography.LettersBlock;
+import franca.java.office.document.typography.CharsBlock;
 import franca.java.office.document.typography.TextBlock;
 
 public class HtmlParser extends Parser {
@@ -49,9 +49,9 @@ public class HtmlParser extends Parser {
           literalStringBuffer.appendChar(c);
         }
 
-        LettersBlock lettersBlock = new LettersBlock();
-        parentBlock.addBlock(lettersBlock);
-        lettersBlock.setText(literalStringBuffer.getString());
+        CharsBlock charsBlock = new CharsBlock();
+        parentBlock.addBlock(charsBlock);
+        charsBlock.setChars(literalStringBuffer.getString());
 
         if (outputStringBuffer != null) {
           outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -477,7 +477,8 @@ public class HtmlParser extends Parser {
 
     literalStringBuffer = null;
 
-    boolean skipSpaces = true;
+    // don't
+    int spacesCount = -1;
 
     while (position < input.length()) {
       if (peekChar() == '\r') {
@@ -492,274 +493,44 @@ public class HtmlParser extends Parser {
         skipWhitespaces();
         continue;
       }
-      if (peekString("&amp;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("&");
-        skipSpaces = false;
-        skipChars(5);
-        continue;
-      }
-      if (peekString("&lt;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("<");
-        skipSpaces = false;
-        skipChars(4);
-        continue;
-      }
-      if (peekString("&gt;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString(">");
-        skipSpaces = false;
-        skipChars(4);
-        continue;
-      }
-      if (peekString("&quot;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("\"");
-        skipSpaces = false;
-        skipChars(6);
-        continue;
-      }
-      if (peekString("&#39;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("'");
-        skipSpaces = false;
-        skipChars(5);
-        continue;
-      }
-      if (peekString("&Aacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("Á");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&aacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("á");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&Eacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("É");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&eacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("é");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&Iacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("Í");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&iacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("í");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&Oacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("Ó");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&oacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("ó");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&Uacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("Ú");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&uacute;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("ú");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&Ntilde;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("Ñ");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&ntilde;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("ñ");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&copy;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("©");
-        skipSpaces = false;
-        skipChars(8);
-        continue;
-      }
-      if (peekString("&reg;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("®");
-        skipSpaces = false;
-        skipChars(5);
-        continue;
-      }
-      if (peekString("&trade;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("™");
-        skipSpaces = false;
-        skipChars(7);
-        continue;
-      }
-      if (peekString("&euro;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("€");
-        skipChars(6);
-        continue;
-      }
-      if (peekString("&pound;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("£");
-        skipSpaces = false;
-        skipChars(7);
-        continue;
-      }
-      if (peekString("&cent;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("¢");
-        skipChars(6);
-        continue;
-      }
-      if (peekString("&yen;")) {
-        if (literalStringBuffer == null) {
-          literalStringBuffer = new StringBuffer();
-        }
-        literalStringBuffer.appendString("¥");
-        skipChars(5);
-        continue;
-      }
-      if (peekString("&#")) {
-        skipChars(2);
+      String encodedLetter = parseEncodedChar();
+      if (encodedLetter != null) {
+        if (spacesCount > 0) {
 
+        }
         if (literalStringBuffer == null) {
           literalStringBuffer = new StringBuffer();
         }
 
-        StringBuffer stringBuffer = new StringBuffer();
-
-        while (position < input.length()) {
-          if (peekChar() == ';') {
-            skipChars(1);
-            break;
-          }
-          stringBuffer.appendChar(consumeChar());
-        }
-        Integer integer = Runtime.hexStringToInteger(stringBuffer.getString());
-        if (integer != null) {
-          literalStringBuffer.appendChar((char) integer.intValue());
-        } else {
-          integer = Runtime.stringToInteger(stringBuffer.getString());
-          if (integer != null) {
-            literalStringBuffer.appendChar((char) integer.intValue());
-          } else {
-            literalStringBuffer.appendString(stringBuffer.getString());
-          }
-        }
+        skipSpaces = false;
         continue;
       }
       if (peekString("&nbsp;")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+          parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_NON_BREAKABLE_SPACE, " ");
+        parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ");
         skipSpaces = false;
         skipChars(6);
         continue;
       }
       if (peekString("<br>")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+          parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "");
+        parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "");
         skipSpaces = true;
         skipChars(4);
         continue;
       }
       if (peekChar() == ' ') {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+          parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
           literalStringBuffer = null;
         }
-        parentBlock = appendTextBlock(parentBlock, LettersBlock.TYPE_SPACE, " ");
+        parentBlock = appendTextBlock(parentBlock, CharsBlock.TYPE_SPACE, " ");
         skipSpaces = false;
         skipChars(1);
         continue;
@@ -779,8 +550,135 @@ public class HtmlParser extends Parser {
 
     if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
       // text found
-      appendTextBlock(parentBlock, LettersBlock.TYPE_TEXT, literalStringBuffer.getString());
+      appendTextBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString());
     }
+  }
+
+  private char parseEncodedChar() {
+    if (peekString("&amp;")) {
+      skipChars(5);
+      return '&';
+    }
+    if (peekString("&lt;")) {
+      skipChars(4);
+      return '<';
+    }
+    if (peekString("&gt;")) {
+      skipChars(4);
+      return '>';
+    }
+    if (peekString("&quot;")) {
+      skipChars(6);
+      return '"';
+    }
+    if (peekString("&#39;")) {
+      skipChars(5);
+      return '\'';
+    }
+    if (peekString("&Aacute;")) {
+      skipChars(8);
+      return 'Á';
+    }
+    if (peekString("&aacute;")) {
+      skipChars(8);
+      return 'á';
+    }
+    if (peekString("&Eacute;")) {
+      skipChars(8);
+      return 'É';
+    }
+    if (peekString("&eacute;")) {
+      skipChars(8);
+      return 'é';
+    }
+    if (peekString("&Iacute;")) {
+      skipChars(8);
+      return 'Í';
+    }
+    if (peekString("&iacute;")) {
+      skipChars(8);
+      return 'í';
+    }
+    if (peekString("&Oacute;")) {
+      skipChars(8);
+      return 'Ó';
+    }
+    if (peekString("&oacute;")) {
+      skipChars(8);
+      return 'ó';
+    }
+    if (peekString("&Uacute;")) {
+      skipChars(8);
+      return 'Ú';
+    }
+    if (peekString("&uacute;")) {
+      skipChars(8);
+      return 'ú';
+    }
+    if (peekString("&Ntilde;")) {
+      skipChars(8);
+      return 'Ñ';
+    }
+    if (peekString("&ntilde;")) {
+      skipChars(8);
+      return 'ñ';
+    }
+    if (peekString("&copy;")) {
+      skipChars(8);
+      return '©';
+    }
+    if (peekString("&reg;")) {
+      skipChars(5);
+      return '®';
+    }
+    if (peekString("&trade;")) {
+      skipChars(7);
+      return '™';
+    }
+    if (peekString("&euro;")) {
+      skipChars(6);
+      return '€';
+    }
+    if (peekString("&pound;")) {
+      skipChars(7);
+      return '£';
+    }
+    if (peekString("&cent;")) {
+      skipChars(6);
+      return '¢';
+    }
+    if (peekString("&yen;")) {
+      skipChars(5);
+      return '¥';
+    }
+    if (peekString("&#")) {
+      int storedPosition = position;
+
+      skipChars(2);
+
+      StringBuffer stringBuffer = new StringBuffer();
+
+      while (position < input.length()) {
+        if (peekChar() == ';') {
+          skipChars(1);
+          break;
+        }
+        stringBuffer.appendChar(consumeChar());
+      }
+      Integer integer = Runtime.hexStringToInteger(stringBuffer.getString());
+      if (integer != null) {
+        return (char) integer.intValue();
+      } else {
+        integer = Runtime.stringToInteger(stringBuffer.getString());
+        if (integer != null) {
+          return (char) integer.intValue();
+        }
+      }
+      // wrong char, rewind
+      position = storedPosition;
+      return 0;
+    }
+    return 0;
   }
 
   private Block appendTextBlock(Block parentBlock, String textType, String text) {
@@ -795,14 +693,40 @@ public class HtmlParser extends Parser {
         outputStringBuffer.appendEndLine();
       }
     }
-    LettersBlock lettersBlock = new LettersBlock();
-    parentBlock.addBlock(lettersBlock);
-    lettersBlock.type = textType;
-    lettersBlock.setText(text);
+    CharsBlock charsBlock = new CharsBlock();
+    parentBlock.addBlock(charsBlock);
+    charsBlock.type = textType;
+    charsBlock.setChars(text);
     if (outputStringBuffer != null) {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
       outputStringBuffer.appendString(textType + " \"" + text + "\"");
       outputStringBuffer.appendEndLine();
+    }
+    return parentBlock;
+  }
+
+  private Block appendSpaceBlocks(Block parentBlock, int spacesCount) {
+    // <tag>#text</tag> convert to <tag><text>#text</text></tag>
+    if (!(parentBlock instanceof TextBlock)) {
+      TextBlock textBlock = new TextBlock();
+      parentBlock.addBlock(textBlock);
+      parentBlock = textBlock;
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendChars('.', outputSpacesNumber);
+        outputStringBuffer.appendString("< " + parentBlock.getClassName() + " >");
+        outputStringBuffer.appendEndLine();
+      }
+    }
+    for (int i = 0; i < spacesCount; i++) {
+      CharsBlock charsBlock = new CharsBlock();
+      parentBlock.addBlock(charsBlock);
+      charsBlock.type = CharsBlock.TYPE_SPACE;
+      charsBlock.setChars(" ");
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendChars('.', outputSpacesNumber);
+        outputStringBuffer.appendString("space" + " \" \"");
+        outputStringBuffer.appendEndLine();
+      }
     }
     return parentBlock;
   }

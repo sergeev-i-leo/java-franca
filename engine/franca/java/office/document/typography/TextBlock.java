@@ -15,8 +15,8 @@ public class TextBlock extends Block {
     }
     StringBuffer stringBuffer = new StringBuffer();
     for (Block block : getBlocks()) {
-      if (block instanceof LettersBlock) {
-        stringBuffer.appendString(((LettersBlock) block).getText());
+      if (block instanceof CharsBlock) {
+        stringBuffer.appendString(((CharsBlock) block).getChars());
       }
     }
     return stringBuffer.getString();
@@ -27,8 +27,8 @@ public class TextBlock extends Block {
       getBlocks().clear();
     }
 
-    LettersBlock letters = new LettersBlock();
-    letters.setText(text);
+    CharsBlock letters = new CharsBlock();
+    letters.setChars(text);
     addBlock(letters);
   }
 }

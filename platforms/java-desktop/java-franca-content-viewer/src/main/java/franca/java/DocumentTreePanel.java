@@ -5,7 +5,7 @@ import franca.java.data.json.JsonObject;
 import franca.java.office.document.Block;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
-import franca.java.office.document.typography.LettersBlock;
+import franca.java.office.document.typography.CharsBlock;
 import franca.java.office.document.typography.TextBlock;
 
 import javax.swing.*;
@@ -50,9 +50,9 @@ public class DocumentTreePanel extends JPanel {
     } else if (block instanceof TextBlock) {
       TextBlock textBlock = (TextBlock) block;
       nodeText = textBlock.getClassName() + " = \"" + textBlock.getText() + "\"";
-    } else if (block instanceof LettersBlock) {
-      LettersBlock lettersBlock = (LettersBlock) block;
-      nodeText = lettersBlock.getClassName() + " [" + lettersBlock.type + "] = \"" + lettersBlock.getText() + "\"";
+    } else if (block instanceof CharsBlock) {
+      CharsBlock charsBlock = (CharsBlock) block;
+      nodeText = charsBlock.getClassName() + " [" + charsBlock.type + "] = \"" + charsBlock.getChars() + "\"";
     } else {
       nodeText = block.getClassName();
     }
