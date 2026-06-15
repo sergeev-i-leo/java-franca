@@ -77,8 +77,6 @@ public class HtmlParser extends Parser {
         return;
       }
 
-      skipChars(1);
-
       if (parseClosingTag()) {
         return;
       }
@@ -198,14 +196,26 @@ public class HtmlParser extends Parser {
     } else {
       return false;
     }
+
+    skipChars(1);
+
     return true;
   }
 
   private boolean parseClosingTag() {
+    if (peekChar() != '<') {
+      // not a node tag is missing
+      return false;
+    }
+
+    int storedPosition = position;
+
+    skipChars(1);
 
     skipWhitespaces();
 
     if (peekChar() != '/') {
+      position = storedPosition;
       return false;
     }
 
@@ -590,6 +600,7 @@ public class HtmlParser extends Parser {
           literalStringBuffer = null;
           spacesCount = 0;
         }
+        skipChars(1);
         spacesCount++;
         continue;
       } else if (spacesCount > 0) {
@@ -918,6 +929,7 @@ public class HtmlParser extends Parser {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
       outputStringBuffer.appendString(charsType + " \"" + chars + "\"");
       outputStringBuffer.appendEndLine();
+      System.out.println(charsType + " \"" + chars + "\"");
     }
     return parentBlock;
   }
