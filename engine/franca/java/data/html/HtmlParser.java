@@ -84,6 +84,9 @@ public class HtmlParser extends Parser {
       Block block = parseHtmlNode();
       if (block != null) {
         parentBlock.addBlock(block);
+      } else {
+        // corrupted html
+        skipChars(1);
       }
     }
   }
@@ -674,107 +677,73 @@ public class HtmlParser extends Parser {
     int storedPosition = position;
     skipChars(1);
     skipWhitespaces();
-    if (peekString("strong")) {
-      skipChars(6);
+    if (peekChar() == '/') {
+      skipChars(1);
+      skipWhitespaces();
+      String tagName = parseTagName();
+      if (tagName.equals("strong")) {
+      } else if (tagName.equals("b")) {
+      } else if (tagName.equals("em")) {
+      } else if (tagName.equals("i")) {
+      } else if (tagName.equals("underline")) {
+      } else if (tagName.equals("u")) {
+      } else if (tagName.equals("del")) {
+      } else if (tagName.equals("span")) {
+      } else {
+        position = storedPosition;
+        return false;
+      }
+      skipWhitespaces();
+      // >
+      skipChars(1);
+      if (blockStyles.size() > 0) {
+        blockStyles.remove(blockStyles.size() - 1);
+      }
+      if (outputStringBuffer != null) {
+        outputStringBuffer.appendChars('.', outputSpacesNumber);
+        outputStringBuffer.appendString("</" + tagName + ">");
+        outputStringBuffer.appendEndLine();
+      }
+      return true;
+    }
+    String tagName = parseTagName();
+    if (tagName.equals("strong")) {
       blockStyle.fontWeight = "700";
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
-      return true;
-    }
-    if (peekString("b")) {
-      skipChars(1);
+    } else if (tagName.equals("b")) {
       blockStyle.fontWeight = "700";
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
-      return true;
-    }
-    if (peekString("em")) {
-      skipChars(2);
+    } else if (tagName.equals("em")) {
       blockStyle.isItalic = true;
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
-      return true;
-    }
-    if (peekString("i")) {
-      skipChars(1);
+    } else if (tagName.equals("i")) {
       blockStyle.isItalic = true;
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
-      return true;
-    }
-    if (peekString("underline")) {
-      skipChars(9);
+    } else if (tagName.equals("underline")) {
       blockStyle.isUnderline = true;
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
-      return true;
-    }
-    if (peekString("u")) {
-      skipChars(1);
+    } else if (tagName.equals("u")) {
       blockStyle.isUnderline = true;
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
-      return true;
-    }
-    if (peekString("del")) {
-      skipChars(9);
+    } else if (tagName.equals("del")) {
       blockStyle.isUnderline = true;
       blockStyles.add(blockStyle);
-      skipWhitespaces();
-      skipChars(1);
       return true;
-    }
-    if (peekString("span")) {
+    } else if (tagName.equals("span")) {
       // start of style run
-      skipChars(5);
       Block block = new Block();
       block.blockStyle = blockStyle;
       parseHtmlAttributes(block);
-      if (peekChar() == '>') {
-        // ok span with style
-        skipChars(1);
-        return true;
-      }
-      // corrupted html
-      return false;
-    }
-    if (peekChar() != '/') {
-      // not span tag
-      position = storedPosition;
-      return false;
-    }
-    skipWhitespaces();
-    if (peekString("strong")) {
-      skipChars(6);
-    } else if (peekString("b")) {
-      skipChars(1);
-    } else if (peekString("em")) {
-      skipChars(2);
-    } else if (peekString("i")) {
-      skipChars(1);
-    } else if (peekString("underline")) {
-      skipChars(9);
-    } else if (peekString("u")) {
-      skipChars(1);
-    } else if (peekString("del")) {
-      skipChars(3);
-    } else if (peekString("span")) {
-      skipChars(4);
     } else {
       position = storedPosition;
       return false;
     }
     skipWhitespaces();
-    // >
     skipChars(1);
-    if (blockStyles.size() > 0) {
-      blockStyles.remove(blockStyles.size() - 1);
+    if (outputStringBuffer != null) {
+      outputStringBuffer.appendChars('.', outputSpacesNumber);
+      outputStringBuffer.appendString("<" + tagName + ">");
+      outputStringBuffer.appendEndLine();
     }
     return true;
   }
@@ -929,7 +898,6 @@ public class HtmlParser extends Parser {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
       outputStringBuffer.appendString(charsType + " \"" + chars + "\"");
       outputStringBuffer.appendEndLine();
-      System.out.println(charsType + " \"" + chars + "\"");
     }
     return parentBlock;
   }
