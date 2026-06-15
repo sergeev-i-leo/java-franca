@@ -60,19 +60,19 @@ public class DocumentTreePanel extends JPanel {
     DefaultMutableTreeNode blockNode = new DefaultMutableTreeNode(nodeText);
 
     // classes
-    if (block.classes.size() > 0) {
+    if (block.classesJsonArray.size() > 0) {
       DefaultMutableTreeNode classesNode = new DefaultMutableTreeNode("classes");
-      for (int i = 0; i < block.classes.size(); i++) {
-        classesNode.add(new DefaultMutableTreeNode(block.classes.getStringValue(i)));
+      for (int i = 0; i < block.classesJsonArray.size(); i++) {
+        classesNode.add(new DefaultMutableTreeNode(block.classesJsonArray.getStringValue(i)));
       }
       blockNode.add(classesNode);
     }
 
     // attributes
-    if (block.attributes.size() > 0) {
+    if (block.attributesJsonArray.size() > 0) {
       DefaultMutableTreeNode attrsNode = new DefaultMutableTreeNode("attributes");
-      for (int i = 0; i < block.attributes.size(); i++) {
-        JsonElement jsonElement = block.attributes.get(i);
+      for (int i = 0; i < block.attributesJsonArray.size(); i++) {
+        JsonElement jsonElement = block.attributesJsonArray.get(i);
         JsonObject jsonObject = jsonElement.asJsonObject();
         if (jsonObject != null) {
           String name = jsonObject.getStringValue("name");
@@ -101,11 +101,11 @@ public class DocumentTreePanel extends JPanel {
     }
 
     // style
-    if (block.style.size() > 0) {
+    if (block.styleJsonArray.size() > 0) {
       DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      for (int i = 0; i < block.style.size(); i += 2) {
-        String name = block.style.getStringValue(i);
-        String value = block.style.getStringValue(i + 1);
+      for (int i = 0; i < block.styleJsonArray.size(); i += 2) {
+        String name = block.styleJsonArray.getStringValue(i);
+        String value = block.styleJsonArray.getStringValue(i + 1);
         if (name == null) {
           styleNode.add(new DefaultMutableTreeNode("STYLE ERROR"));
         } else if (value == null) {

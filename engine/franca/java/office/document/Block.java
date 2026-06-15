@@ -10,11 +10,11 @@ public class Block extends TranspilableClass {
   public Block parentBlock = null;
 
   // array of strings className, className, className ...
-  public JsonArray classes = new JsonArray();
+  public JsonArray classesJsonArray = new JsonArray();
   // array of strings styleName, styleValue, styleName, styleValue ...
-  public JsonArray style = new JsonArray();
+  public JsonArray styleJsonArray = new JsonArray();
   // single attributes, non-quoted attributes, quoted attributes
-  public JsonArray attributes = new JsonArray();
+  public JsonArray attributesJsonArray = new JsonArray();
 
   private ArrayList<Block> blocks = null;
 
