@@ -578,8 +578,8 @@ public class HtmlParser extends Parser {
           parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
         } else if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
-          literalStringBuffer = null;
         }
+        literalStringBuffer = null;
         spacesCount = 0;
         continue;
       }
@@ -600,10 +600,10 @@ public class HtmlParser extends Parser {
         if (literalStringBuffer != null) {
           // there are accumulated chars
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
-          literalStringBuffer = null;
           spacesCount = 0;
         }
         skipChars(1);
+        literalStringBuffer = null;
         spacesCount++;
         continue;
       } else if (spacesCount > 0) {
@@ -611,8 +611,8 @@ public class HtmlParser extends Parser {
         if (literalStringBuffer != null) {
           System.out.println("Accumulated chars at position " + position);
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
-          literalStringBuffer = null;
         }
+        literalStringBuffer = null;
         parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
       }
 
@@ -631,19 +631,19 @@ public class HtmlParser extends Parser {
       if (peekString("&nbsp;")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
-          literalStringBuffer = null;
         }
         parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", blockStyle);
         skipChars(6);
+        literalStringBuffer = null;
         continue;
       }
       if (peekString("<br>")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
-          literalStringBuffer = null;
         }
         parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", blockStyle);
         skipChars(4);
+        literalStringBuffer = null;
         continue;
       }
 
