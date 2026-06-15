@@ -495,9 +495,23 @@ public class HtmlParser extends Parser {
         continue;
       }
 
-      JsonArray styleJsonArray =
-      if (parseStyle(stylesJsonArray)) {
-        // format found
+      JsonArray styleJsonArray;
+      if (stylesStackJsonArray.isEmpty()) {
+        styleJsonArray = null;
+      } else {
+        styleJsonArray = stylesStackJsonArray.get(stylesStackJsonArray.size() - 1).asJsonArray();
+      }
+
+      if (parseStyle(stylesStackJsonArray)) {
+        if (spacesCount > 0) {
+          // we accumulated spaces
+          parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonArray);
+        } else if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+          literalStringBuffer = null;
+        }
+        spacesCount = 0;
+        continue;
       }
 
       if (peekChar() == '<') {
@@ -515,7 +529,7 @@ public class HtmlParser extends Parser {
         }
         if (literalStringBuffer != null) {
           // there are accumulated chars
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), stylesJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
           literalStringBuffer = null;
           spacesCount = 0;
         }
@@ -525,10 +539,10 @@ public class HtmlParser extends Parser {
         // literalStringBuffer must be null
         if (literalStringBuffer != null) {
           System.out.println("Accumulated chars at position " + position);
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), stylesJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
           literalStringBuffer = null;
         }
-        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, stylesJsonArray);
+        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonArray);
       }
 
       // not space char found
@@ -545,19 +559,19 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&nbsp;")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), stylesJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
           literalStringBuffer = null;
         }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", stylesJsonArray);
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", styleJsonArray);
         skipChars(6);
         continue;
       }
       if (peekString("<br>")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), stylesJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
           literalStringBuffer = null;
         }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", stylesJsonArray);
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styleJsonArray);
         skipChars(4);
         continue;
       }
@@ -567,14 +581,20 @@ public class HtmlParser extends Parser {
 
     if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
       // chars found
-      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), stylesJsonArray);
+      JsonArray styleJsonArray;
+      if (stylesStackJsonArray.isEmpty()) {
+        styleJsonArray = null;
+      } else {
+        styleJsonArray = stylesStackJsonArray.get(stylesStackJsonArray.size() - 1).asJsonArray();
+      }
+      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
     }
   }
 
-  public int parseStyle(JsonArray stylesStackJsonArray) {
-    // returns +1 if style pushed to stack, -1 if style popped from stack, else returns 0
+  public boolean parseStyle(JsonArray stylesStackJsonArray) {
+    // returns true if style stack changed or else returns false
     if (peekChar() != '<') {
-      return 0;
+      return false;
     }
     int storedPosition = position;
     skipChars(1);
@@ -595,21 +615,21 @@ public class HtmlParser extends Parser {
           }
         }
         skipChars(1);
-        return 1;
+        return true;
       }
       // corrupted html
-      return 0;
+      return false;
     }
     if (peekChar() != '/') {
       // not span tag
       position = storedPosition;
-      return 0;
+      return false;
     }
     skipWhitespaces();
     if (!peekString("span")) {
       // not span tag
       position = storedPosition;
-      return 0;
+      return false;
     }
     skipChars(5);
     skipWhitespaces();
@@ -618,7 +638,7 @@ public class HtmlParser extends Parser {
     if (stylesStackJsonArray.isNotEmpty()) {
       stylesStackJsonArray.remove(stylesStackJsonArray.size() - 1);
     }
-    return -1;
+    return true;
   }
 
   private char parseEncodedChar() {
