@@ -4,13 +4,13 @@ import franca.java.expected.TranspilableClass;
 
 public class BlockStyle extends TranspilableClass {
 
-  public Integer color = null;
-  public Integer backgroundColor = null;
+  public String color = null;
+  public String backgroundColor = null;
 
   public String textAlign = null;
 
   public String deviceFontName = null;
-  public Integer fontWeight = null;
+  public String fontWeight = null;
   public Boolean isItalic = null;
   public Boolean isUnderline = null;
   public Boolean isStrikethrough = null;
@@ -18,6 +18,20 @@ public class BlockStyle extends TranspilableClass {
   @Override
   public String getClassName() {
     return "BlockStyle";
+  }
+
+  public BlockStyle clone() {
+    BlockStyle result = new BlockStyle();
+    result.color = color;
+    result.backgroundColor = backgroundColor;
+    result.textAlign = textAlign;
+    result.deviceFontName = deviceFontName;
+    result.fontWeight = fontWeight;
+    result.isItalic = isItalic;
+    result.isUnderline = isUnderline;
+    result.isStrikethrough = isStrikethrough;
+
+    return result;
   }
 
   public BlockStyle mergeWith(BlockStyle overlayBlockStyle) {

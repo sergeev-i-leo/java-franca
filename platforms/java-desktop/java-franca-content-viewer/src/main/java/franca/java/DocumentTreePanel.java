@@ -101,19 +101,39 @@ public class DocumentTreePanel extends JPanel {
     }
 
     // style
-    if (block.styleJsonArray.size() > 0) {
+    if (block.blockStyle.color != null) {
       DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      for (int i = 0; i < block.styleJsonArray.size(); i += 2) {
-        String name = block.styleJsonArray.getStringValue(i);
-        String value = block.styleJsonArray.getStringValue(i + 1);
-        if (name == null) {
-          styleNode.add(new DefaultMutableTreeNode("STYLE ERROR"));
-        } else if (value == null) {
-          styleNode.add(new DefaultMutableTreeNode(name + " : STYLE ERROR"));
-        } else {
-          styleNode.add(new DefaultMutableTreeNode(name + " : " + value));
-        }
-      }
+      styleNode.add(new DefaultMutableTreeNode("color : " + block.blockStyle.color));
+      blockNode.add(styleNode);
+    }
+    if (block.blockStyle.backgroundColor != null) {
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
+      styleNode.add(new DefaultMutableTreeNode("backgroundColor : " + block.blockStyle.backgroundColor));
+      blockNode.add(styleNode);
+    }
+    if (block.blockStyle.textAlign != null) {
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
+      styleNode.add(new DefaultMutableTreeNode("textAlign : " + block.blockStyle.textAlign));
+      blockNode.add(styleNode);
+    }
+    if (block.blockStyle.fontWeight != null) {
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
+      styleNode.add(new DefaultMutableTreeNode("fontWeight : " + block.blockStyle.fontWeight));
+      blockNode.add(styleNode);
+    }
+    if (block.blockStyle.isItalic != null) {
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
+      styleNode.add(new DefaultMutableTreeNode("isItalic : " + block.blockStyle.isItalic));
+      blockNode.add(styleNode);
+    }
+    if (block.blockStyle.isUnderline != null) {
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
+      styleNode.add(new DefaultMutableTreeNode("isUnderline : " + block.blockStyle.isUnderline));
+      blockNode.add(styleNode);
+    }
+    if (block.blockStyle.isStrikethrough != null) {
+      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
+      styleNode.add(new DefaultMutableTreeNode("isStrikethrough : " + block.blockStyle.isStrikethrough));
       blockNode.add(styleNode);
     }
 

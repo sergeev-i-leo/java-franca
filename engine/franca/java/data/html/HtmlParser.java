@@ -1,5 +1,7 @@
 package franca.java.data.html;
 
+import java.util.ArrayList;
+
 import franca.java.expected.StringBuffer;
 import franca.java.expected.ExpectedRuntime;
 import franca.java.data.Parser;
@@ -7,6 +9,7 @@ import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
 import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
+import franca.java.office.document.BlockStyle;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.office.document.typography.CharsBlock;
@@ -65,7 +68,8 @@ public class HtmlParser extends Parser {
       }
 
       // can be part of inline element <span>, <strong>, <em>
-      parseTextContents(parentBlock, new JsonArray());
+      ArrayList<BlockStyle> blockStyles = new ArrayList<>();
+      parseTextContents(parentBlock, blockStyles);
 
       if (peekChar() != '<') {
         // corrupted html
@@ -256,7 +260,7 @@ public class HtmlParser extends Parser {
       if (attributeName.equals("class")) {
         parseClassAttribute(targetBlock.classesJsonArray);
       } else if (attributeName.equals("style")) {
-        parseStyleAttribute(targetBlock.styleJsonArray);
+        parseStyleAttribute(targetBlock.blockStyle);
       } else {
         parseAttributeValue(attributeName, targetBlock.attributesJsonArray);
       }
@@ -319,7 +323,7 @@ public class HtmlParser extends Parser {
     skipChars(1);
   }
 
-  private void parseStyleAttribute(JsonArray jsonArray) {
+  private void parseStyleAttribute(BlockStyle blockStyle) {
     skipWhitespaces();
 
     char styleValueDelimiter = peekChar();
@@ -345,9 +349,42 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      // style array contain pairs: styleName, styleValue, styleName, styleValue ...
-      jsonArray.addStringValue(styleName);
-      jsonArray.addStringValue(literalStringBuffer.getString());
+      String styleValue = literalStringBuffer.getString();
+      switch (styleName) {
+        case "color":
+          blockStyle.color = styleValue;
+          break;
+        case "background-color":
+          blockStyle.backgroundColor = styleValue;
+          break;
+        case "text-align":
+          blockStyle.textAlign = styleValue;
+          break;
+        case "font-weight":
+          blockStyle.fontWeight = styleValue;
+          break;
+        case "font-style":
+          if (styleValue.equals("italic")) {
+            blockStyle.isItalic = true;
+          } else if (styleValue.equals("normal")) {
+            // reset font
+            blockStyle.isItalic = false;
+          }
+          break;
+        case "text-decoration":
+          if (styleValue.equals("none")) {
+            blockStyle.isUnderline = false;
+            blockStyle.isStrikethrough = false;
+          } else {
+            if (styleValue.contains("underline")) {
+              blockStyle.isUnderline = true;
+            }
+            if (styleValue.contains("strike-through")) {
+              blockStyle.isStrikethrough = true;
+            }
+          }
+          break;
+      }
 
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -497,7 +534,7 @@ public class HtmlParser extends Parser {
     }
   }
 
-  public void parseTextContents(Block parentBlock, JsonArray stylesStackJsonArray) {
+  public void parseTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
 
     literalStringBuffer = null;
 
@@ -515,19 +552,19 @@ public class HtmlParser extends Parser {
         continue;
       }
 
-      JsonArray styleJsonArray;
-      if (stylesStackJsonArray.isEmpty()) {
-        styleJsonArray = null;
+      BlockStyle blockStyle;
+      if (blockStyles.isEmpty()) {
+        blockStyle = null;
       } else {
-        styleJsonArray = stylesStackJsonArray.get(stylesStackJsonArray.size() - 1).asJsonArray();
+        blockStyle = blockStyles.get(blockStyles.size() - 1);
       }
 
-      if (parseStyleJsonArray(stylesStackJsonArray)) {
+      if (parseBlockStyle(blockStyles)) {
         if (spacesCount > 0) {
           // we accumulated spaces
-          parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonArray);
+          parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
         } else if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
           literalStringBuffer = null;
         }
         spacesCount = 0;
@@ -549,7 +586,7 @@ public class HtmlParser extends Parser {
         }
         if (literalStringBuffer != null) {
           // there are accumulated chars
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
           literalStringBuffer = null;
           spacesCount = 0;
         }
@@ -559,10 +596,10 @@ public class HtmlParser extends Parser {
         // literalStringBuffer must be null
         if (literalStringBuffer != null) {
           System.out.println("Accumulated chars at position " + position);
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
           literalStringBuffer = null;
         }
-        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonArray);
+        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
       }
 
       // not space char found
@@ -572,26 +609,26 @@ public class HtmlParser extends Parser {
       }
       spacesCount = 0;
 
-      char encodedChar = parseEncodedChar();
-      if (encodedChar != (char) 0) {
-        literalStringBuffer.appendChar(encodedChar);
+      String encodedChar = parseEncodedChar();
+      if (encodedChar != null) {
+        literalStringBuffer.appendString(encodedChar);
         continue;
       }
       if (peekString("&nbsp;")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
           literalStringBuffer = null;
         }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", styleJsonArray);
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", blockStyle);
         skipChars(6);
         continue;
       }
       if (peekString("<br>")) {
         if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
           literalStringBuffer = null;
         }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styleJsonArray);
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", blockStyle);
         skipChars(4);
         continue;
       }
@@ -601,39 +638,95 @@ public class HtmlParser extends Parser {
 
     if ((literalStringBuffer != null) && (literalStringBuffer.isNotEmpty())) {
       // chars found
-      JsonArray styleJsonArray;
-      if (stylesStackJsonArray.isEmpty()) {
-        styleJsonArray = null;
+      BlockStyle blockStyle;
+      if (blockStyles.isEmpty()) {
+        blockStyle = null;
       } else {
-        styleJsonArray = stylesStackJsonArray.get(stylesStackJsonArray.size() - 1).asJsonArray();
+        blockStyle = blockStyles.get(blockStyles.size() - 1);
       }
-      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), styleJsonArray);
+      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalStringBuffer.getString(), blockStyle);
     }
   }
 
-  public boolean parseStyleJsonArray(JsonArray stylesStackJsonArray) {
+  public boolean parseBlockStyle(ArrayList<BlockStyle> blockStyles) {
     // returns true if style stack changed or else returns false
     if (peekChar() != '<') {
       return false;
     }
+    BlockStyle blockStyle;
+    if (blockStyles.isEmpty()) {
+      blockStyle = new BlockStyle();
+    } else {
+      blockStyle = blockStyles.get(blockStyles.size() - 1);
+      blockStyle = blockStyle.clone();
+    }
     int storedPosition = position;
     skipChars(1);
     skipWhitespaces();
+    if (peekString("strong")) {
+      skipChars(6);
+      blockStyle.fontWeight = "700";
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
+    if (peekString("b")) {
+      skipChars(1);
+      blockStyle.fontWeight = "700";
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
+    if (peekString("em")) {
+      skipChars(2);
+      blockStyle.isItalic = true;
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
+    if (peekString("i")) {
+      skipChars(1);
+      blockStyle.isItalic = true;
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
+    if (peekString("underline")) {
+      skipChars(9);
+      blockStyle.isUnderline = true;
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
+    if (peekString("u")) {
+      skipChars(1);
+      blockStyle.isUnderline = true;
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
+    if (peekString("del")) {
+      skipChars(9);
+      blockStyle.isUnderline = true;
+      blockStyles.add(blockStyle);
+      skipWhitespaces();
+      skipChars(1);
+      return true;
+    }
     if (peekString("span")) {
       // start of style run
       skipChars(5);
       Block block = new Block();
+      block.blockStyle = blockStyle;
       parseHtmlAttributes(block);
       if (peekChar() == '>') {
         // ok span with style
-        JsonArray styleJsonArray = new JsonArray();
-        stylesStackJsonArray.add(styleJsonArray);
-        for (int i = 0; i < block.styleJsonArray.size(); i++) {
-          String string = block.styleJsonArray.get(i).getStringValue();
-          if (string != null) {
-            styleJsonArray.addStringValue(string);
-          }
-        }
         skipChars(1);
         return true;
       }
@@ -646,117 +739,131 @@ public class HtmlParser extends Parser {
       return false;
     }
     skipWhitespaces();
-    if (!peekString("span")) {
-      // not span tag
+    if (peekString("strong")) {
+      skipChars(6);
+    } else if (peekString("b")) {
+      skipChars(1);
+    } else if (peekString("em")) {
+      skipChars(2);
+    } else if (peekString("i")) {
+      skipChars(1);
+    } else if (peekString("underline")) {
+      skipChars(9);
+    } else if (peekString("u")) {
+      skipChars(1);
+    } else if (peekString("del")) {
+      skipChars(3);
+    } else if (peekString("span")) {
+      skipChars(4);
+    } else {
       position = storedPosition;
       return false;
     }
-    skipChars(5);
     skipWhitespaces();
     // >
     skipChars(1);
-    if (stylesStackJsonArray.isNotEmpty()) {
-      stylesStackJsonArray.remove(stylesStackJsonArray.size() - 1);
+    if (blockStyles.size() > 0) {
+      blockStyles.remove(blockStyles.size() - 1);
     }
     return true;
   }
 
-  private char parseEncodedChar() {
+  private String parseEncodedChar() {
     if (peekString("&amp;")) {
       skipChars(5);
-      return '&';
+      return "&";
     }
     if (peekString("&lt;")) {
       skipChars(4);
-      return '<';
+      return "<";
     }
     if (peekString("&gt;")) {
       skipChars(4);
-      return '>';
+      return ">";
     }
     if (peekString("&quot;")) {
       skipChars(6);
-      return '"';
+      return "\"";
     }
     if (peekString("&#39;")) {
       skipChars(5);
-      return '\'';
+      return "'";
     }
     if (peekString("&Aacute;")) {
       skipChars(8);
-      return 'Á';
+      return "Á";
     }
     if (peekString("&aacute;")) {
       skipChars(8);
-      return 'á';
+      return "á";
     }
     if (peekString("&Eacute;")) {
       skipChars(8);
-      return 'É';
+      return "É";
     }
     if (peekString("&eacute;")) {
       skipChars(8);
-      return 'é';
+      return "é";
     }
     if (peekString("&Iacute;")) {
       skipChars(8);
-      return 'Í';
+      return "Í";
     }
     if (peekString("&iacute;")) {
       skipChars(8);
-      return 'í';
+      return "í";
     }
     if (peekString("&Oacute;")) {
       skipChars(8);
-      return 'Ó';
+      return "Ó";
     }
     if (peekString("&oacute;")) {
       skipChars(8);
-      return 'ó';
+      return "ó";
     }
     if (peekString("&Uacute;")) {
       skipChars(8);
-      return 'Ú';
+      return "Ú";
     }
     if (peekString("&uacute;")) {
       skipChars(8);
-      return 'ú';
+      return "ú";
     }
     if (peekString("&Ntilde;")) {
       skipChars(8);
-      return 'Ñ';
+      return "Ñ";
     }
     if (peekString("&ntilde;")) {
       skipChars(8);
-      return 'ñ';
+      return "ñ";
     }
     if (peekString("&copy;")) {
       skipChars(8);
-      return '©';
+      return "©";
     }
     if (peekString("&reg;")) {
       skipChars(5);
-      return '®';
+      return "®";
     }
     if (peekString("&trade;")) {
       skipChars(7);
-      return '™';
+      return "™";
     }
     if (peekString("&euro;")) {
       skipChars(6);
-      return '€';
+      return "€";
     }
     if (peekString("&pound;")) {
       skipChars(7);
-      return '£';
+      return "£";
     }
     if (peekString("&cent;")) {
       skipChars(6);
-      return '¢';
+      return "¢";
     }
     if (peekString("&yen;")) {
       skipChars(5);
-      return '¥';
+      return "¥";
     }
     if (peekString("&#")) {
       int storedPosition = position;
@@ -774,21 +881,21 @@ public class HtmlParser extends Parser {
       }
       Integer integer = ExpectedRuntime.hexStringToInteger(stringBuffer.getString());
       if (integer != null) {
-        return (char) integer.intValue();
+        return String.valueOf((char) integer.intValue());
       } else {
         integer = ExpectedRuntime.stringToInteger(stringBuffer.getString());
         if (integer != null) {
-          return (char) integer.intValue();
+          return String.valueOf((char) integer.intValue());
         }
       }
       // wrong char, rewind
       position = storedPosition;
-      return (char) 0;
+      return null;
     }
-    return (char) 0;
+    return null;
   }
 
-  private Block appendCharsBlock(Block parentBlock, String charsType, String chars, JsonArray styleJsonArray) {
+  private Block appendCharsBlock(Block parentBlock, String charsType, String chars, BlockStyle blockStyle) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
@@ -804,12 +911,8 @@ public class HtmlParser extends Parser {
     parentBlock.addBlock(charsBlock);
     charsBlock.type = charsType;
     charsBlock.setChars(chars);
-    // styleArray contain pairs: styleName, styleValue, styleName, styleValue ...
-    for (int i = 0; i < styleJsonArray.size(); i++) {
-      String string = styleJsonArray.get(i).getStringValue();
-      if (string != null) {
-        charsBlock.styleJsonArray.addStringValue(string);
-      }
+    if (blockStyle != null) {
+      charsBlock.blockStyle = blockStyle.clone();
     }
     if (outputStringBuffer != null) {
       outputStringBuffer.appendChars('.', outputSpacesNumber);
@@ -819,7 +922,7 @@ public class HtmlParser extends Parser {
     return parentBlock;
   }
 
-  private Block appendSpaceBlocks(Block parentBlock, int spacesCount, JsonArray styleJsonArray) {
+  private Block appendSpaceBlocks(Block parentBlock, int spacesCount, BlockStyle blockStyle) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
@@ -836,14 +939,8 @@ public class HtmlParser extends Parser {
       parentBlock.addBlock(charsBlock);
       charsBlock.type = CharsBlock.TYPE_SPACE;
       charsBlock.setChars(" ");
-      if (styleJsonArray != null) {
-        // styleArray contain pairs: styleName, styleValue, styleName, styleValue ...
-        for (int i1 = 0; i1 < styleJsonArray.size(); i1++) {
-          String string = styleJsonArray.get(i1).getStringValue();
-          if (string != null) {
-            charsBlock.styleJsonArray.addStringValue(string);
-          }
-        }
+      if (blockStyle != null) {
+        charsBlock.blockStyle = blockStyle.clone();
       }
       if (outputStringBuffer != null) {
         outputStringBuffer.appendChars('.', outputSpacesNumber);
