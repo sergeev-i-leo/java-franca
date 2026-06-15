@@ -7,6 +7,8 @@ public class BlockStyle extends TranspilableClass {
   public Integer color = null;
   public Integer backgroundColor = null;
 
+  public String textAlign = null;
+
   public String deviceFontName = null;
   public Integer fontWeight = null;
   public Boolean isItalic = null;
@@ -18,27 +20,51 @@ public class BlockStyle extends TranspilableClass {
     return "BlockStyle";
   }
 
-  public void mergeWith(BlockStyle blockStyle) {
-    if (blockStyle.color != null) {
-      color = blockStyle.color;
+  public BlockStyle mergeWith(BlockStyle overlayBlockStyle) {
+    BlockStyle result = new BlockStyle();
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.color != null)) {
+      result.color = overlayBlockStyle.color;
+    } else {
+      result.color = color;
     }
-    if (blockStyle.backgroundColor != null) {
-      backgroundColor = blockStyle.backgroundColor;
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.backgroundColor != null)) {
+      result.backgroundColor = overlayBlockStyle.backgroundColor;
+    } else {
+      result.backgroundColor = backgroundColor;
     }
-    if (blockStyle.deviceFontName != null) {
-      deviceFontName = blockStyle.deviceFontName;
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.deviceFontName != null)) {
+      result.deviceFontName = overlayBlockStyle.deviceFontName;
+    } else {
+      result.deviceFontName = deviceFontName;
     }
-    if (blockStyle.fontWeight != null) {
-      fontWeight = blockStyle.fontWeight;
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.fontWeight != null)) {
+      result.fontWeight = overlayBlockStyle.fontWeight;
+    } else {
+      result.fontWeight = fontWeight;
     }
-    if (blockStyle.isItalic != null) {
-      isItalic = blockStyle.isItalic;
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.isItalic != null)) {
+      result.isItalic = overlayBlockStyle.isItalic;
+    } else {
+      result.isItalic = isItalic;
     }
-    if (blockStyle.isUnderline != null) {
-      isUnderline = blockStyle.isUnderline;
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.isUnderline != null)) {
+      result.isUnderline = overlayBlockStyle.isUnderline;
+    } else {
+      result.isUnderline = isUnderline;
     }
-    if (blockStyle.isStrikethrough != null) {
-      isStrikethrough = blockStyle.isStrikethrough;
+
+    if ((overlayBlockStyle != null) && (overlayBlockStyle.isStrikethrough != null)) {
+      result.isStrikethrough = overlayBlockStyle.isStrikethrough;
+    } else {
+      result.isStrikethrough = isStrikethrough;
     }
+
+    return result;
   }
 }

@@ -1,6 +1,6 @@
 package franca.java.expected;
 
-public class Runtime {
+public class ExpectedRuntime {
 
   private static long nextId = 0L;
 

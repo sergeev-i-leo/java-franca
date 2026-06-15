@@ -1,7 +1,7 @@
 package franca.java.data.html;
 
 import franca.java.expected.StringBuffer;
-import franca.java.expected.Runtime;
+import franca.java.expected.ExpectedRuntime;
 import franca.java.data.Parser;
 import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
@@ -772,11 +772,11 @@ public class HtmlParser extends Parser {
         }
         stringBuffer.appendChar(consumeChar());
       }
-      Integer integer = Runtime.hexStringToInteger(stringBuffer.getString());
+      Integer integer = ExpectedRuntime.hexStringToInteger(stringBuffer.getString());
       if (integer != null) {
         return (char) integer.intValue();
       } else {
-        integer = Runtime.stringToInteger(stringBuffer.getString());
+        integer = ExpectedRuntime.stringToInteger(stringBuffer.getString());
         if (integer != null) {
           return (char) integer.intValue();
         }

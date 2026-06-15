@@ -5,7 +5,7 @@ public class TranspilableClass {
   private long id = 0L;
 
   public TranspilableClass() {
-    id = Runtime.getId();
+    id = ExpectedRuntime.getId();
   }
 
   public String getClassName() {
