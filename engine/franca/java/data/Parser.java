@@ -1,7 +1,7 @@
 package franca.java.data;
 
 import franca.java.expected.ExpectedRuntime;
-import franca.java.expected.StringBuffer;
+import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 
 public class Parser extends TranspilableClass {
@@ -9,7 +9,7 @@ public class Parser extends TranspilableClass {
   public String input = null;
   public int position = 0;
 
-  public StringBuffer literalStringBuffer = null;
+  public BufferedString literalBufferedString = null;
   public boolean booleanLiteral = false;
   public Integer integerLiteral = null;
   public Double doubleLiteral = null;
@@ -18,15 +18,15 @@ public class Parser extends TranspilableClass {
     if (input.startsWith("false", position)) {
       booleanLiteral = false;
       skipChars(5);
-      literalStringBuffer = new StringBuffer();
-      literalStringBuffer.appendString("false");
+      literalBufferedString = new BufferedString();
+      literalBufferedString.appendString("false");
       return "boolean-literal";
     }
     if (input.startsWith("true", position)) {
       booleanLiteral = false;
       skipChars(4);
-      literalStringBuffer = new StringBuffer();
-      literalStringBuffer.appendString("true");
+      literalBufferedString = new BufferedString();
+      literalBufferedString.appendString("true");
       return "boolean-literal";
     }
     String result = parseNumberLiteral();
@@ -54,7 +54,7 @@ public class Parser extends TranspilableClass {
         return null;
     }
     collectNumberLiteral();
-    String literal = literalStringBuffer.getString();
+    String literal = literalBufferedString.getString();
     integerLiteral = ExpectedRuntime.stringToInteger(literal);
     if (integerLiteral != null) {
       return "integer-literal";
@@ -71,7 +71,7 @@ public class Parser extends TranspilableClass {
   }
 
   public void collectNumberLiteral() {
-    literalStringBuffer = new StringBuffer();
+    literalBufferedString = new BufferedString();
     while (position < input.length()) {
       char c = input.charAt(position);
       switch (c) {
@@ -91,7 +91,7 @@ public class Parser extends TranspilableClass {
         case 'e':
         case 'X':
         case 'x':
-          literalStringBuffer.appendChar(c);
+          literalBufferedString.appendChar(c);
           break;
         default:
           return;
@@ -117,7 +117,7 @@ public class Parser extends TranspilableClass {
         }
         c = consumeChar();
       }
-      literalStringBuffer.appendChar(c);
+      literalBufferedString.appendChar(c);
     }
     return "error";
   }

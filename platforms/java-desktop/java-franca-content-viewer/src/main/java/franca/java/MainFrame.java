@@ -1,6 +1,6 @@
 package franca.java;
 
-import franca.java.expected.StringBuffer;
+import franca.java.expected.BufferedString;
 import franca.java.data.html.HtmlParser;
 import franca.java.office.document.Block;
 
@@ -62,8 +62,8 @@ public class MainFrame extends JFrame {
     inner.attributesJsonArray.addStringValue("data-name=inner-row");
 
     root.addBlock(inner);
-    DocumentModel.blocks.clear();
-    DocumentModel.blocks.add(root);
+    Document.instance.clearBlocks();
+    Document.instance.addBlock(root);
 
     if (documentTreePanel != null) {
       documentTreePanel.refresh();
@@ -108,9 +108,9 @@ public class MainFrame extends JFrame {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           HtmlParser parser = new HtmlParser();
-          StringBuffer outputStringBuffer = new StringBuffer();
-          DocumentModel.blocks = parser.parse(content, outputStringBuffer).getBlocks();
-          jsonTextPanel.setJsonText(outputStringBuffer.getString());
+          BufferedString outputBufferedString = new BufferedString();
+          Document.instance = parser.parse(content, outputBufferedString);
+          jsonTextPanel.setJsonText(outputBufferedString.getString());
           documentTreePanel.refresh();
 
           // TODO: конвертация raw → Block

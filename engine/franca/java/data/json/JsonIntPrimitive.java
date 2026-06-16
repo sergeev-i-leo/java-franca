@@ -1,7 +1,7 @@
 package franca.java.data.json;
 
 import franca.java.expected.ExpectedRuntime;
-import franca.java.expected.StringBuffer;
+import franca.java.expected.BufferedString;
 
 public class JsonIntPrimitive extends JsonPrimitive {
 
@@ -17,8 +17,8 @@ public class JsonIntPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
-    stringBuffer.appendString(ExpectedRuntime.intToString(value));
+  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
+    bufferedString.appendString(ExpectedRuntime.intToString(value));
   }
 
   @Override

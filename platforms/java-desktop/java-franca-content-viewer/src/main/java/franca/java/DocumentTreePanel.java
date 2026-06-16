@@ -27,9 +27,9 @@ public class DocumentTreePanel extends JPanel {
   }
 
   public void refresh() {
-    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Document");
+    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("DocumentBlock");
 
-    for (Block block : DocumentModel.blocks) {
+    for (Block block : Document.instance.getBlocks()) {
       rootNode.add(buildTree(block));
     }
 

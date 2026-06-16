@@ -1,6 +1,6 @@
 package franca.java.data.json;
 
-import franca.java.expected.StringBuffer;
+import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 
 public class JsonElement extends TranspilableClass {
@@ -9,7 +9,7 @@ public class JsonElement extends TranspilableClass {
     return "JsonElement";
   }
 
-  public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
+  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
   }
 
   public Boolean getBooleanValue() {

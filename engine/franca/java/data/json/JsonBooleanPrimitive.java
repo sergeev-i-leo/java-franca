@@ -1,6 +1,6 @@
 package franca.java.data.json;
 
-import franca.java.expected.StringBuffer;
+import franca.java.expected.BufferedString;
 
 public class JsonBooleanPrimitive extends JsonPrimitive {
 
@@ -16,8 +16,8 @@ public class JsonBooleanPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(StringBuffer stringBuffer, Integer spacesBefore) {
-    stringBuffer.appendString(value ? "true" : "false");
+  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
+    bufferedString.appendString(value ? "true" : "false");
   }
 
   @Override

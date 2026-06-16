@@ -1,6 +1,6 @@
 package franca.java.office.document.typography;
 
-import franca.java.expected.StringBuffer;
+import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
 
 public class TextBlock extends Block {
@@ -13,13 +13,13 @@ public class TextBlock extends Block {
     if (getBlocks() == null) {
       return "";
     }
-    StringBuffer stringBuffer = new StringBuffer();
+    BufferedString bufferedString = new BufferedString();
     for (Block block : getBlocks()) {
       if (block instanceof CharsBlock) {
-        stringBuffer.appendString(((CharsBlock) block).getChars());
+        bufferedString.appendString(((CharsBlock) block).getChars());
       }
     }
-    return stringBuffer.getString();
+    return bufferedString.getString();
   }
 
   public void setText(String text) {

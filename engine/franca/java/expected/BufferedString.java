@@ -1,6 +1,6 @@
 package franca.java.expected;
 
-public class StringBuffer {
+public class BufferedString {
 
   private StringBuilder stringBuilder = new StringBuilder();
 

@@ -34,4 +34,8 @@ public class Block extends TranspilableClass {
     return blocks;
   }
 
+  public void clearBlocks() {
+    blocks.clear();
+  }
+
 }

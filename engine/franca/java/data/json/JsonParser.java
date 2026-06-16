@@ -49,7 +49,7 @@ public class JsonParser extends Parser {
       return new JsonDoublePrimitive(doubleLiteral);
     }
     if (literalType.equals("string-literal")) {
-      JsonStringPrimitive jsonStringPrimitive = new JsonStringPrimitive(literalStringBuffer.getString());
+      JsonStringPrimitive jsonStringPrimitive = new JsonStringPrimitive(literalBufferedString.getString());
       return jsonStringPrimitive;
     }
     System.out.println("Invalid JsonElement at " + position);
@@ -111,7 +111,7 @@ public class JsonParser extends Parser {
       if (peekChar() == ':') {
         skipChars(1);
         JsonElement jsonElement = parseJsonElement();
-        jsonObject.put(literalStringBuffer.getString(), jsonElement);
+        jsonObject.put(literalBufferedString.getString(), jsonElement);
       }
     } catch (Exception e) {
       System.out.println("End of input at " + position);
