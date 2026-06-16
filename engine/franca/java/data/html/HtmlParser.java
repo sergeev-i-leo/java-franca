@@ -583,7 +583,7 @@ public class HtmlParser extends Parser {
 
   public void parseTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
 
-    literalBufferedString = null;
+    literalBufferedString = new BufferedString();
 
     // for trailing spaces
     int spacesCount;
@@ -616,10 +616,10 @@ public class HtmlParser extends Parser {
         if (spacesCount > 0) {
           // we accumulated spaces
           parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
-        } else if ((literalBufferedString != null) && (literalBufferedString.isNotEmpty())) {
+        } else if (literalBufferedString.isNotEmpty()) {
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
-        literalBufferedString = null;
+        literalBufferedString.clear();
         spacesCount = 0;
         continue;
       }
@@ -637,30 +637,27 @@ public class HtmlParser extends Parser {
           skipChars(1);
           continue;
         }
-        if (literalBufferedString != null) {
+        if (literalBufferedString.isNotEmpty()) {
           // there are accumulated chars
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
           spacesCount = 0;
         }
         skipChars(1);
-        literalBufferedString = null;
+        literalBufferedString.clear();
         spacesCount++;
         continue;
       } else if (spacesCount > 0) {
         // literalStringBuffer must be null
-        if (literalBufferedString != null) {
+        if (literalBufferedString.isNotEmpty()) {
           System.out.println("Accumulated chars at position " + inputPosition);
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
-        literalBufferedString = null;
+        literalBufferedString.clear();
         parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
       }
 
       // not space char found
 
-      if (literalBufferedString == null) {
-        literalBufferedString = new BufferedString();
-      }
       spacesCount = 0;
 
       String encodedChar = parseEncodedChar();
@@ -669,28 +666,28 @@ public class HtmlParser extends Parser {
         continue;
       }
       if (peekString("&nbsp;")) {
-        if ((literalBufferedString != null) && (literalBufferedString.isNotEmpty())) {
+        if (literalBufferedString.isNotEmpty()) {
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
         parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", blockStyle);
         skipChars(6);
-        literalBufferedString = null;
+        literalBufferedString.clear();
         continue;
       }
       if (peekString("<br>")) {
-        if ((literalBufferedString != null) && (literalBufferedString.isNotEmpty())) {
+        if (literalBufferedString.isNotEmpty()) {
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
         parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", blockStyle);
         skipChars(4);
-        literalBufferedString = null;
+        literalBufferedString.clear();
         continue;
       }
 
       literalBufferedString.appendChar(consumeChar());
     }
 
-    if ((literalBufferedString != null) && (literalBufferedString.isNotEmpty())) {
+    if (literalBufferedString.isNotEmpty()) {
       // chars found
       BlockStyle blockStyle;
       if (blockStyles.isEmpty()) {

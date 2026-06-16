@@ -46,6 +46,18 @@ public class MarkdownParser extends HtmlParser {
         }
         continue;
       }
+      BufferedString bufferedString = new BufferedString();
+      while (inputPosition < input.length()) {
+        if (peekLineEnd()) {
+          skipLineEnd();
+          break;
+        }
+        bufferedString.appendChar(consumeChar());
+      }
+      // treat unknown block as paragraph block
+      ParagraphBlock paragraphBlock = new ParagraphBlock();
+      paragraphBlock.addBlock(paragraphBlock);
+      paragraphBlock.setMarkdownText(bufferedString.getString());
     }
   }
 }

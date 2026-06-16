@@ -38,4 +38,8 @@ public class BufferedString {
   public String getLowerCaseString() {
     return stringBuilder.toString().toLowerCase();
   }
+
+  public void clear() {
+    stringBuilder = new StringBuilder();
+  }
 }
