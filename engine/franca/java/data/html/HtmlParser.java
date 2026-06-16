@@ -10,6 +10,10 @@ import franca.java.data.json.JsonObject;
 import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
 import franca.java.office.document.BlockStyle;
+import franca.java.office.document.list.ListBlock;
+import franca.java.office.document.list.ListItemBlock;
+import franca.java.office.document.structure.HorizontalRuleBlock;
+import franca.java.office.document.table.*;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.office.document.typography.CharsBlock;
@@ -172,6 +176,36 @@ public class HtmlParser extends Parser {
     }
     if (tagName.equals("p")) {
       return new ParagraphBlock();
+    }
+    if (tagName.equals("hr")) {
+      return new HorizontalRuleBlock();
+    }
+    if (tagName.equals("ul")) {
+      return new ListBlock(false);
+    }
+    if (tagName.equals("ol")) {
+      return new ListBlock(true);
+    }
+    if (tagName.equals("li")) {
+      return new ListItemBlock();
+    }
+    if (tagName.equals("table")) {
+      return new TableBlock();
+    }
+    if (tagName.equals("thead")) {
+      return new TableHeaderBlock();
+    }
+    if (tagName.equals("tbody")) {
+      return new TableBodyBlock();
+    }
+    if (tagName.equals("tr")) {
+      return new TableRowBlock();
+    }
+    if (tagName.equals("th")) {
+      return new TableCellBlock(true);
+    }
+    if (tagName.equals("td")) {
+      return new TableCellBlock(false);
     }
     return new Block();
   }
