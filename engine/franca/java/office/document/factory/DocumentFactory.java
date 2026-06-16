@@ -98,8 +98,6 @@ public class DocumentFactory extends TranspilableClass {
     targetBufferedString.appendEndLine();
     targetBufferedString.appendString("  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">");
     targetBufferedString.appendEndLine();
-    targetBufferedString.appendString("  <style>[data-class-name]{position:relative;}[data-class-name]:hover{outline:1px solid #66afe9;}[data-class-name]:hover::before{content:attr(data-class-name)\" : \"attr(data-type);position:absolute;top:-20px;left:0;font:11px monospace;padding:2px 5px;border:1px solid #66afe9;border-radius:3px;background:#fff;white-space:nowrap;z-index:1000;pointer-events:none;}</style>");
-    targetBufferedString.appendEndLine();
     targetBufferedString.appendString("</head>");
     targetBufferedString.appendEndLine();
     targetBufferedString.appendString("<body class=\"bg-body text-body\">");
