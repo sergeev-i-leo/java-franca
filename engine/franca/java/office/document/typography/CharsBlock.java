@@ -1,6 +1,5 @@
 package franca.java.office.document.typography;
 
-import franca.java.data.json.JsonElement;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
@@ -47,8 +46,40 @@ public class CharsBlock extends Block {
     super.serialize(targetBufferedString, spacesBefore);
   }
 
+  @Override
   public String getSerializationTag() {
     return "span";
+  }
+
+  @Override
+
+  public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
+
+    targetBufferedString.appendChars(' ', spacesBefore);
+    targetBufferedString.appendString(">");
+    targetBufferedString.appendEndLine();
+
+    targetBufferedString.appendChars(' ', spacesBefore + 4);
+    if (type.equals(CharsBlock.TYPE_CHARS)) {
+      for (int i = 0; i < chars.length(); i++) {
+        targetBufferedString.appendChar(chars.charAt(i));
+      }
+    }
+    if (type.equals(CharsBlock.TYPE_SPACE)) {
+      targetBufferedString.appendChar(' ');
+    }
+    if (type.equals(CharsBlock.TYPE_NON_BREAKABLE_SPACE)) {
+      targetBufferedString.appendString("&nbsp;");
+    }
+    if (type.equals(CharsBlock.TYPE_LINE_BREAK)) {
+      targetBufferedString.appendString("<br>");
+    }
+
+    targetBufferedString.appendEndLine();
+
+    targetBufferedString.appendChars(' ', spacesBefore);
+    targetBufferedString.appendString("</" + serializationTag + ">");
+    targetBufferedString.appendEndLine();
   }
 
   public String getChars() {

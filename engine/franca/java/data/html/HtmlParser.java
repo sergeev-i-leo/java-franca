@@ -16,16 +16,20 @@ import franca.java.office.document.typography.TextBlock;
 
 public class HtmlParser extends Parser {
 
-  private int outputSpacesNumber = 0;
+  private Block bodyBlock = null;
 
   public Block parse(String input) {
     this.input = input;
-
     inputPosition = 0;
+
+    bodyBlock = null;
 
     Block block = new Block();
     parseHtmlNodeContents(block);
 
+    if (bodyBlock != null) {
+      return bodyBlock;
+    }
     return block;
   }
 
@@ -103,15 +107,16 @@ public class HtmlParser extends Parser {
 
     String tagName = parseTagName();
     Block block = DocumentFactory.createBlockByTagName(tagName);
+    if (tagName.equals("body")) {
+      bodyBlock = block;
+    }
 
     JsonObject jsonObject = new JsonObject();
     block.attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", "tag-name");
     jsonObject.putStringValue("value", tagName);
 
-    outputSpacesNumber += 2;
     parseHtmlAttributes(block);
-    outputSpacesNumber -= 2;
 
     skipWhitespaces();
 
@@ -135,9 +140,7 @@ public class HtmlParser extends Parser {
       return block;
     }
 
-    outputSpacesNumber += 2;
     parseHtmlNodeContents(block);
-    outputSpacesNumber -= 2;
 
     // expect closing tag
 

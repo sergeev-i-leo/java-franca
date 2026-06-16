@@ -39,21 +39,7 @@ public class Block extends TranspilableClass {
 
     serializeAttributesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
 
-    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
-      targetBufferedString.appendChars(' ', spacesBefore);
-      targetBufferedString.appendString(">");
-      targetBufferedString.appendEndLine();
-      return;
-    } else if (getBlocks().isEmpty()) {
-      targetBufferedString.appendChars(' ', spacesBefore);
-      targetBufferedString.appendString("/>");
-      targetBufferedString.appendEndLine();
-      return;
-    }
-
-    for (Block block : getBlocks()) {
-      block.serialize(targetBufferedString, spacesBefore + 4);
-    }
+    serializeContents(targetBufferedString, serializationTag, spacesBefore);
   }
 
   public String getSerializationTag() {
@@ -83,6 +69,33 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeAttributesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
+  }
+
+  public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
+
+    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
+      targetBufferedString.appendChars(' ', spacesBefore);
+      targetBufferedString.appendString(">");
+      targetBufferedString.appendEndLine();
+      return;
+    } else if (getBlocks().isEmpty()) {
+      targetBufferedString.appendChars(' ', spacesBefore);
+      targetBufferedString.appendString("/>");
+      targetBufferedString.appendEndLine();
+      return;
+    }
+
+    targetBufferedString.appendChars(' ', spacesBefore);
+    targetBufferedString.appendString(">");
+    targetBufferedString.appendEndLine();
+
+    for (Block block : getBlocks()) {
+      block.serialize(targetBufferedString, spacesBefore + 4);
+    }
+
+    targetBufferedString.appendChars(' ', spacesBefore);
+    targetBufferedString.appendString("</" + serializationTag + ">");
+    targetBufferedString.appendEndLine();
   }
 
   public void addBlock(Block block) {
