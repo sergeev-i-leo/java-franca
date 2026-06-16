@@ -138,10 +138,9 @@ public class Parser extends TranspilableClass {
 
   public boolean peekString(String string) {
     for (int i = 0; i < string.length(); i++) {
-      if (inputPosition + i >= input.length()) {
-        return false;
-      }
-      if (input.charAt(inputPosition + i) != string.charAt(i)) {
+      char c0 = peekNextChar(i);
+      char c1 = string.charAt(i);
+      if (c0 != c1) {
         return false;
       }
     }
@@ -159,6 +158,18 @@ public class Parser extends TranspilableClass {
       return c;
     }
     return 0;
+  }
+
+  public String consumeLine() {
+    literalBufferedString = new BufferedString();
+    while (inputPosition < input.length()) {
+      if (peekLineEnd()) {
+        skipLineEnd();
+        break;
+      }
+      literalBufferedString.appendChar(consumeChar());
+    }
+    return literalBufferedString.getString();
   }
 
   public void skipChars(int offset) {

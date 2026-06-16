@@ -21,9 +21,6 @@ import franca.java.office.document.typography.TextBlock;
 
 public class HtmlParser extends Parser {
 
-  // true for HTML, false for MARKDOWN
-  public boolean skipLeadingSpaces = true;
-
   public BufferedString outputBufferedString;
   private int outputSpacesNumber = 0;
 
@@ -81,9 +78,19 @@ public class HtmlParser extends Parser {
         return;
       }
 
-      if (parseClosingTag()) {
+      int storedPosition = inputPosition;
+
+      skipChars(1);
+
+      skipWhitespaces();
+
+      if (peekChar() == '/') {
+        // closing tag
+        inputPosition = storedPosition;
         return;
       }
+
+      inputPosition = storedPosition;
 
       Block block = parseHtmlNode();
       if (block != null) {
@@ -125,9 +132,35 @@ public class HtmlParser extends Parser {
     parseHtmlAttributes(block);
     outputSpacesNumber -= 2;
 
-    // self-closing tags
+    skipWhitespaces();
 
-    if (isSelfClosingTag(tagName)) {
+    boolean needsHtmlNodeContents = true;
+
+    if (peekChar() == '/') {
+      needsHtmlNodeContents = false;
+      skipChars(1);
+      skipWhitespaces();
+    }
+    if (peekChar() != '>') {
+    } else if (tagName.equals("area")) {
+      needsHtmlNodeContents = false;
+    } else if (tagName.equals("img")) {
+      needsHtmlNodeContents = false;
+    } else if (tagName.equals("input")) {
+      needsHtmlNodeContents = false;
+    } else if (tagName.equals("hr")) {
+      needsHtmlNodeContents = false;
+    } else if (tagName.equals("link")) {
+      needsHtmlNodeContents = false;
+    } else if (tagName.equals("meta")) {
+      needsHtmlNodeContents = false;
+    }
+
+    // '>'
+
+    skipChars(1);
+
+    if (!needsHtmlNodeContents) {
       if (outputBufferedString != null) {
         outputBufferedString.appendChars('.', outputSpacesNumber);
         outputBufferedString.appendString("/>");
@@ -136,12 +169,45 @@ public class HtmlParser extends Parser {
       return block;
     }
 
-    // '>'
-    skipChars(1);
-
     outputSpacesNumber += 2;
     parseHtmlNodeContents(block);
     outputSpacesNumber -= 2;
+
+    // expect closing tag
+
+    skipWhitespaces();
+
+    if (peekChar() != '<') {
+      // corrupted html
+      skipChars(1);
+      return block;
+    }
+
+    skipChars(1);
+
+    if (peekChar() != '/') {
+      // corrupted html
+      skipChars(1);
+      return block;
+    }
+
+    String closingTagName = parseTagName();
+
+    skipWhitespaces();
+
+    if (peekChar() != '>') {
+      // corrupted html
+      skipChars(1);
+      return block;
+    }
+
+    skipChars(1);
+
+    if (outputBufferedString != null) {
+      outputBufferedString.appendChars('.', outputSpacesNumber);
+      outputBufferedString.appendString("</ " + closingTagName + " >");
+      outputBufferedString.appendEndLine();
+    }
 
     return block;
   }
@@ -208,74 +274,6 @@ public class HtmlParser extends Parser {
       return new TableCellBlock(false);
     }
     return new Block();
-  }
-
-  private boolean isSelfClosingTag(String tagName) {
-    skipWhitespaces();
-
-    if (peekChar() == '/') {
-      skipChars(1);
-      skipWhitespaces();
-    }
-
-    if (peekChar() != '>') {
-      // corrupted html
-      skipChars(1);
-      return false;
-    }
-
-    if (tagName.equals("area")) {
-    } else if (tagName.equals("img")) {
-    } else if (tagName.equals("input")) {
-    } else if (tagName.equals("hr")) {
-    } else if (tagName.equals("link")) {
-    } else if (tagName.equals("meta")) {
-    } else {
-      return false;
-    }
-
-    skipChars(1);
-
-    return true;
-  }
-
-  private boolean parseClosingTag() {
-    if (peekChar() != '<') {
-      // not a node tag is missing
-      return false;
-    }
-
-    int storedPosition = inputPosition;
-
-    skipChars(1);
-
-    skipWhitespaces();
-
-    if (peekChar() != '/') {
-      inputPosition = storedPosition;
-      return false;
-    }
-
-    skipChars(1);
-
-    String closingTagName = parseTagName();
-
-    skipWhitespaces();
-
-    if (peekChar() != '>') {
-      // corrupted html
-      skipChars(1);
-      return true;
-    }
-
-    skipChars(1);
-
-    if (outputBufferedString != null) {
-      outputBufferedString.appendChars('.', outputSpacesNumber);
-      outputBufferedString.appendString("</ " + closingTagName + " >");
-      outputBufferedString.appendEndLine();
-    }
-    return true;
   }
 
   private void parseHtmlAttributes(Block targetBlock) {
@@ -586,22 +584,13 @@ public class HtmlParser extends Parser {
     literalBufferedString = new BufferedString();
 
     // for trailing spaces
-    int spacesCount;
-    if (skipLeadingSpaces) {
-      spacesCount = -1;
-    } else {
-      spacesCount = 0;
-    }
+    int spacesCount = -1;
 
     while (inputPosition < input.length()) {
       if (peekLineEnd()) {
         skipLineEnd();
         // set spaces to leading
-        if (skipLeadingSpaces) {
-          spacesCount = -1;
-        } else {
-          spacesCount = 0;
-        }
+        spacesCount = -1;
         continue;
       }
 
@@ -631,9 +620,6 @@ public class HtmlParser extends Parser {
       if (peekChar() == ' ') {
         if (spacesCount < 0) {
           // leading space
-          if (!skipLeadingSpaces) {
-            spacesCount = 1;
-          }
           skipChars(1);
           continue;
         }
@@ -912,7 +898,7 @@ public class HtmlParser extends Parser {
     return null;
   }
 
-  private Block appendCharsBlock(Block parentBlock, String charsType, String chars, BlockStyle blockStyle) {
+  public Block appendCharsBlock(Block parentBlock, String charsType, String chars, BlockStyle blockStyle) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
@@ -939,7 +925,7 @@ public class HtmlParser extends Parser {
     return parentBlock;
   }
 
-  private Block appendSpaceBlocks(Block parentBlock, int spacesCount, BlockStyle blockStyle) {
+  public Block appendSpaceBlocks(Block parentBlock, int spacesCount, BlockStyle blockStyle) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();

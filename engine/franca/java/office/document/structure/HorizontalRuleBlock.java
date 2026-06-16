@@ -4,6 +4,8 @@ import franca.java.office.document.Block;
 
 public class HorizontalRuleBlock extends Block {
 
+  public String text = "";
+
   @Override
   public String getClassName() {
     return "HorizontalRuleBlock";
