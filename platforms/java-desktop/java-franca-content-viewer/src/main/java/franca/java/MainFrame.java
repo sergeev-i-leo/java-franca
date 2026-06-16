@@ -129,7 +129,7 @@ public class MainFrame extends JFrame {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           MarkdownParser parser = new MarkdownParser();
           BufferedString outputBufferedString = new BufferedString();
-          Document.instance = parser.parse(content);
+          Document.instance = parser.parse(content, outputBufferedString);
           jsonTextPanel.setJsonText(outputBufferedString.getString());
           documentTreePanel.refresh();
 

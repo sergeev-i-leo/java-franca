@@ -81,20 +81,7 @@ public class JsonParser extends Parser {
       return null;
     }
     skipChars(1);
-    return recreateJsonObjectByClassName(jsonObject);
-  }
-
-  protected JsonObject recreateJsonObjectByClassName(JsonObject jsonObject) {
-    // for creating specific classes by $className
     return jsonObject;
-  }
-
-  private void cloneJsonObject(JsonObject sourceJsonObject, JsonObject targetJsonObject) {
-    ArrayList<String> keys = sourceJsonObject.keys();
-    for (int i = 0; i < keys.size(); i++) {
-      String key = keys.get(i);
-      targetJsonObject.put(key, sourceJsonObject.get(key));
-    }
   }
 
   private void parseJsonObjectMember(JsonObject jsonObject) {

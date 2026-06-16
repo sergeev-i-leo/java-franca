@@ -17,8 +17,8 @@ public class JsonIntPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
-    bufferedString.appendString(ExpectedRuntime.intToString(value));
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
+    targetBufferedString.appendString(ExpectedRuntime.intToString(value));
   }
 
   @Override

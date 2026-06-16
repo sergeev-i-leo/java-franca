@@ -51,7 +51,7 @@ public class TextBlock extends Block {
     HtmlParser htmlParser = new HtmlParser();
     htmlParser.input = htmlText;
     htmlParser.inputPosition = 0;
-    htmlParser.parseTextContents(this, blockStyles);
+    htmlParser.parseHtmlTextContents(this, blockStyles);
   }
 
   public void setMarkdownText(String markdownText) {
@@ -61,7 +61,7 @@ public class TextBlock extends Block {
     MarkdownParser markdownParser = new MarkdownParser();
     markdownParser.input = markdownText;
     markdownParser.inputPosition = 0;
-    markdownParser.parseTextContents(this, blockStyles);
+    markdownParser.parseMarkdownTextContents(this, blockStyles);
   }
 
   public String getText() {

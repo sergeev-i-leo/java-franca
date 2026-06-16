@@ -1,11 +1,15 @@
 package franca.java.office.document;
 
+import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 import franca.java.data.json.JsonArray;
+import franca.java.office.document.factory.DocumentFactory;
 
 import java.util.ArrayList;
 
 public class Block extends TranspilableClass {
+
+  private static ArrayList<Block> emptyBlocks = null;
 
   public Block parentBlock = null;
 
@@ -22,6 +26,49 @@ public class Block extends TranspilableClass {
     return "Block";
   }
 
+  public void serialize(BufferedString targetBufferedString, int spacesBefore) {
+    targetBufferedString.appendChars(' ', spacesBefore);
+
+    String serializationTag = getSerializationTag();
+    targetBufferedString.appendString("<" + serializationTag + " data-class-name=\"" + getClassName() + "\"");
+    targetBufferedString.appendEndLine();
+
+    serializeClassesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+
+    serializeBlockStyle(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+
+    serializeAttributesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+
+    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
+      targetBufferedString.appendChars(' ', spacesBefore);
+      targetBufferedString.appendString(">");
+      targetBufferedString.appendEndLine();
+      return;
+    } else if (getBlocks().isEmpty()) {
+      targetBufferedString.appendChars(' ', spacesBefore);
+      targetBufferedString.appendString("/>");
+      targetBufferedString.appendEndLine();
+      return;
+    }
+
+    for (Block block : getBlocks()) {
+      block.serialize(targetBufferedString, spacesBefore + 4);
+    }
+  }
+
+  public String getSerializationTag() {
+    return "div";
+  }
+
+  public void serializeClassesJsonArray(BufferedString bufferedString, Integer spacesBefore) {
+  }
+
+  public void serializeBlockStyle(BufferedString bufferedString, Integer spacesBefore) {
+  }
+
+  public void serializeAttributesJsonArray(BufferedString bufferedString, Integer spacesBefore) {
+  }
+
   public void addBlock(Block block) {
     if (blocks == null) {
       blocks = new ArrayList<>();
@@ -31,7 +78,13 @@ public class Block extends TranspilableClass {
   }
 
   public ArrayList<Block> getBlocks() {
-    return blocks;
+    if (blocks != null) {
+      return blocks;
+    }
+    if (Block.emptyBlocks == null) {
+      Block.emptyBlocks = new ArrayList<>();
+    }
+    return Block.emptyBlocks;
   }
 
   public void clearBlocks() {

@@ -17,8 +17,8 @@ public class JsonDoublePrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
-    bufferedString.appendString(ExpectedRuntime.doubleToString(value));
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
+    targetBufferedString.appendString(ExpectedRuntime.doubleToString(value));
   }
 
   @Override

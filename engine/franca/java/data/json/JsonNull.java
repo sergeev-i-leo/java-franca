@@ -9,8 +9,8 @@ public class JsonNull extends JsonElement {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
-    bufferedString.appendString("null");
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
+    targetBufferedString.appendString("null");
   }
 
   @Override

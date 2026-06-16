@@ -13,9 +13,9 @@ public class JsonArray extends JsonElement {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
-    bufferedString.appendString("[");
-    bufferedString.appendEndLine();
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
+    targetBufferedString.appendString("[");
+    targetBufferedString.appendEndLine();
 
     for (int i0 = 0; i0 < size(); i0++) {
       JsonElement jsonElement = get(i0);
@@ -24,27 +24,25 @@ public class JsonArray extends JsonElement {
         continue;
       }
       if (spacesBefore != null) {
-        for (int i1 = 0; i1 < spacesBefore + 2; i1++) {
-          bufferedString.appendString(" ");
-        }
-        jsonElement.serialize(bufferedString, spacesBefore + 2);
+        targetBufferedString.appendChars(' ', spacesBefore + 2);
+        jsonElement.serialize(targetBufferedString, spacesBefore + 2);
         if (i0 + 1 < size()) {
-          bufferedString.appendString(",");
+          targetBufferedString.appendString(",");
         }
-        bufferedString.appendEndLine();
+        targetBufferedString.appendEndLine();
       } else {
-        jsonElement.serialize(bufferedString, null);
+        jsonElement.serialize(targetBufferedString, null);
         if (i0 + 1 < size()) {
-          bufferedString.appendString(",");
+          targetBufferedString.appendString(",");
         }
       }
     }
     if (spacesBefore != null) {
       for (int i1 = 0; i1 < spacesBefore; i1++) {
-        bufferedString.appendString(" ");
+        targetBufferedString.appendString(" ");
       }
     }
-    bufferedString.appendString("]");
+    targetBufferedString.appendString("]");
   }
 
   @Override

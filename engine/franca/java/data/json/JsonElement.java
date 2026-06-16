@@ -9,7 +9,7 @@ public class JsonElement extends TranspilableClass {
     return "JsonElement";
   }
 
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
   }
 
   public Boolean getBooleanValue() {

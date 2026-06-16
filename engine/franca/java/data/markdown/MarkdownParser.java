@@ -1,6 +1,5 @@
 package franca.java.data.markdown;
 
-import franca.java.data.Parser;
 import franca.java.data.html.HtmlParser;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
@@ -13,9 +12,7 @@ import franca.java.office.document.typography.ParagraphBlock;
 
 import java.util.ArrayList;
 
-public class MarkdownParser extends Parser {
-
-  private HtmlParser htmlParser = new HtmlParser();
+public class MarkdownParser extends HtmlParser {
 
   private ArrayList<BlockStyle> blockStyles = new ArrayList<>();
 
@@ -24,8 +21,10 @@ public class MarkdownParser extends Parser {
     return "MarkdownParser";
   }
 
-  public Block parse(String input) {
+  public Block parse(String input, BufferedString outputBufferedString) {
     this.input = input;
+    this.outputBufferedString = outputBufferedString;
+
     inputPosition = 0;
 
     Block block = new Block();
@@ -66,7 +65,7 @@ public class MarkdownParser extends Parser {
         skipChars(2);
         HeadingBlock headingBlock = new HeadingBlock(1);
         parentBlock.addBlock(headingBlock);
-        parseTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, blockStyles);
         skipLine();
         continue;
       }
@@ -75,7 +74,7 @@ public class MarkdownParser extends Parser {
         skipChars(3);
         HeadingBlock headingBlock = new HeadingBlock(2);
         parentBlock.addBlock(headingBlock);
-        parseTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, blockStyles);
         skipLine();
         continue;
       }
@@ -84,7 +83,7 @@ public class MarkdownParser extends Parser {
         skipChars(4);
         HeadingBlock headingBlock = new HeadingBlock(3);
         parentBlock.addBlock(headingBlock);
-        parseTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, blockStyles);
         skipLine();
         continue;
       }
@@ -93,7 +92,7 @@ public class MarkdownParser extends Parser {
         skipChars(5);
         HeadingBlock headingBlock = new HeadingBlock(4);
         parentBlock.addBlock(headingBlock);
-        parseTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, blockStyles);
         skipLine();
         continue;
       }
@@ -102,7 +101,7 @@ public class MarkdownParser extends Parser {
         skipChars(6);
         HeadingBlock headingBlock = new HeadingBlock(5);
         parentBlock.addBlock(headingBlock);
-        parseTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, blockStyles);
         skipLine();
         continue;
       }
@@ -111,12 +110,12 @@ public class MarkdownParser extends Parser {
         skipChars(7);
         HeadingBlock headingBlock = new HeadingBlock(6);
         parentBlock.addBlock(headingBlock);
-        parseTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, blockStyles);
         skipLine();
         continue;
       }
 
-      Block block = htmlParser.parseHtmlNode();;
+      Block block = parseHtmlNode();;
       if (block != null) {
         // skip lineEnd
         parentBlock.addBlock(block);
@@ -141,7 +140,7 @@ public class MarkdownParser extends Parser {
     }
   }
 
-  public void parseTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
+  public void parseMarkdownTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
 
     literalBufferedString = new BufferedString();
 
@@ -157,12 +156,12 @@ public class MarkdownParser extends Parser {
         blockStyle = blockStyles.get(blockStyles.size() - 1);
       }
 
-      if (parseBlockStyle(blockStyles)) {
+      if (parseMarkdownTextContentsStyle(blockStyles)) {
         if (spacesCount > 0) {
           // we accumulated spaces
-          parentBlock = htmlParser.appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
+          parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
         } else if (literalBufferedString.isNotEmpty()) {
-          parentBlock = htmlParser.appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
         literalBufferedString.clear();
         spacesCount = 0;
@@ -182,7 +181,7 @@ public class MarkdownParser extends Parser {
       if (peekChar() == ' ') {
         if (literalBufferedString.isNotEmpty()) {
           // there are accumulated chars
-          parentBlock = htmlParser.appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
           spacesCount = 0;
         }
         skipChars(1);
@@ -193,10 +192,10 @@ public class MarkdownParser extends Parser {
         // literalStringBuffer must be null
         if (literalBufferedString.isNotEmpty()) {
           System.out.println("Accumulated chars at position " + inputPosition);
-          parentBlock = htmlParser.appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
         literalBufferedString.clear();
-        parentBlock = htmlParser.appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
+        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
       }
 
       spacesCount = 0;
@@ -212,11 +211,11 @@ public class MarkdownParser extends Parser {
       } else {
         blockStyle = blockStyles.get(blockStyles.size() - 1);
       }
-      htmlParser.appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
     }
   }
 
-  public boolean parseBlockStyle(ArrayList<BlockStyle> blockStyles) {
+  public boolean parseMarkdownTextContentsStyle(ArrayList<BlockStyle> blockStyles) {
     return false;
   }
 }

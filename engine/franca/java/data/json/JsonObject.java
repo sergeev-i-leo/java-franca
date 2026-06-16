@@ -14,9 +14,9 @@ public class JsonObject extends JsonElement {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
-    bufferedString.appendString("{");
-    bufferedString.appendEndLine();
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
+    targetBufferedString.appendString("{");
+    targetBufferedString.appendEndLine();
 
     ArrayList<String> keys = keys();
     for (int i0 = 0; i0 < keys.size(); i0++) {
@@ -26,36 +26,31 @@ public class JsonObject extends JsonElement {
         continue;
       }
       if (spacesBefore != null) {
-        for (int i1 = 0; i1 < spacesBefore + 2; i1++) {
-          bufferedString.appendString(" ");
-        }
+        targetBufferedString.appendChars(' ', spacesBefore + 2);
       }
       String name = keys.get(i0);
-      bufferedString.appendString("\"");
-      bufferedString.appendString(name);
-      bufferedString.appendString("\": ");
+      targetBufferedString.appendString("\"");
+      targetBufferedString.appendString(name);
+      targetBufferedString.appendString("\": ");
       if (spacesBefore != null) {
-        jsonElement.serialize(bufferedString, spacesBefore + 2);
+        jsonElement.serialize(targetBufferedString, spacesBefore + 2);
         if (i0 + 1 < keys.size()) {
-          bufferedString.appendString(",");
+          targetBufferedString.appendString(",");
         }
-        bufferedString.appendEndLine();
+        targetBufferedString.appendEndLine();
       } else {
-        jsonElement.serialize(bufferedString, null);
+        jsonElement.serialize(targetBufferedString, null);
         if (i0 + 1 < keys.size()) {
-          bufferedString.appendString(",");
+          targetBufferedString.appendString(",");
         }
       }
     }
     if (spacesBefore != null) {
       for (int i = 0; i < spacesBefore; i++) {
-        bufferedString.appendString(" ");
+        targetBufferedString.appendString(" ");
       }
     }
-    bufferedString.appendString("}");
-  }
-
-  public void deserialize(JsonObject parsedJsonObject) {
+    targetBufferedString.appendString("}");
   }
 
   @Override

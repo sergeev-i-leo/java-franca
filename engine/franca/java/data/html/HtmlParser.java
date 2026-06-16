@@ -10,6 +10,7 @@ import franca.java.data.json.JsonObject;
 import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
 import franca.java.office.document.BlockStyle;
+import franca.java.office.document.factory.DocumentFactory;
 import franca.java.office.document.list.ListBlock;
 import franca.java.office.document.list.ListItemBlock;
 import franca.java.office.document.structure.HorizontalRuleBlock;
@@ -70,7 +71,7 @@ public class HtmlParser extends Parser {
 
       // can be part of inline element <span>, <strong>, <em>
       ArrayList<BlockStyle> blockStyles = new ArrayList<>();
-      parseTextContents(parentBlock, blockStyles);
+      parseHtmlTextContents(parentBlock, blockStyles);
 
       if (peekChar() != '<') {
         // corrupted html
@@ -115,7 +116,7 @@ public class HtmlParser extends Parser {
     skipWhitespaces();
 
     String tagName = parseTagName();
-    Block block = createBlockByTagName(tagName);
+    Block block = DocumentFactory.createBlockByTagName(tagName);
 
     if (outputBufferedString != null) {
       outputBufferedString.appendChars('.', outputSpacesNumber);
@@ -142,17 +143,7 @@ public class HtmlParser extends Parser {
       skipWhitespaces();
     }
     if (peekChar() != '>') {
-    } else if (tagName.equals("area")) {
-      needsHtmlNodeContents = false;
-    } else if (tagName.equals("img")) {
-      needsHtmlNodeContents = false;
-    } else if (tagName.equals("input")) {
-      needsHtmlNodeContents = false;
-    } else if (tagName.equals("hr")) {
-      needsHtmlNodeContents = false;
-    } else if (tagName.equals("link")) {
-      needsHtmlNodeContents = false;
-    } else if (tagName.equals("meta")) {
+    } else if (DocumentFactory.htmlTagIsSelfClosing(tagName)) {
       needsHtmlNodeContents = false;
     }
 
@@ -191,6 +182,8 @@ public class HtmlParser extends Parser {
       return block;
     }
 
+    skipChars(1);
+
     String closingTagName = parseTagName();
 
     skipWhitespaces();
@@ -213,67 +206,14 @@ public class HtmlParser extends Parser {
   }
 
   private String parseTagName() {
+    skipWhitespaces();
+
     BufferedString bufferedString = new BufferedString();
     while ((inputPosition < input.length()) && (Character.isLetterOrDigit(peekChar()))) {
       char c = consumeChar();
       bufferedString.appendChar(c);
     }
     return bufferedString.getLowerCaseString();
-  }
-
-  public Block createBlockByTagName(String tagName) {
-    if (tagName.equals("h1")) {
-      return new HeadingBlock(1);
-    }
-    if (tagName.equals("h2")) {
-      return new HeadingBlock(2);
-    }
-    if (tagName.equals("h3")) {
-      return new HeadingBlock(3);
-    }
-    if (tagName.equals("h4")) {
-      return new HeadingBlock(4);
-    }
-    if (tagName.equals("h5")) {
-      return new HeadingBlock(5);
-    }
-    if (tagName.equals("h6")) {
-      return new HeadingBlock(6);
-    }
-    if (tagName.equals("p")) {
-      return new ParagraphBlock();
-    }
-    if (tagName.equals("hr")) {
-      return new HorizontalRuleBlock();
-    }
-    if (tagName.equals("ul")) {
-      return new ListBlock(false);
-    }
-    if (tagName.equals("ol")) {
-      return new ListBlock(true);
-    }
-    if (tagName.equals("li")) {
-      return new ListItemBlock();
-    }
-    if (tagName.equals("table")) {
-      return new TableBlock();
-    }
-    if (tagName.equals("thead")) {
-      return new TableHeaderBlock();
-    }
-    if (tagName.equals("tbody")) {
-      return new TableBodyBlock();
-    }
-    if (tagName.equals("tr")) {
-      return new TableRowBlock();
-    }
-    if (tagName.equals("th")) {
-      return new TableCellBlock(true);
-    }
-    if (tagName.equals("td")) {
-      return new TableCellBlock(false);
-    }
-    return new Block();
   }
 
   private void parseHtmlAttributes(Block targetBlock) {
@@ -579,7 +519,7 @@ public class HtmlParser extends Parser {
     }
   }
 
-  public void parseTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
+  public void parseHtmlTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
 
     literalBufferedString = new BufferedString();
 
@@ -601,7 +541,7 @@ public class HtmlParser extends Parser {
         blockStyle = blockStyles.get(blockStyles.size() - 1);
       }
 
-      if (parseBlockStyle(blockStyles)) {
+      if (parseHtmlTextContentsStyle(blockStyles)) {
         if (spacesCount > 0) {
           // we accumulated spaces
           parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
@@ -685,7 +625,7 @@ public class HtmlParser extends Parser {
     }
   }
 
-  public boolean parseBlockStyle(ArrayList<BlockStyle> blockStyles) {
+  public boolean parseHtmlTextContentsStyle(ArrayList<BlockStyle> blockStyles) {
     // returns true if style stack changed or else returns false
     if (peekChar() != '<') {
       return false;

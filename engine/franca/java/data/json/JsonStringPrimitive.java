@@ -16,13 +16,13 @@ public class JsonStringPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     String string = value;
     if (string == null) {
       string = "";
     }
     string = string.replace("\"", "\\\"");
-    bufferedString.appendString("\"" + string + "\"");
+    targetBufferedString.appendString("\"" + string + "\"");
   }
 
   @Override

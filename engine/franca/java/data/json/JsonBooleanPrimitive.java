@@ -16,8 +16,8 @@ public class JsonBooleanPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public void serialize(BufferedString bufferedString, Integer spacesBefore) {
-    bufferedString.appendString(value ? "true" : "false");
+  public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
+    targetBufferedString.appendString(value ? "true" : "false");
   }
 
   @Override
