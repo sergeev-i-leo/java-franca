@@ -83,11 +83,9 @@ public class DocumentFactory extends TranspilableClass {
     }
   }
 
-  public static String serialize(Block block) {
-    BufferedString bufferedString = new BufferedString();
+  public static void serialize(Block block, BufferedString targetBufferedString) {
     for (Block childBlock : block.getBlocks()) {
-      block.serialize(bufferedString, 0);
+      childBlock.serialize(targetBufferedString, 0);
     }
-    return bufferedString.getString();
   }
 }

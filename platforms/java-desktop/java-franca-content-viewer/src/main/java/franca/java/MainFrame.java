@@ -111,9 +111,9 @@ public class MainFrame extends JFrame {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           HtmlParser parser = new HtmlParser();
           Document.instance = parser.parse(content);
-          BufferedString outputBufferedString = new BufferedString();
-          DocumentFactory.serialize(Document.instance);
-          jsonTextPanel.setJsonText(outputBufferedString.getString());
+          BufferedString targetBufferedString = new BufferedString();
+          DocumentFactory.serialize(Document.instance, targetBufferedString);
+          jsonTextPanel.setJsonText(targetBufferedString.getString());
           documentTreePanel.refresh();
 
           // TODO: конвертация raw → Block
@@ -130,9 +130,11 @@ public class MainFrame extends JFrame {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           MarkdownParser parser = new MarkdownParser();
-          BufferedString outputBufferedString = new BufferedString();
-          Document.instance = parser.parse(content, outputBufferedString);
-          jsonTextPanel.setJsonText(outputBufferedString.getString());
+          Document.instance = parser.parse(content);
+          BufferedString targetBufferedString = new BufferedString();
+          DocumentFactory.serialize(Document.instance, targetBufferedString);
+          jsonTextPanel.setJsonText(targetBufferedString.getString());
+          jsonTextPanel.setJsonText(targetBufferedString.getString());
           documentTreePanel.refresh();
 
           // TODO: конвертация raw → Block

@@ -21,9 +21,8 @@ public class MarkdownParser extends HtmlParser {
     return "MarkdownParser";
   }
 
-  public Block parse(String input, BufferedString outputBufferedString) {
+  public Block parse(String input) {
     this.input = input;
-    this.outputBufferedString = outputBufferedString;
 
     inputPosition = 0;
 
