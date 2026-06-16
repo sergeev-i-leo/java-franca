@@ -56,7 +56,7 @@ public class MarkdownParser extends HtmlParser {
       }
       // treat unknown block as paragraph block
       ParagraphBlock paragraphBlock = new ParagraphBlock();
-      paragraphBlock.addBlock(paragraphBlock);
+      parentBlock.addBlock(paragraphBlock);
       paragraphBlock.setMarkdownText(bufferedString.getString());
     }
   }
