@@ -13,7 +13,7 @@ public class JsonParser extends Parser {
 
     this.input = input;
 
-    position = 0;
+    inputPosition = 0;
     JsonElement jsonElement = parseJsonElement();
     if (jsonElement != null) {
       return jsonElement;
@@ -23,8 +23,8 @@ public class JsonParser extends Parser {
 
   private JsonElement parseJsonElement() {
     skipWhitespaces();
-    if (input.startsWith("null", position)) {
-      position += 4;
+    if (input.startsWith("null", inputPosition)) {
+      inputPosition += 4;
       return new JsonNull();
     }
     JsonElement jsonElement = parseJsonObject();
@@ -52,7 +52,7 @@ public class JsonParser extends Parser {
       JsonStringPrimitive jsonStringPrimitive = new JsonStringPrimitive(literalBufferedString.getString());
       return jsonStringPrimitive;
     }
-    System.out.println("Invalid JsonElement at " + position);
+    System.out.println("Invalid JsonElement at " + inputPosition);
     return null;
   }
 
@@ -76,7 +76,7 @@ public class JsonParser extends Parser {
       skipChars(1);
     }
     if (peekChar() != '}') {
-      System.out.println("Missing '}' at " + position);
+      System.out.println("Missing '}' at " + inputPosition);
       skipChars(1);
       return null;
     }
@@ -104,7 +104,7 @@ public class JsonParser extends Parser {
       if (!literalType.equals("string")) {
         // error
         skipChars(1);
-        System.out.println("JsonObject name expected at " + position);
+        System.out.println("JsonObject name expected at " + inputPosition);
         return;
       }
       skipWhitespaces();
@@ -114,7 +114,7 @@ public class JsonParser extends Parser {
         jsonObject.put(literalBufferedString.getString(), jsonElement);
       }
     } catch (Exception e) {
-      System.out.println("End of input at " + position);
+      System.out.println("End of input at " + inputPosition);
     }
   }
 
@@ -124,7 +124,7 @@ public class JsonParser extends Parser {
     }
     skipChars(1);
     JsonArray jsonArray = new JsonArray();
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       skipWhitespaces();
       if (peekChar() == ']') {
         break;
@@ -137,7 +137,7 @@ public class JsonParser extends Parser {
       skipChars(1);
     }
     if (peekChar() != ']') {
-      System.out.println("Missing ']' at " + position);
+      System.out.println("Missing ']' at " + inputPosition);
       skipChars(1);
       return null;
     }

@@ -1,5 +1,6 @@
 package franca.java;
 
+import franca.java.data.markdown.ObsidianParser;
 import franca.java.expected.BufferedString;
 import franca.java.data.html.HtmlParser;
 import franca.java.office.document.Block;
@@ -108,6 +109,25 @@ public class MainFrame extends JFrame {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           HtmlParser parser = new HtmlParser();
+          BufferedString outputBufferedString = new BufferedString();
+          Document.instance = parser.parse(content, outputBufferedString);
+          jsonTextPanel.setJsonText(outputBufferedString.getString());
+          documentTreePanel.refresh();
+
+          // TODO: конвертация raw → Block
+          // DocumentModel.blocks.clear();
+          // DocumentModel.blocks.add(convertedBlock);
+          // skiaTreePanel.refresh();
+          // skiaPanel.refresh();
+
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+      if (selectedFile != null && selectedFile.getName().endsWith(".md")) {
+        try {
+          String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
+          ObsidianParser parser = new ObsidianParser();
           BufferedString outputBufferedString = new BufferedString();
           Document.instance = parser.parse(content, outputBufferedString);
           jsonTextPanel.setJsonText(outputBufferedString.getString());

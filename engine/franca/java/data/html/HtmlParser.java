@@ -31,7 +31,7 @@ public class HtmlParser extends Parser {
     this.input = input;
     this.outputBufferedString = outputBufferedString;
 
-    position = 0;
+    inputPosition = 0;
 
     Block block = new Block();
     parseHtmlNodeContents(block);
@@ -41,14 +41,14 @@ public class HtmlParser extends Parser {
 
   private void parseHtmlNodeContents(Block parentBlock) {
 
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       skipWhitespaces();
 
       if ((peekChar() == '<') && (peekNextChar(1) == '!')) {
         literalBufferedString = new BufferedString();
         literalBufferedString.appendString("<!");
         skipChars(2);
-        while (position < input.length()) {
+        while (inputPosition < input.length()) {
           // html comment mustn't contain >
           char c = consumeChar();
           if (c == '>') {
@@ -148,7 +148,7 @@ public class HtmlParser extends Parser {
 
   private String parseTagName() {
     BufferedString bufferedString = new BufferedString();
-    while ((position < input.length()) && (Character.isLetterOrDigit(peekChar()))) {
+    while ((inputPosition < input.length()) && (Character.isLetterOrDigit(peekChar()))) {
       char c = consumeChar();
       bufferedString.appendChar(c);
     }
@@ -245,14 +245,14 @@ public class HtmlParser extends Parser {
       return false;
     }
 
-    int storedPosition = position;
+    int storedPosition = inputPosition;
 
     skipChars(1);
 
     skipWhitespaces();
 
     if (peekChar() != '/') {
-      position = storedPosition;
+      inputPosition = storedPosition;
       return false;
     }
 
@@ -280,7 +280,7 @@ public class HtmlParser extends Parser {
 
   private void parseHtmlAttributes(Block targetBlock) {
 
-    while ((position < input.length()) && (peekChar() != '>') && (peekChar() != '/')) {
+    while ((inputPosition < input.length()) && (peekChar() != '>') && (peekChar() != '/')) {
       skipWhitespaces();
 
       // attribute name
@@ -316,7 +316,7 @@ public class HtmlParser extends Parser {
 
   private String parseAttributeName() {
     BufferedString bufferedString = new BufferedString();
-    while ((position < input.length()) && (isAttributeNameCharacter(peekChar()))) {
+    while ((inputPosition < input.length()) && (isAttributeNameCharacter(peekChar()))) {
       char c = consumeChar();
       bufferedString.appendChar(c);
     }
@@ -339,7 +339,7 @@ public class HtmlParser extends Parser {
     char classValueDelimiter = peekChar();
     skipChars(1);
 
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       if (peekChar() == classValueDelimiter) {
         if (literalBufferedString.isNotEmpty()) {
           jsonArray.add(new JsonStringPrimitive(literalBufferedString.getLowerCaseString()));
@@ -376,7 +376,7 @@ public class HtmlParser extends Parser {
     char styleValueDelimiter = peekChar();
     skipChars(1);
 
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       if (peekChar() == styleValueDelimiter) {
         break;
       }
@@ -453,7 +453,7 @@ public class HtmlParser extends Parser {
     skipWhitespaces();
 
     literalBufferedString = new BufferedString();
-    while ((position < input.length()) && (isStyleNameCharacter(peekChar()))) {
+    while ((inputPosition < input.length()) && (isStyleNameCharacter(peekChar()))) {
       char c = consumeChar();
       literalBufferedString.appendChar(c);
     }
@@ -474,7 +474,7 @@ public class HtmlParser extends Parser {
     boolean insideQuotes = false;
     char quoteCharacter = 0;
 
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       char c = peekChar();
 
       if (c == '\\') {
@@ -524,7 +524,7 @@ public class HtmlParser extends Parser {
     if ((attributeValueDelimiter != '\"') && (attributeValueDelimiter != '\'')) {
       // not quoted
       literalBufferedString = new BufferedString();
-      while (position < input.length()) {
+      while (inputPosition < input.length()) {
         char c = peekChar();
         if ((c == '>') || (c == '/') || (isWhitespace(c))) {
           break;
@@ -548,7 +548,7 @@ public class HtmlParser extends Parser {
     skipChars(1);
 
     literalBufferedString = new BufferedString();
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       char c = peekChar();
       if (c == '\\') {
         skipChars(1);
@@ -586,16 +586,22 @@ public class HtmlParser extends Parser {
     literalBufferedString = null;
 
     // for trailing spaces
-    int spacesCount = -1;
+    int spacesCount;
+    if (skipLeadingSpaces) {
+      spacesCount = -1;
+    } else {
+      spacesCount = 0;
+    }
 
-    while (position < input.length()) {
-      if (peekChar() == '\r') {
-        skipChars(1);
-        if (peekChar() == '\n') {
-          skipChars(1);
-        }
+    while (inputPosition < input.length()) {
+      if (peekLineEnd()) {
+        skipLineEnd();
         // set spaces to leading
-        spacesCount = -1;
+        if (skipLeadingSpaces) {
+          spacesCount = -1;
+        } else {
+          spacesCount = 0;
+        }
         continue;
       }
 
@@ -643,7 +649,7 @@ public class HtmlParser extends Parser {
       } else if (spacesCount > 0) {
         // literalStringBuffer must be null
         if (literalBufferedString != null) {
-          System.out.println("Accumulated chars at position " + position);
+          System.out.println("Accumulated chars at position " + inputPosition);
           parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
         }
         literalBufferedString = null;
@@ -708,7 +714,7 @@ public class HtmlParser extends Parser {
       blockStyle = blockStyles.get(blockStyles.size() - 1);
       blockStyle = blockStyle.clone();
     }
-    int storedPosition = position;
+    int storedPosition = inputPosition;
     skipChars(1);
     skipWhitespaces();
     if (peekChar() == '/') {
@@ -724,7 +730,7 @@ public class HtmlParser extends Parser {
       } else if (tagName.equals("del")) {
       } else if (tagName.equals("span")) {
       } else {
-        position = storedPosition;
+        inputPosition = storedPosition;
         return false;
       }
       skipWhitespaces();
@@ -769,7 +775,7 @@ public class HtmlParser extends Parser {
       block.blockStyle = blockStyle;
       parseHtmlAttributes(block);
     } else {
-      position = storedPosition;
+      inputPosition = storedPosition;
       return false;
     }
     skipWhitespaces();
@@ -880,13 +886,13 @@ public class HtmlParser extends Parser {
       return "¥";
     }
     if (peekString("&#")) {
-      int storedPosition = position;
+      int storedPosition = inputPosition;
 
       skipChars(2);
 
       BufferedString bufferedString = new BufferedString();
 
-      while (position < input.length()) {
+      while (inputPosition < input.length()) {
         if (peekChar() == ';') {
           skipChars(1);
           break;
@@ -903,7 +909,7 @@ public class HtmlParser extends Parser {
         }
       }
       // wrong char, rewind
-      position = storedPosition;
+      inputPosition = storedPosition;
       return null;
     }
     return null;

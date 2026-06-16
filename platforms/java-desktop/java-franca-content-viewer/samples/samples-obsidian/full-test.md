@@ -1,4 +1,6 @@
 
+<p>This is <b>bold</b> text</p>
+
 # Heading Level 1
 
 ## Heading Level 2

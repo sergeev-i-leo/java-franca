@@ -35,7 +35,10 @@ public class Block extends TranspilableClass {
   }
 
   public void clearBlocks() {
-    blocks.clear();
+    if (blocks != null) {
+      blocks.clear();
+    }
+    blocks = null;
   }
 
 }

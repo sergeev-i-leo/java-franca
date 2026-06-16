@@ -7,7 +7,7 @@ import franca.java.expected.TranspilableClass;
 public class Parser extends TranspilableClass {
 
   public String input = null;
-  public int position = 0;
+  public int inputPosition = 0;
 
   public BufferedString literalBufferedString = null;
   public boolean booleanLiteral = false;
@@ -15,14 +15,14 @@ public class Parser extends TranspilableClass {
   public Double doubleLiteral = null;
 
   public String parseLiteral() {
-    if (input.startsWith("false", position)) {
+    if (input.startsWith("false", inputPosition)) {
       booleanLiteral = false;
       skipChars(5);
       literalBufferedString = new BufferedString();
       literalBufferedString.appendString("false");
       return "boolean-literal";
     }
-    if (input.startsWith("true", position)) {
+    if (input.startsWith("true", inputPosition)) {
       booleanLiteral = false;
       skipChars(4);
       literalBufferedString = new BufferedString();
@@ -72,8 +72,8 @@ public class Parser extends TranspilableClass {
 
   public void collectNumberLiteral() {
     literalBufferedString = new BufferedString();
-    while (position < input.length()) {
-      char c = input.charAt(position);
+    while (inputPosition < input.length()) {
+      char c = input.charAt(inputPosition);
       switch (c) {
         case '-':
         case '+':
@@ -101,18 +101,18 @@ public class Parser extends TranspilableClass {
   }
 
   public String parseStringLiteral() {
-    if (input.charAt(position) != '"') {
+    if (input.charAt(inputPosition) != '"') {
       return null;
     }
     skipChars(1);
-    while (position < input.length()) {
+    while (inputPosition < input.length()) {
       char c = consumeChar();
       if (c == '"') {
         skipChars(1);
         return "string";
       }
       if (c == '\\') {
-        if (position >= input.length()) {
+        if (inputPosition >= input.length()) {
           return "error";
         }
         c = consumeChar();
@@ -123,34 +123,38 @@ public class Parser extends TranspilableClass {
   }
 
   public char peekChar() {
-    if (position < input.length()) {
-      return input.charAt(position);
+    if (inputPosition < input.length()) {
+      return input.charAt(inputPosition);
     }
     return '\u0000';
   }
 
   public char peekNextChar(int offset) {
-    if (position + offset < input.length()) {
-      return input.charAt(position + offset);
+    if (inputPosition + offset < input.length()) {
+      return input.charAt(inputPosition + offset);
     }
     return '\u0000';
   }
 
   public boolean peekString(String string) {
     for (int i = 0; i < string.length(); i++) {
-      if (position + i >= input.length()) {
+      if (inputPosition + i >= input.length()) {
         return false;
       }
-      if (input.charAt(position + i) != string.charAt(i)) {
+      if (input.charAt(inputPosition + i) != string.charAt(i)) {
         return false;
       }
     }
     return true;
   }
 
+  public boolean peekLineEnd() {
+    return (peekChar() == '\r') || (peekChar() == '\n');
+  }
+
   public char consumeChar() {
-    if (position < input.length()) {
-      char c = input.charAt(position);
+    if (inputPosition < input.length()) {
+      char c = input.charAt(inputPosition);
       skipChars(1);
       return c;
     }
@@ -158,14 +162,14 @@ public class Parser extends TranspilableClass {
   }
 
   public void skipChars(int offset) {
-    position += offset;
+    inputPosition += offset;
   }
 
   public void skipWhitespaces() {
-    while (position < input.length()) {
-      char c = input.charAt(position);
+    while (inputPosition < input.length()) {
+      char c = input.charAt(inputPosition);
       if (isWhitespace(c)) {
-        position++;
+        inputPosition++;
       } else {
         break;
       }
@@ -174,5 +178,24 @@ public class Parser extends TranspilableClass {
 
   public boolean isWhitespace(char c) {
     return (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r') || (c == '\f');
+  }
+
+  public void skipLineEnd() {
+    if (peekChar() == '\r') {
+      skipChars(1);
+    }
+    if (peekChar() == '\n') {
+      skipChars(1);
+    }
+  }
+
+  public void skipLine() {
+    while (inputPosition < input.length()) {
+      if (peekLineEnd()) {
+        skipLineEnd();
+        break;
+      }
+      skipChars(1);
+    }
   }
 }
