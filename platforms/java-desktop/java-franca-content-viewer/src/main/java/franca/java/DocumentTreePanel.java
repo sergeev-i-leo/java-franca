@@ -43,18 +43,18 @@ public class DocumentTreePanel extends JPanel {
 
     if (block instanceof HeadingBlock) {
       HeadingBlock headingBlock = (HeadingBlock) block;
-      nodeText = headingBlock.getClassName() + " [" + headingBlock.level + "] = \"" + headingBlock.getText() + "\"";
+      nodeText = headingBlock.getDataBlock() + " [" + headingBlock.level + "] = \"" + headingBlock.getText() + "\"";
     } else if (block instanceof ParagraphBlock) {
       ParagraphBlock paragraphBlock = (ParagraphBlock) block;
-      nodeText = paragraphBlock.getClassName() + " = \"" + paragraphBlock.getText() + "\"";
+      nodeText = paragraphBlock.getDataBlock() + " = \"" + paragraphBlock.getText() + "\"";
     } else if (block instanceof TextBlock) {
       TextBlock textBlock = (TextBlock) block;
-      nodeText = textBlock.getClassName() + " = \"" + textBlock.getText() + "\"";
+      nodeText = textBlock.getDataBlock() + " = \"" + textBlock.getText() + "\"";
     } else if (block instanceof CharsBlock) {
       CharsBlock charsBlock = (CharsBlock) block;
-      nodeText = charsBlock.getClassName() + " [" + charsBlock.type + "] = \"" + charsBlock.getChars() + "\"";
+      nodeText = charsBlock.getDataBlock() + " [" + charsBlock.type + "] = \"" + charsBlock.getChars() + "\"";
     } else {
-      nodeText = block.getClassName();
+      nodeText = block.getDataBlock();
     }
 
     DefaultMutableTreeNode blockNode = new DefaultMutableTreeNode(nodeText);

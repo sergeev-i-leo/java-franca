@@ -3,7 +3,7 @@ package franca.java.office.document;
 public class DocumentBlock extends Block {
 
   @Override
-  public String getClassName() {
+  public String getDataBlock() {
     return "DocumentBlock";
   }
 }

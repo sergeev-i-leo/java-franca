@@ -5,10 +5,6 @@ import franca.java.expected.TranspilableClass;
 
 public class JsonElement extends TranspilableClass {
 
-  public String getClassName() {
-    return "JsonElement";
-  }
-
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
   }
 

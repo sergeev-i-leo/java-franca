@@ -13,7 +13,7 @@ public class HeadingBlock extends TextBlock {
     }
   }
 
-  public String getClassName() {
+  public String getDataBlock() {
     return "HeadingBlock";
   }
 }

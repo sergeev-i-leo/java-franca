@@ -16,11 +16,6 @@ public class MarkdownParser extends HtmlParser {
 
   private ArrayList<BlockStyle> blockStyles = new ArrayList<>();
 
-  @Override
-  public String getClassName() {
-    return "MarkdownParser";
-  }
-
   public Block parse(String input) {
     this.input = input;
 

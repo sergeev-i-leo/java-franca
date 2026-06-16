@@ -22,7 +22,7 @@ public class Block extends TranspilableClass {
 
   private ArrayList<Block> blocks = null;
 
-  public String getClassName() {
+  public String getDataBlock() {
     return "Block";
   }
 
@@ -30,7 +30,7 @@ public class Block extends TranspilableClass {
     targetBufferedString.appendChars(' ', spacesBefore);
 
     String serializationTag = getSerializationTag();
-    targetBufferedString.appendString("<" + serializationTag + " data-class-name=\"" + getClassName() + "\"");
+    targetBufferedString.appendString("<" + serializationTag + " data-block=\"" + getDataBlock() + "\"");
     targetBufferedString.appendEndLine();
 
     serializeClassesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);

@@ -8,10 +8,6 @@ public class TranspilableClass {
     id = ExpectedRuntime.getId();
   }
 
-  public String getClassName() {
-    return "TranspilableClass";
-  }
-
   public long getId() {
     return id;
   }

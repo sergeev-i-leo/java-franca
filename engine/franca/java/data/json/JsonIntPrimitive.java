@@ -12,10 +12,6 @@ public class JsonIntPrimitive extends JsonPrimitive {
     this.value = value;
   }
 
-  public String getClassName() {
-    return "JsonIntPrimitive";
-  }
-
   @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString(ExpectedRuntime.intToString(value));

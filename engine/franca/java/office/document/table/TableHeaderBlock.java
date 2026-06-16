@@ -5,7 +5,7 @@ import franca.java.office.document.Block;
 public class TableHeaderBlock extends Block {
 
   @Override
-  public String getClassName() {
+  public String getDataBlock() {
     return "TableHeaderBlock";
   }
 }

@@ -11,10 +11,6 @@ public class JsonStringPrimitive extends JsonPrimitive {
     this.value = value;
   }
 
-  public String getClassName() {
-    return "JsonStringPrimitive";
-  }
-
   @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     String string = value;

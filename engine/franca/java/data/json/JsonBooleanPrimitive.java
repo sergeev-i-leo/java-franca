@@ -6,10 +6,6 @@ public class JsonBooleanPrimitive extends JsonPrimitive {
 
   private final boolean value;
 
-  public String getClassName() {
-    return "JsonBooleanPrimitive";
-  }
-
   public JsonBooleanPrimitive(boolean value) {
     super();
     this.value = value;

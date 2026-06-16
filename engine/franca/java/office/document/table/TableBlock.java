@@ -9,7 +9,7 @@ public class TableBlock extends Block {
   public ArrayList<TableColumn> tableColumns = new ArrayList<>();
 
   @Override
-  public String getClassName() {
+  public String getDataBlock() {
     return "TableBlock";
   }
 }

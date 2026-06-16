@@ -15,11 +15,6 @@ public class BlockStyle extends TranspilableClass {
   public Boolean isUnderline = null;
   public Boolean isStrikethrough = null;
 
-  @Override
-  public String getClassName() {
-    return "BlockStyle";
-  }
-
   public BlockStyle clone() {
     BlockStyle result = new BlockStyle();
     result.color = color;

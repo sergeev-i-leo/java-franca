@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class TextBlock extends Block {
 
-  public String getClassName() {
+  public String getDataBlock() {
     return "TextBlock";
   }
 

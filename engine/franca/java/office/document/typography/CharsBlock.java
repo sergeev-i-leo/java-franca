@@ -15,7 +15,7 @@ public class CharsBlock extends Block {
 
   private String chars = "";
 
-  public String getClassName() {
+  public String getDataBlock() {
     return "CharsBlock";
   }
 
@@ -57,9 +57,7 @@ public class CharsBlock extends Block {
 
     targetBufferedString.appendChars(' ', spacesBefore);
     targetBufferedString.appendString(">");
-    targetBufferedString.appendEndLine();
 
-    targetBufferedString.appendChars(' ', spacesBefore + 4);
     if (type.equals(CharsBlock.TYPE_CHARS)) {
       for (int i = 0; i < chars.length(); i++) {
         targetBufferedString.appendChar(chars.charAt(i));
@@ -75,9 +73,6 @@ public class CharsBlock extends Block {
       targetBufferedString.appendString("<br>");
     }
 
-    targetBufferedString.appendEndLine();
-
-    targetBufferedString.appendChars(' ', spacesBefore);
     targetBufferedString.appendString("</" + serializationTag + ">");
     targetBufferedString.appendEndLine();
   }

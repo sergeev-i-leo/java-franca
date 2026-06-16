@@ -9,10 +9,6 @@ public class JsonObject extends JsonElement {
 
   private final HashMap<String, JsonElement> jsonElements = new HashMap<>();
 
-  public String getClassName() {
-    return "JsonObject";
-  }
-
   @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString("{");

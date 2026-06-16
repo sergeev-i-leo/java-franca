@@ -7,7 +7,7 @@ public class HorizontalRuleBlock extends Block {
   public String text = "";
 
   @Override
-  public String getClassName() {
+  public String getDataBlock() {
     return "HorizontalRuleBlock";
   }
 }

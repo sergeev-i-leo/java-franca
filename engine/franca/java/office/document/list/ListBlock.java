@@ -12,7 +12,7 @@ public class ListBlock extends Block {
   }
 
   @Override
-  public String getClassName() {
+  public String getDataBlock() {
     return "ListBlock";
   }
 }

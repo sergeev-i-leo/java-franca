@@ -12,7 +12,7 @@ public class TableCellBlock extends Block {
   }
 
   @Override
-  public String getClassName() {
+  public String getDataBlock() {
     return "TableCellBlock";
   }
 }

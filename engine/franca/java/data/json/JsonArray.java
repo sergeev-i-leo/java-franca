@@ -8,10 +8,6 @@ public class JsonArray extends JsonElement {
 
   private final ArrayList<JsonElement> jsonElements = new ArrayList<>();
 
-  public String getClassName() {
-    return "JsonArray";
-  }
-
   @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString("[");
