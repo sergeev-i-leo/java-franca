@@ -74,9 +74,9 @@ public class Block extends TranspilableClass {
         }
         targetBufferedString.appendString(string);
       }
-      targetBufferedString.appendString("\"");
-      targetBufferedString.appendEndLine();
     }
+    targetBufferedString.appendString("\"");
+    targetBufferedString.appendEndLine();
   }
 
   public void serializeBlockStyle(BufferedString targetBufferedString, int spacesBefore) {
