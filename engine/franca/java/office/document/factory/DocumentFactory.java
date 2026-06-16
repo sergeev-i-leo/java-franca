@@ -84,8 +84,32 @@ public class DocumentFactory extends TranspilableClass {
   }
 
   public static void serialize(Block block, BufferedString targetBufferedString) {
+    targetBufferedString.appendString("<!DOCTYPE html>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("<html lang=\"en\">");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("<head>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("  <meta charset=\"UTF-8\">");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("  <title>Java Franca Document</title>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("  <style>[data-class-name]{position:relative;}[data-class-name]:hover{outline:1px solid #66afe9;}[data-class-name]:hover::before{content:attr(data-class-name)\" : \"attr(data-type);position:absolute;top:-20px;left:0;font:11px monospace;padding:2px 5px;border:1px solid #66afe9;border-radius:3px;background:#fff;white-space:nowrap;z-index:1000;pointer-events:none;}</style>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("</head>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("<body class=\"bg-body text-body\">");
+    targetBufferedString.appendEndLine();
     for (Block childBlock : block.getBlocks()) {
-      childBlock.serialize(targetBufferedString, 0);
+      childBlock.serialize(targetBufferedString, 2);
     }
+    targetBufferedString.appendString("<body>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("<html>");
+    targetBufferedString.appendEndLine();
   }
 }
