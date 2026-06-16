@@ -83,10 +83,10 @@ public class DocumentFactory extends TranspilableClass {
     }
   }
 
-  public String serialize(ArrayList<Block> blocks, Integer spacesBefore) {
+  public static String serialize(Block block) {
     BufferedString bufferedString = new BufferedString();
-    for (Block block : blocks) {
-      block.serialize(bufferedString, spacesBefore);
+    for (Block childBlock : block.getBlocks()) {
+      block.serialize(bufferedString, 0);
     }
     return bufferedString.getString();
   }

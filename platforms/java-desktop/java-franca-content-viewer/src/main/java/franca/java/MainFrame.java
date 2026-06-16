@@ -4,6 +4,7 @@ import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
 import franca.java.data.html.HtmlParser;
 import franca.java.office.document.Block;
+import franca.java.office.document.factory.DocumentFactory;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -109,8 +110,9 @@ public class MainFrame extends JFrame {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
           HtmlParser parser = new HtmlParser();
+          Document.instance = parser.parse(content);
           BufferedString outputBufferedString = new BufferedString();
-          Document.instance = parser.parse(content, outputBufferedString);
+          DocumentFactory.serialize(Document.instance);
           jsonTextPanel.setJsonText(outputBufferedString.getString());
           documentTreePanel.refresh();
 

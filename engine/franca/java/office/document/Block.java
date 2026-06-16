@@ -60,13 +60,29 @@ public class Block extends TranspilableClass {
     return "div";
   }
 
-  public void serializeClassesJsonArray(BufferedString bufferedString, Integer spacesBefore) {
+  public void serializeClassesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
+    if (classesJsonArray.isEmpty()) {
+      return;
+    }
+    targetBufferedString.appendChars(' ', spacesBefore);
+    targetBufferedString.appendString("class=\"");
+    for (int i = 0; i < classesJsonArray.size(); i++) {
+      String string = classesJsonArray.get(i).getStringValue();
+      if (string != null) {
+        if (i > 0) {
+          targetBufferedString.appendChar(' ');
+        }
+        targetBufferedString.appendString(string);
+      }
+      targetBufferedString.appendString("\"");
+      targetBufferedString.appendEndLine();
+    }
   }
 
-  public void serializeBlockStyle(BufferedString bufferedString, Integer spacesBefore) {
+  public void serializeBlockStyle(BufferedString targetBufferedString, int spacesBefore) {
   }
 
-  public void serializeAttributesJsonArray(BufferedString bufferedString, Integer spacesBefore) {
+  public void serializeAttributesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
   }
 
   public void addBlock(Block block) {
