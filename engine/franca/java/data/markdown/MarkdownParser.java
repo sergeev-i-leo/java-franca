@@ -370,19 +370,37 @@ public class MarkdownParser extends HtmlParser {
   }
 
   private void parseBlockCellAlignments(ArrayList<String> blockCellAlignments) {
-    skipLine();
-    /*skipChars(1);
-    while (peekChar() == '-') {
+    String blockCellAlignment = "default";
+    while (inputPosition < input.length()) {
+      skipWhitespaces();
+      if (peekLineEnd()) {
+        skipLine();
+        break;
+      }
+      if (peekString(":-")) {
+        blockCellAlignment = "left";
+        skipChars(1);
+        continue;
+      }
+      if (peekString("-:")) {
+        if (blockCellAlignment.equals("left")) {
+          blockCellAlignment = "center";
+        } else {
+          blockCellAlignment = "right";
+        }
+      }
+      if (peekChar() != '|') {
+        skipChars(1);
+        continue;
+      }
+      if (blockCellAlignment.equals("default")) {
+        blockCellAlignment = "left";
+      }
+      blockCellAlignments.add(blockCellAlignment);
+      blockCellAlignment = "default";
+      // '|'
       skipChars(1);
     }
-    if (blockCellAlignments == null) {
-    }
-    if (peekChar() == ':') {
-      blockCellAlignments.add("center");
-    } else {
-      blockCellAlignments.add("left");
-    }*/
-
   }
 
   public void parseMarkdownTextContents(Block parentBlock, boolean isTableCell) {
