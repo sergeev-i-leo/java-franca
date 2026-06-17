@@ -23,10 +23,6 @@ public class Block extends TranspilableClass {
 
   private ArrayList<Block> blocks = null;
 
-  public String getDataBlock() {
-    return "Block";
-  }
-
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {
     targetBufferedString.appendChars(' ', spacesBefore);
 
@@ -45,6 +41,10 @@ public class Block extends TranspilableClass {
 
   public String getSerializationTag() {
     return "div";
+  }
+
+  public String getDataBlock() {
+    return "Block";
   }
 
   public void serializeClassesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
@@ -167,6 +167,26 @@ public class Block extends TranspilableClass {
       blocks.clear();
     }
     blocks = null;
+  }
+
+  public void addQuotedAttribute(String attributeName, String attributeValue) {
+    for (int i = 0; i < attributesJsonArray.size(); i++) {
+      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
+      if (jsonObject == null) {
+        continue;
+      }
+      String string = jsonObject.getStringValue("name");
+      if (string == null) {
+        continue;
+      }
+      if (string.equals(attributeName)) {
+        return;
+      }
+    }
+    JsonObject jsonObject = new JsonObject();
+    attributesJsonArray.add(jsonObject);
+    jsonObject.putStringValue("name", attributeName);
+    jsonObject.putStringValue("quoted-value", attributeValue);
   }
 
 }

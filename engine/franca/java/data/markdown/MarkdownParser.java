@@ -39,19 +39,19 @@ public class MarkdownParser extends HtmlParser {
       if (peekString("___")) {
         HorizontalRuleBlock horizontalRuleBlock = new HorizontalRuleBlock();
         parentBlock.addBlock(horizontalRuleBlock);
-        horizontalRuleBlock.text = consumeLine();
+        horizontalRuleBlock.type = consumeLine();
         continue;
       }
       if (peekString("---")) {
         HorizontalRuleBlock horizontalRuleBlock = new HorizontalRuleBlock();
         parentBlock.addBlock(horizontalRuleBlock);
-        horizontalRuleBlock.text = consumeLine();
+        horizontalRuleBlock.type = consumeLine();
         continue;
       }
       if (peekString("***")) {
         HorizontalRuleBlock horizontalRuleBlock = new HorizontalRuleBlock();
         parentBlock.addBlock(horizontalRuleBlock);
-        horizontalRuleBlock.text = consumeLine();
+        horizontalRuleBlock.type = consumeLine();
         continue;
       }
 

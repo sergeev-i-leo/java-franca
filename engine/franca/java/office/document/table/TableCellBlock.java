@@ -12,6 +12,11 @@ public class TableCellBlock extends Block {
   }
 
   @Override
+  public String getSerializationTag() {
+    return isHeader ? "th" : "td";
+  }
+
+  @Override
   public String getDataBlock() {
     return "TableCellBlock";
   }

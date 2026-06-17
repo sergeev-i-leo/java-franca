@@ -1,5 +1,7 @@
 package franca.java.office.document.typography;
 
+import franca.java.expected.ExpectedRuntime;
+
 public class HeadingBlock extends TextBlock {
 
   public int level;
@@ -13,6 +15,12 @@ public class HeadingBlock extends TextBlock {
     }
   }
 
+  @Override
+  public String getSerializationTag() {
+    return "h" + ExpectedRuntime.intToString(level);
+  }
+
+  @Override
   public String getDataBlock() {
     return "HeadingBlock";
   }

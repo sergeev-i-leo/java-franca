@@ -9,6 +9,11 @@ public class TableBlock extends Block {
   public ArrayList<TableColumn> tableColumns = new ArrayList<>();
 
   @Override
+  public String getSerializationTag() {
+    return "table";
+  }
+
+  @Override
   public String getDataBlock() {
     return "TableBlock";
   }

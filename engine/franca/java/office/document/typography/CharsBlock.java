@@ -15,34 +15,9 @@ public class CharsBlock extends Block {
 
   private String chars = "";
 
-  public String getDataBlock() {
-    return "CharsBlock";
-  }
-
   @Override
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {
-    int i = 0;
-    while (i < attributesJsonArray.size()) {
-      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
-      if (jsonObject == null) {
-        continue;
-      }
-      String string = jsonObject.getStringValue("name");
-      if (string == null) {
-        i++;
-        continue;
-      }
-      if (string.equals("data-type")) {
-        break;
-      }
-      i++;
-    }
-    if (i == attributesJsonArray.size()) {
-      JsonObject jsonObject = new JsonObject();
-      attributesJsonArray.add(jsonObject);
-      jsonObject.putStringValue("name", "data-type");
-      jsonObject.putStringValue("quoted-value", type);
-    }
+    addQuotedAttribute("data-type", type);
     super.serialize(targetBufferedString, spacesBefore);
   }
 
@@ -52,7 +27,11 @@ public class CharsBlock extends Block {
   }
 
   @Override
+  public String getDataBlock() {
+    return "CharsBlock";
+  }
 
+  @Override
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
 
     targetBufferedString.appendChars(' ', spacesBefore);

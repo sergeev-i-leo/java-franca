@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class TextBlock extends Block {
 
+  @Override
   public String getDataBlock() {
     return "TextBlock";
   }
