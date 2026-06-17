@@ -37,24 +37,20 @@ public class HtmlParser extends Parser {
     while (inputPosition < input.length()) {
       skipWhitespaces();
 
-      if ((peekChar() == '<') && (peekNextChar(1) == '!')) {
-        literalBufferedString = new BufferedString();
-        literalBufferedString.appendString("<!");
-        skipChars(2);
+      if (peekString("<!--")) {
+        // skip comment
+        skipChars(4);
         while (inputPosition < input.length()) {
-          // html comment mustn't contain >
-          char c = consumeChar();
-          if (c == '>') {
-            literalBufferedString.appendChar(c);
+          if (peekString("-->")) {
+            skipLine();
             break;
           }
-          literalBufferedString.appendChar(c);
+          skipChars(1);
         }
-
-        CharsBlock charsBlock = new CharsBlock();
-        parentBlock.addBlock(charsBlock);
-        charsBlock.setChars(literalBufferedString.getString());
-
+        continue;
+      } else if (peekString("<!")) {
+        // skip <!DOCTYPE
+        skipLine();
         continue;
       }
 
@@ -82,7 +78,7 @@ public class HtmlParser extends Parser {
 
       inputPosition = storedPosition;
 
-      Block block = parseHtmlNode();
+      var block = parseHtmlNode();
       if (block != null) {
         parentBlock.addBlock(block);
       } else {
@@ -156,15 +152,13 @@ public class HtmlParser extends Parser {
 
     skipChars(1);
 
-    String closingTagName = parseTagName();
+    // skip closing tag, don't check matching
+
+    parseTagName();
 
     skipWhitespaces();
 
-    if (peekChar() != '>') {
-      // corrupted html
-      skipChars(1);
-      return block;
-    }
+    // '>' or corrupted html
 
     skipChars(1);
 
@@ -214,46 +208,46 @@ public class HtmlParser extends Parser {
   }
 
   private String parseAttributeName() {
-    BufferedString bufferedString = new BufferedString();
+    literalBufferedString = new BufferedString();
     while ((inputPosition < input.length()) && (isAttributeNameCharacter(peekChar()))) {
-      char c = consumeChar();
-      bufferedString.appendChar(c);
+      var c = consumeChar();
+      literalBufferedString.appendChar(c);
     }
-    if (bufferedString.isEmpty()) {
+    if (literalBufferedString.isEmpty()) {
       return null;
     }
 
-    return bufferedString.getLowerCaseString();
+    return literalBufferedString.getLowerCaseString();
   }
 
   private boolean isAttributeNameCharacter(char c) {
     return (c != '=') && (c != '>') && (c != '/') && (!Character.isWhitespace(c));
   }
 
-  private void parseClassAttribute(JsonArray jsonArray) {
+  private void parseClassAttribute(JsonArray classesJsonArray) {
     skipWhitespaces();
 
     literalBufferedString = new BufferedString();
 
-    char classValueDelimiter = peekChar();
+    var delimiter = peekChar();
     skipChars(1);
 
     while (inputPosition < input.length()) {
-      if (peekChar() == classValueDelimiter) {
-        if (literalBufferedString.isNotEmpty()) {
-          jsonArray.add(new JsonStringPrimitive(literalBufferedString.getLowerCaseString()));
-        }
+      if (peekChar() == delimiter) {
         break;
       }
       if (peekChar() == ' ') {
         if (literalBufferedString.isNotEmpty()) {
-          jsonArray.add(new JsonStringPrimitive(literalBufferedString.getLowerCaseString()));
+          classesJsonArray.add(new JsonStringPrimitive(literalBufferedString.getLowerCaseString()));
         }
-        literalBufferedString = new BufferedString();
+        literalBufferedString.clear();
         skipChars(1);
       } else {
         literalBufferedString.appendChar(consumeChar());
       }
+    }
+    if (literalBufferedString.isNotEmpty()) {
+      classesJsonArray.add(new JsonStringPrimitive(literalBufferedString.getLowerCaseString()));
     }
 
     skipChars(1);
@@ -262,7 +256,7 @@ public class HtmlParser extends Parser {
   private void parseStyleAttribute(JsonObject styleJsonObject) {
     skipWhitespaces();
 
-    char delimiter = peekChar();
+    var delimiter = peekChar();
     skipChars(1);
 
     while (inputPosition < input.length()) {
@@ -270,7 +264,7 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      String name = parseStyleName();
+      var name = parseStyleName();
       if (name == null) {
         return;
       }
@@ -285,7 +279,7 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      String value = literalBufferedString.getString();
+      var value = literalBufferedString.getString();
       styleJsonObject.putStringValue(name, value);
 
       if (peekChar() != ';') {
@@ -320,11 +314,11 @@ public class HtmlParser extends Parser {
     skipWhitespaces();
 
     literalBufferedString = new BufferedString();
-    boolean insideQuotes = false;
-    char quoteCharacter = 0;
+    var insideQuotes = false;
+    var quoteCharacter = 0;
 
     while (inputPosition < input.length()) {
-      char c = peekChar();
+      var c = peekChar();
 
       if (c == '\\') {
         skipChars(1);
@@ -452,6 +446,16 @@ public class HtmlParser extends Parser {
         continue;
       }
 
+      if (peekString("<br>")) {
+        if (literalBufferedString.isNotEmpty()) {
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+        }
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styleJsonObject);
+        skipChars(4);
+        literalBufferedString.clear();
+        continue;
+      }
+
       if (peekChar() == '<') {
         break;
       }
@@ -496,15 +500,6 @@ public class HtmlParser extends Parser {
         }
         parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", styleJsonObject);
         skipChars(6);
-        literalBufferedString.clear();
-        continue;
-      }
-      if (peekString("<br>")) {
-        if (literalBufferedString.isNotEmpty()) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
-        }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styleJsonObject);
-        skipChars(4);
         literalBufferedString.clear();
         continue;
       }

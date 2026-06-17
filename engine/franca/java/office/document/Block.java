@@ -78,7 +78,7 @@ public class Block extends TranspilableClass {
     for (String key : keys) {
       String value = styleJsonObject.getStringValue(key);
       if (value != null) {
-        targetBufferedString.appendString(key + "=" + value + ";");
+        targetBufferedString.appendString(key + ":" + value + ";");
       }
     }
     targetBufferedString.appendString("\"");
