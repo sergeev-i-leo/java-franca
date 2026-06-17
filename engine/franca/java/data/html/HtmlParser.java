@@ -110,11 +110,6 @@ public class HtmlParser extends Parser {
       bodyBlock = block;
     }
 
-    JsonObject jsonObject = new JsonObject();
-    block.attributesJsonArray.add(jsonObject);
-    jsonObject.putStringValue("name", "tag-name");
-    jsonObject.putStringValue("value", tagName);
-
     parseHtmlAttributes(block);
 
     skipWhitespaces();
