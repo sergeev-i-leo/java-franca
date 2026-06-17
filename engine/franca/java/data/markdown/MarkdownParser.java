@@ -9,8 +9,7 @@ import franca.java.office.document.Block;
 import franca.java.office.document.list.ListBlock;
 import franca.java.office.document.list.ListItemBlock;
 import franca.java.office.document.structure.HorizontalRuleBlock;
-import franca.java.office.document.table.TableBlock;
-import franca.java.office.document.table.TableCellBlock;
+import franca.java.office.document.table.*;
 import franca.java.office.document.typography.CharsBlock;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
@@ -117,25 +116,19 @@ public class MarkdownParser extends HtmlParser {
         if (block != null) {
           parentBlock.addBlock(block);
         }
-        // empty line after list
-        if (peekLineEnd()) {
-          skipLineEnd();
-        }
+        // empty line after list block to be parsed to paragraph block
         continue;
       }
-/*
+
       block = parseMarkdownTableBlock();
       if (block != null) {
         if (block != null) {
           parentBlock.addBlock(block);
         }
-        // empty line after list
-        if (peekLineEnd()) {
-          skipLineEnd();
-        }
+        // empty line after table block to be parsed to paragraph block
         continue;
       }
-*/
+
       block = parseHtmlNode();;
       if (block != null) {
         // skip lineEnd
@@ -302,10 +295,79 @@ public class MarkdownParser extends HtmlParser {
     return listItemBlock;
   }
 
-  /*public TableBlock parseMarkdownTableBlock() {
-    Table
+  public TableBlock parseMarkdownTableBlock() {
+    TableBlock tableBlock = null;
+    TableHeaderBlock tableHeaderBlock = null;
+    TableBodyBlock tableBodyBlock = null;
 
-  }*/
+    ArrayList<String> blockCellAlignments = null;
+    while (inputPosition < input.length()) {
+      if (peekChar() != '|') {
+        break;
+      }
+
+      skipChars(1);
+      skipWhitespaces();
+
+      if (peekString(":-")) {
+        blockCellAlignments = new ArrayList<>();
+        parseBlockCellAlignments(blockCellAlignments);
+        continue;
+      }
+      if (peekString("-")) {
+        blockCellAlignments = new ArrayList<>();
+        parseBlockCellAlignments(blockCellAlignments);
+        continue;
+      }
+
+      if (tableBlock == null) {
+        tableBlock = new TableBlock();
+      }
+
+      var tableRowBlock = new TableRowBlock();
+
+      if (tableHeaderBlock == null) {
+        tableHeaderBlock = new TableHeaderBlock();
+        tableBlock.addBlock(tableHeaderBlock);
+        tableHeaderBlock.addBlock(tableRowBlock);
+      } else {
+        if (tableBodyBlock == null) {
+          tableBodyBlock = new TableBodyBlock();
+        }
+        tableBlock.addBlock(tableBodyBlock);
+        tableBodyBlock.addBlock(tableRowBlock);
+      }
+
+      while (inputPosition < input.length()) {
+        if (peekLineEnd()) {
+          skipLine();
+          break;
+        }
+        var tableCellBlock = new TableCellBlock(true);
+        parseMarkdownTextContents(tableCellBlock, true);
+        skipWhitespaces();
+        // '|'
+        skipChars(1);
+        skipWhitespaces();
+      }
+    }
+    return tableBlock;
+  }
+
+  private void parseBlockCellAlignments(ArrayList<String> blockCellAlignments) {
+    skipChars(1);
+    while (peekChar() == '-') {
+      skipChars(1);
+    }
+    if (blockCellAlignments == null) {
+    }
+    if (peekChar() == ':') {
+      blockCellAlignments.add("center");
+    } else {
+      blockCellAlignments.add("left");
+    }
+
+  }
 
   public void parseMarkdownTextContents(Block parentBlock, boolean isTableCell) {
 
@@ -341,8 +403,13 @@ public class MarkdownParser extends HtmlParser {
         break;
       }
 
-      if ((isTableCell) && (peekChar() == '|')) {
-        break;
+      if (isTableCell) {
+        if ((peekChar() == '\\') && (peekNextChar(1) == '|')) {
+          // escaped |, consume later
+          skipChars(1);
+        } else if (peekChar() == '|') {
+          break;
+        }
       }
 
       if (peekChar() == ' ') {
