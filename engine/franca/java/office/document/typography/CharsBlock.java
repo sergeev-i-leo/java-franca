@@ -28,7 +28,7 @@ public class CharsBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "CharsBlock";
+    return "chars-block";
   }
 
   @Override

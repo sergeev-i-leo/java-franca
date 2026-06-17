@@ -44,7 +44,7 @@ public class Block extends TranspilableClass {
   }
 
   public String getDataBlock() {
-    return "Block";
+    return "block";
   }
 
   public void serializeClassesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
@@ -160,6 +160,16 @@ public class Block extends TranspilableClass {
       Block.emptyBlocks = new ArrayList<>();
     }
     return Block.emptyBlocks;
+  }
+
+  public Block getBlock(int index) {
+    if (blocks == null) {
+      return null;
+    }
+    if ((index < 0) || (index >= blocks.size())) {
+      return null;
+    }
+    return blocks.get(index);
   }
 
   public void clearBlocks() {

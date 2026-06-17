@@ -333,8 +333,8 @@ public class MarkdownParser extends HtmlParser {
       } else {
         if (tableBodyBlock == null) {
           tableBodyBlock = new TableBodyBlock();
+          tableBlock.addBlock(tableBodyBlock);
         }
-        tableBlock.addBlock(tableBodyBlock);
         tableBodyBlock.addBlock(tableRowBlock);
       }
 
@@ -343,19 +343,35 @@ public class MarkdownParser extends HtmlParser {
           skipLine();
           break;
         }
-        var tableCellBlock = new TableCellBlock(true);
+        var tableCellBlock = new TableCellBlock(tableBodyBlock == null);
         parseMarkdownTextContents(tableCellBlock, true);
         skipWhitespaces();
+        if (peekChar() == '|') {
+          tableRowBlock.addBlock(tableCellBlock);
+        }
         // '|'
         skipChars(1);
-        skipWhitespaces();
+      }
+      // alignment
+      if (blockCellAlignments == null) {
+        continue;
+      }
+      for (int i = 0; i < blockCellAlignments.size(); i++) {
+        var block = tableRowBlock.getBlock(i);
+        if (block != null) {
+          block = block.getBlock(0);
+          if (block != null) {
+            block.styleJsonObject.putStringValue("text-align", blockCellAlignments.get(i));
+          }
+        }
       }
     }
     return tableBlock;
   }
 
   private void parseBlockCellAlignments(ArrayList<String> blockCellAlignments) {
-    skipChars(1);
+    skipLine();
+    /*skipChars(1);
     while (peekChar() == '-') {
       skipChars(1);
     }
@@ -365,7 +381,7 @@ public class MarkdownParser extends HtmlParser {
       blockCellAlignments.add("center");
     } else {
       blockCellAlignments.add("left");
-    }
+    }*/
 
   }
 
@@ -396,6 +412,16 @@ public class MarkdownParser extends HtmlParser {
         }
         literalBufferedString.clear();
         spacesCount = 0;
+        continue;
+      }
+
+      if (peekString("<br>")) {
+        if (literalBufferedString.isNotEmpty()) {
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+        }
+        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styleJsonObject);
+        skipChars(4);
+        literalBufferedString.clear();
         continue;
       }
 

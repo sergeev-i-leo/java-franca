@@ -11,6 +11,6 @@ public class TableHeaderBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "TableHeaderBlock";
+    return "table-header-block";
   }
 }

@@ -18,6 +18,6 @@ public class ListBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "ListBlock";
+    return "list-block";
   }
 }

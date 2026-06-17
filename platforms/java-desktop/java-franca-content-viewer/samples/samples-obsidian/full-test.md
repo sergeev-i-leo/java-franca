@@ -53,7 +53,7 @@ And here is the continuation.
 
 ## Table
 
-| Header 1                     | Header 2 | Header 3 |
+| H1                     | Header2 | Header3 |
 | :----------------------------: | -------- | -------- |
 | Cell 1, Line1<br>Cell1 Line2 | Cell 2   | Cell 3   |
 | Cell 4                       | Cell 5   | Cell 6   |

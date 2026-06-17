@@ -20,6 +20,6 @@ public class ListItemBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "ListItemBlock";
+    return "list-item-block";
   }
 }

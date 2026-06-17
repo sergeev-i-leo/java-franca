@@ -22,6 +22,6 @@ public class HeadingBlock extends TextBlock {
 
   @Override
   public String getDataBlock() {
-    return "HeadingBlock";
+    return "heading-block";
   }
 }

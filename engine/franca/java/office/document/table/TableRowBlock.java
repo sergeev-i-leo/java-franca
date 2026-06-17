@@ -11,6 +11,6 @@ public class TableRowBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "TableRowBlock";
+    return "table-row-block";
   }
 }

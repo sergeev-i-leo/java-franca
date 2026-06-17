@@ -9,6 +9,6 @@ public class ParagraphBlock extends TextBlock {
 
   @Override
   public String getDataBlock() {
-    return "ParagraphBlock";
+    return "paragraph-block";
   }
 }
