@@ -22,7 +22,7 @@ public class JsonStringPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public String getStringValue() {
+  public String asStringValue() {
     return value;
   }
 }

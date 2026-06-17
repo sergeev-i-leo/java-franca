@@ -17,7 +17,7 @@ public class JsonBooleanPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public Boolean getBooleanValue() {
+  public Boolean asBooleanValue() {
     return value;
   }
 }

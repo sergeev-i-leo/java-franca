@@ -83,38 +83,38 @@ public class JsonTreePanel extends JPanel {
     JsonObject obj = element.asJsonObject();
     if (obj != null) return "Object";
 
-    String str = element.getStringValue();
+    String str = element.asStringValue();
     if (str != null) return str;  // ← без кавычек
 
-    Integer intVal = element.getIntegerValue();
+    Integer intVal = element.asIntegerValue();
     if (intVal != null) return String.valueOf(intVal);
 
-    Double dblVal = element.getDoubleValue();
+    Double dblVal = element.asDoubleValue();
     if (dblVal != null) return String.valueOf(dblVal);
 
-    Boolean boolVal = element.getBooleanValue();
+    Boolean boolVal = element.asBooleanValue();
     if (boolVal != null) return String.valueOf(boolVal);
 
     return "null";
   }
 
   private DefaultMutableTreeNode buildPrimitiveNode(JsonElement element) {
-    String str = element.getStringValue();
+    String str = element.asStringValue();
     if (str != null) {
       return new DefaultMutableTreeNode(str);  // ← без кавычек
     }
 
-    Integer intVal = element.getIntegerValue();
+    Integer intVal = element.asIntegerValue();
     if (intVal != null) {
       return new DefaultMutableTreeNode(String.valueOf(intVal));
     }
 
-    Double doubleVal = element.getDoubleValue();
+    Double doubleVal = element.asDoubleValue();
     if (doubleVal != null) {
       return new DefaultMutableTreeNode(String.valueOf(doubleVal));
     }
 
-    Boolean boolVal = element.getBooleanValue();
+    Boolean boolVal = element.asBooleanValue();
     if (boolVal != null) {
       return new DefaultMutableTreeNode(String.valueOf(boolVal));
     }

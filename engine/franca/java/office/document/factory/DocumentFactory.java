@@ -1,5 +1,7 @@
 package franca.java.office.document.factory;
 
+import java.util.HashMap;
+
 import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 import franca.java.office.document.Block;
@@ -9,8 +11,6 @@ import franca.java.office.document.structure.HorizontalRuleBlock;
 import franca.java.office.document.table.*;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
-
-import java.util.ArrayList;
 
 public class DocumentFactory extends TranspilableClass {
 

@@ -4,7 +4,6 @@ import franca.java.data.html.HtmlParser;
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
-import franca.java.office.document.BlockStyle;
 
 import java.util.ArrayList;
 
@@ -47,21 +46,21 @@ public class TextBlock extends Block {
   public void setHtmlText(String htmlText) {
     clearBlocks();
 
-    ArrayList<BlockStyle> blockStyles = new ArrayList<>();
+    ArrayList<StyleJsonObject> styleJsonObjects = new ArrayList<>();
     HtmlParser htmlParser = new HtmlParser();
     htmlParser.input = htmlText;
     htmlParser.inputPosition = 0;
-    htmlParser.parseHtmlTextContents(this, blockStyles);
+    htmlParser.parseHtmlTextContents(this, styleJsonObjects);
   }
 
   public void setMarkdownText(String markdownText) {
     clearBlocks();
 
-    ArrayList<BlockStyle> blockStyles = new ArrayList<>();
+    ArrayList<StyleJsonObject> styleJsonObjects = new ArrayList<>();
     MarkdownParser markdownParser = new MarkdownParser();
     markdownParser.input = markdownText;
     markdownParser.inputPosition = 0;
-    markdownParser.parseMarkdownTextContents(this, blockStyles);
+    markdownParser.parseMarkdownTextContents(this, styleJsonObjects);
   }
 
   public String getText() {

@@ -9,6 +9,18 @@ public class JsonObject extends JsonElement {
 
   private final HashMap<String, JsonElement> jsonElements = new HashMap<>();
 
+  public JsonObject createCopy() {
+    JsonObject result = new JsonObject();
+    ArrayList<String> keys = this.keys();
+    for (String key : keys) {
+      String value = getStringValue(key);
+      if (value != null) {
+        result.putStringValue(key, value);
+      }
+    }
+    return result;
+  }
+
   @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString("{");
@@ -89,7 +101,7 @@ public class JsonObject extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getBooleanValue();
+    return jsonElement.asBooleanValue();
   }
 
   public Integer getIntegerValue(String memberName) {
@@ -97,7 +109,7 @@ public class JsonObject extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getIntegerValue();
+    return jsonElement.asIntegerValue();
   }
 
   public Double getDoubleValue(String memberName) {
@@ -105,7 +117,7 @@ public class JsonObject extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getDoubleValue();
+    return jsonElement.asDoubleValue();
   }
 
   public String getStringValue(String memberName) {
@@ -113,7 +125,7 @@ public class JsonObject extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getStringValue();
+    return jsonElement.asStringValue();
   }
 
   public JsonNull getJsonNull(String memberName) {

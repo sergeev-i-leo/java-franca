@@ -8,19 +8,19 @@ public class JsonElement extends TranspilableClass {
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
   }
 
-  public Boolean getBooleanValue() {
+  public Boolean asBooleanValue() {
     return null;
   }
 
-  public Integer getIntegerValue() {
+  public Integer asIntegerValue() {
     return null;
   }
 
-  public Double getDoubleValue() {
+  public Double asDoubleValue() {
     return null;
   }
 
-  public String getStringValue() {
+  public String asStringValue() {
     return null;
   }
 

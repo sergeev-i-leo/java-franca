@@ -102,7 +102,7 @@ public class JsonArray extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getBooleanValue();
+    return jsonElement.asBooleanValue();
   }
 
   public Integer getIntegerValue(int index) {
@@ -110,7 +110,7 @@ public class JsonArray extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getIntegerValue();
+    return jsonElement.asIntegerValue();
   }
 
   public Double getDoubleValue(int index) {
@@ -118,7 +118,7 @@ public class JsonArray extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getDoubleValue();
+    return jsonElement.asDoubleValue();
   }
 
   public String getStringValue(int index) {
@@ -126,7 +126,7 @@ public class JsonArray extends JsonElement {
     if (jsonElement == null) {
       return null;
     }
-    return jsonElement.getStringValue();
+    return jsonElement.asStringValue();
   }
 
   public JsonArray getJsonArray(int index) {

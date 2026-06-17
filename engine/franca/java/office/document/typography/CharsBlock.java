@@ -23,7 +23,7 @@ public class CharsBlock extends Block {
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {
     int i = 0;
     while (i < attributesJsonArray.size()) {
-      JsonObject jsonObject = attributesJsonArray.get(i).asJsonObject();
+      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
       if (jsonObject == null) {
         continue;
       }
@@ -41,7 +41,7 @@ public class CharsBlock extends Block {
       JsonObject jsonObject = new JsonObject();
       attributesJsonArray.add(jsonObject);
       jsonObject.putStringValue("name", "data-type");
-      jsonObject.putStringValue("string-value", type);
+      jsonObject.putStringValue("quoted-value", type);
     }
     super.serialize(targetBufferedString, spacesBefore);
   }
@@ -60,7 +60,13 @@ public class CharsBlock extends Block {
 
     if (type.equals(CharsBlock.TYPE_CHARS)) {
       for (int i = 0; i < chars.length(); i++) {
-        targetBufferedString.appendChar(chars.charAt(i));
+        char c = chars.charAt(i);
+        String string = encodeHtmChar(c);
+        if (string != null) {
+          targetBufferedString.appendString(string);
+        } else {
+          targetBufferedString.appendChar(c);
+        }
       }
     }
     if (type.equals(CharsBlock.TYPE_SPACE)) {
@@ -75,6 +81,22 @@ public class CharsBlock extends Block {
 
     targetBufferedString.appendString("</" + serializationTag + ">");
     targetBufferedString.appendEndLine();
+  }
+
+  public String encodeHtmChar(char c) {
+    switch (c) {
+      case '&':
+        return "&amp;";
+      case '<':
+        return "&lt;";
+      case '>':
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case '\'':
+        return "&#39;";
+    }
+    return null;
   }
 
   public String getChars() {

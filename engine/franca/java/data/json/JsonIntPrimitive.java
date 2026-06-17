@@ -18,7 +18,7 @@ public class JsonIntPrimitive extends JsonPrimitive {
   }
 
   @Override
-  public Integer getIntegerValue() {
+  public Integer asIntegerValue() {
     return value;
   }
 }

@@ -3,7 +3,6 @@ package franca.java.data.markdown;
 import franca.java.data.html.HtmlParser;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
-import franca.java.office.document.BlockStyle;
 import franca.java.office.document.structure.HorizontalRuleBlock;
 import franca.java.office.document.table.TableCellBlock;
 import franca.java.office.document.typography.CharsBlock;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 public class MarkdownParser extends HtmlParser {
 
-  private ArrayList<BlockStyle> blockStyles = new ArrayList<>();
+  private ArrayList<StyleJsonObject> styleJsonObjects = new ArrayList<>();
 
   public Block parse(String input) {
     this.input = input;
@@ -59,7 +58,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(2);
         HeadingBlock headingBlock = new HeadingBlock(1);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, styleJsonObjects);
         skipLine();
         continue;
       }
@@ -68,7 +67,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(3);
         HeadingBlock headingBlock = new HeadingBlock(2);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, styleJsonObjects);
         skipLine();
         continue;
       }
@@ -77,7 +76,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(4);
         HeadingBlock headingBlock = new HeadingBlock(3);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, styleJsonObjects);
         skipLine();
         continue;
       }
@@ -86,7 +85,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(5);
         HeadingBlock headingBlock = new HeadingBlock(4);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, styleJsonObjects);
         skipLine();
         continue;
       }
@@ -95,7 +94,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(6);
         HeadingBlock headingBlock = new HeadingBlock(5);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, styleJsonObjects);
         skipLine();
         continue;
       }
@@ -104,7 +103,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(7);
         HeadingBlock headingBlock = new HeadingBlock(6);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, blockStyles);
+        parseMarkdownTextContents(headingBlock, styleJsonObjects);
         skipLine();
         continue;
       }
@@ -134,7 +133,7 @@ public class MarkdownParser extends HtmlParser {
     }
   }
 
-  public void parseMarkdownTextContents(Block parentBlock, ArrayList<BlockStyle> blockStyles) {
+  public void parseMarkdownTextContents(Block parentBlock, ArrayList<StyleJsonObject> styleJsonObjects) {
 
     literalBufferedString = new BufferedString();
 
@@ -143,19 +142,19 @@ public class MarkdownParser extends HtmlParser {
 
     while (inputPosition < input.length()) {
 
-      BlockStyle blockStyle;
-      if (blockStyles.isEmpty()) {
-        blockStyle = null;
+      StyleJsonObject styleJsonObject;
+      if (styleJsonObjects.isEmpty()) {
+        styleJsonObject = null;
       } else {
-        blockStyle = blockStyles.get(blockStyles.size() - 1);
+        styleJsonObject = styleJsonObjects.get(styleJsonObjects.size() - 1);
       }
 
-      if (parseMarkdownTextContentsStyle(blockStyles)) {
+      if (parseMarkdownTextContentsStyle(styleJsonObjects)) {
         if (spacesCount > 0) {
           // we accumulated spaces
-          parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
+          parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonObject);
         } else if (literalBufferedString.isNotEmpty()) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
         }
         literalBufferedString.clear();
         spacesCount = 0;
@@ -175,7 +174,7 @@ public class MarkdownParser extends HtmlParser {
       if (peekChar() == ' ') {
         if (literalBufferedString.isNotEmpty()) {
           // there are accumulated chars
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
           spacesCount = 0;
         }
         skipChars(1);
@@ -186,10 +185,10 @@ public class MarkdownParser extends HtmlParser {
         // literalStringBuffer must be null
         if (literalBufferedString.isNotEmpty()) {
           System.out.println("Accumulated chars at position " + inputPosition);
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
         }
         literalBufferedString.clear();
-        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, blockStyle);
+        parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonObject);
       }
 
       spacesCount = 0;
@@ -199,17 +198,17 @@ public class MarkdownParser extends HtmlParser {
 
     if (literalBufferedString.isNotEmpty()) {
       // chars found
-      BlockStyle blockStyle;
-      if (blockStyles.isEmpty()) {
-        blockStyle = null;
+      StyleJsonObject styleJsonObject;
+      if (styleJsonObjects.isEmpty()) {
+        styleJsonObject = null;
       } else {
-        blockStyle = blockStyles.get(blockStyles.size() - 1);
+        styleJsonObject = styleJsonObjects.get(styleJsonObjects.size() - 1);
       }
-      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), blockStyle);
+      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
     }
   }
 
-  public boolean parseMarkdownTextContentsStyle(ArrayList<BlockStyle> blockStyles) {
+  public boolean parseMarkdownTextContentsStyle(ArrayList<StyleJsonObject> styleJsonObjects) {
     return false;
   }
 }

@@ -1,5 +1,6 @@
 package franca.java.office.document;
 
+import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 import franca.java.data.json.JsonArray;
@@ -16,7 +17,7 @@ public class Block extends TranspilableClass {
   // array of strings className, className, className ...
   public JsonArray classesJsonArray = new JsonArray();
   // style
-  public BlockStyle blockStyle = new BlockStyle();
+  public JsonObject styleJsonObject = new JsonObject();
   // single attributes, non-quoted attributes, quoted attributes
   public JsonArray attributesJsonArray = new JsonArray();
 
@@ -35,7 +36,7 @@ public class Block extends TranspilableClass {
 
     serializeClassesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
 
-    serializeBlockStyle(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+    serializeStyleJsonObject(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
 
     serializeAttributesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
 
@@ -53,7 +54,7 @@ public class Block extends TranspilableClass {
     targetBufferedString.appendChars(' ', spacesBefore);
     targetBufferedString.appendString("class=\"");
     for (int i = 0; i < classesJsonArray.size(); i++) {
-      String string = classesJsonArray.get(i).getStringValue();
+      String string = classesJsonArray.get(i).asStringValue();
       if (string != null) {
         if (i > 0) {
           targetBufferedString.appendChar(' ');
@@ -65,10 +66,53 @@ public class Block extends TranspilableClass {
     targetBufferedString.appendEndLine();
   }
 
-  public void serializeBlockStyle(BufferedString targetBufferedString, int spacesBefore) {
+  public void serializeStyleJsonObject(BufferedString targetBufferedString, int spacesBefore) {
+    ArrayList<String> keys = styleJsonObject.keys();
+    if (keys.isEmpty()) {
+      return;
+    }
+
+    targetBufferedString.appendChars(' ', spacesBefore);
+    targetBufferedString.appendString("style=\"");
+
+    for (String key : keys) {
+      String value = styleJsonObject.getStringValue(key);
+      if (value != null) {
+        targetBufferedString.appendString(key + "=" + value + ";");
+      }
+    }
+    targetBufferedString.appendString("\"");
+    targetBufferedString.appendEndLine();
   }
 
   public void serializeAttributesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
+    for (int i = 0; i < attributesJsonArray.size(); i++) {
+      String string = attributesJsonArray.getStringValue(i);
+      if (string != null) {
+        targetBufferedString.appendChar(' ');
+        targetBufferedString.appendString(string);
+        continue;
+      }
+      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
+      if (jsonObject == null) {
+        continue;
+      }
+      string = jsonObject.getStringValue("name");
+      if (string == null) {
+        continue;
+      }
+      targetBufferedString.appendChar(' ');
+      targetBufferedString.appendString(string);
+      string = jsonObject.getStringValue("value");
+      if (string != null) {
+        targetBufferedString.appendString(" = " + string);
+        continue;
+      }
+      string = jsonObject.getStringValue("quoted-value");
+      if (string != null) {
+        targetBufferedString.appendString(" = \"" + string + "\"");
+      }
+    }
   }
 
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {

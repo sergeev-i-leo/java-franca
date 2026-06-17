@@ -18,7 +18,7 @@ public class JsonDoublePrimitive extends JsonPrimitive {
   }
 
   @Override
-  public Double getDoubleValue() {
+  public Double asDoubleValue() {
     return value;
   }
 }
