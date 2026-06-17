@@ -101,39 +101,10 @@ public class DocumentTreePanel extends JPanel {
     }
 
     // style
-    if (block.styleJsonObject.color != null) {
+    var keys = block.styleJsonObject.keys();
+    for (String key : keys) {
       DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("color : " + block.styleJsonObject.color));
-      blockNode.add(styleNode);
-    }
-    if (block.styleJsonObject.backgroundColor != null) {
-      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("backgroundColor : " + block.styleJsonObject.backgroundColor));
-      blockNode.add(styleNode);
-    }
-    if (block.styleJsonObject.textAlign != null) {
-      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("textAlign : " + block.styleJsonObject.textAlign));
-      blockNode.add(styleNode);
-    }
-    if (block.styleJsonObject.fontWeight != null) {
-      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("fontWeight : " + block.styleJsonObject.fontWeight));
-      blockNode.add(styleNode);
-    }
-    if (block.styleJsonObject.isItalic != null) {
-      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("isItalic : " + block.styleJsonObject.isItalic));
-      blockNode.add(styleNode);
-    }
-    if (block.styleJsonObject.isUnderline != null) {
-      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("isUnderline : " + block.styleJsonObject.isUnderline));
-      blockNode.add(styleNode);
-    }
-    if (block.styleJsonObject.isStrikethrough != null) {
-      DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode("isStrikethrough : " + block.styleJsonObject.isStrikethrough));
+      styleNode.add(new DefaultMutableTreeNode(key + " : " + block.styleJsonObject.getStringValue(key)));
       blockNode.add(styleNode);
     }
 

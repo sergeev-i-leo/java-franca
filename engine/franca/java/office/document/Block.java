@@ -89,8 +89,9 @@ public class Block extends TranspilableClass {
     for (int i = 0; i < attributesJsonArray.size(); i++) {
       String string = attributesJsonArray.getStringValue(i);
       if (string != null) {
-        targetBufferedString.appendChar(' ');
+        targetBufferedString.appendChars(' ', spacesBefore);
         targetBufferedString.appendString(string);
+        targetBufferedString.appendEndLine();
         continue;
       }
       JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
@@ -101,17 +102,18 @@ public class Block extends TranspilableClass {
       if (string == null) {
         continue;
       }
-      targetBufferedString.appendChar(' ');
+      targetBufferedString.appendChars(' ', spacesBefore);
       targetBufferedString.appendString(string);
       string = jsonObject.getStringValue("value");
       if (string != null) {
         targetBufferedString.appendString(" = " + string);
-        continue;
+      } else {
+        string = jsonObject.getStringValue("quoted-value");
+        if (string != null) {
+          targetBufferedString.appendString(" = \"" + string + "\"");
+        }
       }
-      string = jsonObject.getStringValue("quoted-value");
-      if (string != null) {
-        targetBufferedString.appendString(" = \"" + string + "\"");
-      }
+      targetBufferedString.appendEndLine();
     }
   }
 

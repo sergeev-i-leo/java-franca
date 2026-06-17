@@ -1,6 +1,9 @@
 package franca.java.data.markdown;
 
+import java.util.ArrayList;
+
 import franca.java.data.html.HtmlParser;
+import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
 import franca.java.office.document.structure.HorizontalRuleBlock;
@@ -9,11 +12,9 @@ import franca.java.office.document.typography.CharsBlock;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 
-import java.util.ArrayList;
-
 public class MarkdownParser extends HtmlParser {
 
-  private ArrayList<StyleJsonObject> styleJsonObjects = new ArrayList<>();
+  private ArrayList<JsonObject> styleJsonObjects = new ArrayList<>();
 
   public Block parse(String input) {
     this.input = input;
@@ -133,7 +134,7 @@ public class MarkdownParser extends HtmlParser {
     }
   }
 
-  public void parseMarkdownTextContents(Block parentBlock, ArrayList<StyleJsonObject> styleJsonObjects) {
+  public void parseMarkdownTextContents(Block parentBlock, ArrayList<JsonObject> styleJsonObjects) {
 
     literalBufferedString = new BufferedString();
 
@@ -142,7 +143,7 @@ public class MarkdownParser extends HtmlParser {
 
     while (inputPosition < input.length()) {
 
-      StyleJsonObject styleJsonObject;
+      JsonObject styleJsonObject;
       if (styleJsonObjects.isEmpty()) {
         styleJsonObject = null;
       } else {
@@ -198,7 +199,7 @@ public class MarkdownParser extends HtmlParser {
 
     if (literalBufferedString.isNotEmpty()) {
       // chars found
-      StyleJsonObject styleJsonObject;
+      JsonObject styleJsonObject;
       if (styleJsonObjects.isEmpty()) {
         styleJsonObject = null;
       } else {
@@ -208,7 +209,7 @@ public class MarkdownParser extends HtmlParser {
     }
   }
 
-  public boolean parseMarkdownTextContentsStyle(ArrayList<StyleJsonObject> styleJsonObjects) {
+  public boolean parseMarkdownTextContentsStyle(ArrayList<JsonObject> styleJsonObjects) {
     return false;
   }
 }
