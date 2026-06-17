@@ -58,11 +58,10 @@ public class TextBlock extends Block {
   public void setMarkdownText(String markdownText) {
     clearBlocks();
 
-    var styleJsonObjects = new ArrayList<JsonObject>();
     var markdownParser = new MarkdownParser();
     markdownParser.input = markdownText;
     markdownParser.inputPosition = 0;
-    markdownParser.parseMarkdownTextContents(this, styleJsonObjects);
+    markdownParser.parseMarkdownTextContents(this, false);
   }
 
   public String getText() {

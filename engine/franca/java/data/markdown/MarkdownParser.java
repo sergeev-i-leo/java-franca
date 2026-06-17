@@ -166,6 +166,7 @@ public class MarkdownParser extends HtmlParser {
   public ListBlock parseMarkdownListBlock(int expectedIndentationCount) {
     ListBlock resultListBlock = null;
     ListItemBlock listItemBlock = null;
+
     while (true) {
       int storedPosition = inputPosition;
 
@@ -176,12 +177,14 @@ public class MarkdownParser extends HtmlParser {
       }
 
       if (foundIndentationCount == expectedIndentationCount) {
+        // item
         listItemBlock = parseMarkdownListItemBlock();
         if (listItemBlock == null) {
           // not a list item
           inputPosition = storedPosition;
-          return resultListBlock;
+          break;
         }
+
         if (resultListBlock == null) {
           switch (listItemBlock.type.charAt(0)) {
             case '*':
@@ -201,56 +204,90 @@ public class MarkdownParser extends HtmlParser {
       if (foundIndentationCount < expectedIndentationCount) {
         // level up
         inputPosition = storedPosition;
-        return resultListBlock;
+        break;
       }
 
       // level down
+      if (listItemBlock == null) {
+        break;
+      }
+
       var includedListBlock = parseMarkdownListBlock(foundIndentationCount);
-      if ((listItemBlock != null) && (includedListBlock != null)) {
+      if (includedListBlock != null) {
         listItemBlock.addBlock(includedListBlock);
       }
     }
+
+    return resultListBlock;
   }
 
   public ListItemBlock parseMarkdownListItemBlock() {
-    ListItemBlock listItemBlock;
-    if (peekNextChar(1) == '.') {
-      switch (peekChar()) {
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-          listItemBlock = new ListItemBlock();
-          break;
-        default:
-          return null;
-      }
-    } else {
-      switch (peekChar()) {
-        case '*':
-        case '-':
-        case '+':
-          listItemBlock = new ListItemBlock();
-          break;
-        default:
-          return null;
-      }
+    int storedPosition = inputPosition;
+
+    ListItemBlock listItemBlock = null;
+
+    switch (peekChar()) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        break;
+      case '*':
+        listItemBlock = new ListItemBlock();
+        listItemBlock.type = "*";
+        break;
+      case '-':
+        listItemBlock = new ListItemBlock();
+        listItemBlock.type = "-";
+        break;
+      case '+':
+        listItemBlock = new ListItemBlock();
+        listItemBlock.type = "+";
+        break;
+      default:
+        return null;
     }
 
-    while (peekChar() != ' ') {
-      if (peekLineEnd()) {
-        // empty
-        return listItemBlock;
+    if (listItemBlock == null) {
+      // collect
+      literalBufferedString = new BufferedString();
+      while (inputPosition < input.length()) {
+        var c = peekChar();
+        if (c == '.') {
+          literalBufferedString.appendChar(c);
+          skipChars(1);
+          break;
+        }
+        switch (c) {
+          case '0':
+          case '1':
+          case '2':
+          case '3':
+          case '4':
+          case '5':
+          case '6':
+          case '7':
+          case '8':
+          case '9':
+            literalBufferedString.appendChar(c);
+            break;
+          default:
+            return null;
+        }
       }
-      listItemBlock.type += consumeChar();
+      listItemBlock = new ListItemBlock();
+      listItemBlock.type = literalBufferedString.getString();
     }
 
-    // ' '
+    if (peekChar() != ' ') {
+      inputPosition = storedPosition;
+      return null;
+    }
 
     skipChars(1);
 
