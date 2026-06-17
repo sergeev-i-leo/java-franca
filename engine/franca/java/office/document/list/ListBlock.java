@@ -4,11 +4,16 @@ import franca.java.office.document.Block;
 
 public class ListBlock extends Block {
 
-  public boolean ordered;
+  public boolean isOrdered;
 
-  public ListBlock(boolean ordered) {
+  public ListBlock(boolean isOrdered) {
     super();
-    this.ordered = ordered;
+    this.isOrdered = isOrdered;
+  }
+
+  @Override
+  public String getSerializationTag() {
+    return isOrdered ? "ol" : "ul";
   }
 
   @Override

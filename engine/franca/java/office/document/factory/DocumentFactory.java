@@ -94,7 +94,7 @@ public class DocumentFactory extends TranspilableClass {
     targetBufferedString.appendEndLine();
     targetBufferedString.appendString("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
     targetBufferedString.appendEndLine();
-    targetBufferedString.appendString("  <title>Java Franca Document</title>");
+    targetBufferedString.appendString("  <title>http://localhost:8080</title>");
     targetBufferedString.appendEndLine();
     targetBufferedString.appendString("  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">");
     targetBufferedString.appendEndLine();

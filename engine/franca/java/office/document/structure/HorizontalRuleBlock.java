@@ -5,7 +5,7 @@ import franca.java.office.document.Block;
 
 public class HorizontalRuleBlock extends Block {
 
-  public String type = "";
+  public String type = "***";
 
   @Override
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {

@@ -11,6 +11,8 @@ import java.nio.file.*;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpExchange;
+import franca.java.expected.BufferedString;
+import franca.java.office.document.factory.DocumentFactory;
 
 public class WebServer {
 
@@ -26,7 +28,18 @@ public class WebServer {
       Path rootDir = Paths.get(System.getProperty("user.dir"), "samples");
       String path = exchange.getRequestURI().getPath();
       if (path.equals("/")) {
-        path = "/index.html";
+        // return loaded document
+        BufferedString targetBufferedString = new BufferedString();
+        DocumentFactory.serialize(Document.instance, targetBufferedString);
+        String string = targetBufferedString.getString();
+        exchange.getResponseHeaders().set("Content-Type", "text/html; charset=utf-8");
+        byte[] responseBytes = string.getBytes(StandardCharsets.UTF_8);
+        exchange.sendResponseHeaders(200, responseBytes.length);
+
+        try (OutputStream os = exchange.getResponseBody()) {
+          os.write(responseBytes);
+        }
+        return;
       }
 
       Path file = rootDir.resolve(path.substring(1)).normalize();
@@ -39,7 +52,9 @@ public class WebServer {
       if (Files.exists(file) && !Files.isDirectory(file)) {
         // Определяем MIME-тип
         String mime = Files.probeContentType(file);
-        if (mime == null) mime = "application/octet-stream";
+        if (mime == null) {
+          mime = "application/octet-stream";
+        }
 
         exchange.getResponseHeaders().set("Content-Type", mime);
         exchange.sendResponseHeaders(200, Files.size(file));

@@ -161,6 +161,7 @@ public class Parser extends TranspilableClass {
   }
 
   public String consumeLine() {
+    // consumes line end
     literalBufferedString = new BufferedString();
     while (inputPosition < input.length()) {
       if (peekLineEnd()) {

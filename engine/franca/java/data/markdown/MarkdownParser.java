@@ -6,7 +6,10 @@ import franca.java.data.html.HtmlParser;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
+import franca.java.office.document.list.ListBlock;
+import franca.java.office.document.list.ListItemBlock;
 import franca.java.office.document.structure.HorizontalRuleBlock;
+import franca.java.office.document.table.TableBlock;
 import franca.java.office.document.table.TableCellBlock;
 import franca.java.office.document.typography.CharsBlock;
 import franca.java.office.document.typography.HeadingBlock;
@@ -14,7 +17,7 @@ import franca.java.office.document.typography.ParagraphBlock;
 
 public class MarkdownParser extends HtmlParser {
 
-  private ArrayList<JsonObject> styleJsonObjects = new ArrayList<>();
+  private final ArrayList<JsonObject> styleJsonObjects = new ArrayList<>();
 
   public Block parse(String input) {
     this.input = input;
@@ -33,7 +36,7 @@ public class MarkdownParser extends HtmlParser {
       // \r\n
       if (peekLineEnd()) {
         parentBlock.addBlock(new ParagraphBlock());
-        skipLineEnd();
+        skipLine();
         continue;
       }
       if (peekString("___")) {
@@ -55,38 +58,11 @@ public class MarkdownParser extends HtmlParser {
         continue;
       }
 
-      if (peekString("# ")) {
-        skipChars(2);
-        HeadingBlock headingBlock = new HeadingBlock(1);
+      if (peekString("###### ")) {
+        skipChars(7);
+        HeadingBlock headingBlock = new HeadingBlock(6);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, styleJsonObjects);
-        skipLine();
-        continue;
-      }
-
-      if (peekString("## ")) {
-        skipChars(3);
-        HeadingBlock headingBlock = new HeadingBlock(2);
-        parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, styleJsonObjects);
-        skipLine();
-        continue;
-      }
-
-      if (peekString("### ")) {
-        skipChars(4);
-        HeadingBlock headingBlock = new HeadingBlock(3);
-        parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, styleJsonObjects);
-        skipLine();
-        continue;
-      }
-
-      if (peekString("#### ")) {
-        skipChars(5);
-        HeadingBlock headingBlock = new HeadingBlock(4);
-        parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, styleJsonObjects);
+        parseMarkdownTextContents(headingBlock, false);
         skipLine();
         continue;
       }
@@ -95,21 +71,72 @@ public class MarkdownParser extends HtmlParser {
         skipChars(6);
         HeadingBlock headingBlock = new HeadingBlock(5);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, styleJsonObjects);
+        parseMarkdownTextContents(headingBlock, false);
         skipLine();
         continue;
       }
 
-      if (peekString("###### ")) {
-        skipChars(7);
-        HeadingBlock headingBlock = new HeadingBlock(6);
+      if (peekString("#### ")) {
+        skipChars(5);
+        HeadingBlock headingBlock = new HeadingBlock(4);
         parentBlock.addBlock(headingBlock);
-        parseMarkdownTextContents(headingBlock, styleJsonObjects);
+        parseMarkdownTextContents(headingBlock, false);
         skipLine();
         continue;
       }
 
-      Block block = parseHtmlNode();;
+      if (peekString("### ")) {
+        skipChars(4);
+        HeadingBlock headingBlock = new HeadingBlock(3);
+        parentBlock.addBlock(headingBlock);
+        parseMarkdownTextContents(headingBlock, false);
+        skipLine();
+        continue;
+      }
+
+      if (peekString("## ")) {
+        skipChars(3);
+        HeadingBlock headingBlock = new HeadingBlock(2);
+        parentBlock.addBlock(headingBlock);
+        parseMarkdownTextContents(headingBlock, false);
+        skipLine();
+        continue;
+      }
+
+      if (peekString("# ")) {
+        skipChars(2);
+        HeadingBlock headingBlock = new HeadingBlock(1);
+        parentBlock.addBlock(headingBlock);
+        parseMarkdownTextContents(headingBlock, false);
+        skipLine();
+        continue;
+      }
+
+      Block block = parseMarkdownListBlock(0);
+      if (block != null) {
+        if (block != null) {
+          parentBlock.addBlock(block);
+        }
+        // empty line after list
+        if (peekLineEnd()) {
+          skipLineEnd();
+        }
+        continue;
+      }
+/*
+      block = parseMarkdownTableBlock();
+      if (block != null) {
+        if (block != null) {
+          parentBlock.addBlock(block);
+        }
+        // empty line after list
+        if (peekLineEnd()) {
+          skipLineEnd();
+        }
+        continue;
+      }
+*/
+      block = parseHtmlNode();;
       if (block != null) {
         // skip lineEnd
         parentBlock.addBlock(block);
@@ -119,22 +146,128 @@ public class MarkdownParser extends HtmlParser {
         }
         continue;
       }
-      BufferedString bufferedString = new BufferedString();
+
+      // treat unknown block as paragraph block
+
+      literalBufferedString = new BufferedString();
       while (inputPosition < input.length()) {
         if (peekLineEnd()) {
           skipLineEnd();
           break;
         }
-        bufferedString.appendChar(consumeChar());
+        literalBufferedString.appendChar(consumeChar());
       }
-      // treat unknown block as paragraph block
       ParagraphBlock paragraphBlock = new ParagraphBlock();
       parentBlock.addBlock(paragraphBlock);
-      paragraphBlock.setMarkdownText(bufferedString.getString());
+      paragraphBlock.setMarkdownText(literalBufferedString.getString());
     }
   }
 
-  public void parseMarkdownTextContents(Block parentBlock, ArrayList<JsonObject> styleJsonObjects) {
+  public ListBlock parseMarkdownListBlock(int expectedIndentationCount) {
+    ListBlock resultListBlock = null;
+    ListItemBlock listItemBlock = null;
+    while (true) {
+      int storedPosition = inputPosition;
+
+      int foundIndentationCount = 0;
+      while (peekChar() == ' ') {
+        foundIndentationCount++;
+        skipChars(1);
+      }
+
+      if (foundIndentationCount == expectedIndentationCount) {
+        listItemBlock = parseMarkdownListItemBlock();
+        if (listItemBlock == null) {
+          // not a list item
+          inputPosition = storedPosition;
+          return resultListBlock;
+        }
+        if (resultListBlock == null) {
+          switch (listItemBlock.type.charAt(0)) {
+            case '*':
+            case '-':
+            case '+':
+              resultListBlock = new ListBlock(false);
+              break;
+            default:
+              resultListBlock = new ListBlock(true);
+              break;
+          }
+        }
+        resultListBlock.addBlock(listItemBlock);
+        continue;
+      }
+
+      if (foundIndentationCount < expectedIndentationCount) {
+        // level up
+        inputPosition = storedPosition;
+        return resultListBlock;
+      }
+
+      // level down
+      var includedListBlock = parseMarkdownListBlock(foundIndentationCount);
+      if ((listItemBlock != null) && (includedListBlock != null)) {
+        listItemBlock.addBlock(includedListBlock);
+      }
+    }
+  }
+
+  public ListItemBlock parseMarkdownListItemBlock() {
+    ListItemBlock listItemBlock;
+    if (peekNextChar(1) == '.') {
+      switch (peekChar()) {
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+          listItemBlock = new ListItemBlock();
+          break;
+        default:
+          return null;
+      }
+    } else {
+      switch (peekChar()) {
+        case '*':
+        case '-':
+        case '+':
+          listItemBlock = new ListItemBlock();
+          break;
+        default:
+          return null;
+      }
+    }
+
+    while (peekChar() != ' ') {
+      if (peekLineEnd()) {
+        // empty
+        return listItemBlock;
+      }
+      listItemBlock.type += consumeChar();
+    }
+
+    // ' '
+
+    skipChars(1);
+
+    parseMarkdownTextContents(listItemBlock, false);
+    skipLine();
+
+    return listItemBlock;
+  }
+
+  /*public TableBlock parseMarkdownTableBlock() {
+    Table
+
+  }*/
+
+  public void parseMarkdownTextContents(Block parentBlock, boolean isTableCell) {
+
+    // stops at line end
 
     literalBufferedString = new BufferedString();
 
@@ -163,12 +296,10 @@ public class MarkdownParser extends HtmlParser {
       }
 
       if (peekLineEnd()) {
-        skipLineEnd();
         break;
       }
 
-      if ((parentBlock instanceof TableCellBlock) && (peekChar() == '|')) {
-        consumeChar();
+      if ((isTableCell) && (peekChar() == '|')) {
         break;
       }
 
