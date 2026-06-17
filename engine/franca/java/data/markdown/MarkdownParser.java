@@ -372,7 +372,6 @@ public class MarkdownParser extends HtmlParser {
   private void parseBlockCellAlignments(ArrayList<String> blockCellAlignments) {
     String blockCellAlignment = "default";
     while (inputPosition < input.length()) {
-      skipWhitespaces();
       if (peekLineEnd()) {
         skipLine();
         break;
