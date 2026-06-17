@@ -201,9 +201,10 @@ public class MarkdownParser extends HtmlParser {
         continue;
       }
 
+      inputPosition = storedPosition;
+
       if (foundIndentationCount < expectedIndentationCount) {
         // level up
-        inputPosition = storedPosition;
         break;
       }
 
@@ -240,14 +241,17 @@ public class MarkdownParser extends HtmlParser {
       case '*':
         listItemBlock = new ListItemBlock();
         listItemBlock.type = "*";
+        skipChars(1);
         break;
       case '-':
         listItemBlock = new ListItemBlock();
         listItemBlock.type = "-";
+        skipChars(1);
         break;
       case '+':
         listItemBlock = new ListItemBlock();
         listItemBlock.type = "+";
+        skipChars(1);
         break;
       default:
         return null;
@@ -275,6 +279,7 @@ public class MarkdownParser extends HtmlParser {
           case '8':
           case '9':
             literalBufferedString.appendChar(c);
+            skipChars(1);
             break;
           default:
             return null;

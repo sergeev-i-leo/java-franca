@@ -32,12 +32,13 @@ And here is the continuation.
 2. Second item
    3. Subitem 2.1
    4. Subitem 2.2
-5. Third item
+   5. 
+6. Third item
 
 ### Unordered List
 
 - List item
-- Neste<font color="#9bbb59">d item</font>
+- Nested item
   - Level 2
     - Level 3
 - Another item
