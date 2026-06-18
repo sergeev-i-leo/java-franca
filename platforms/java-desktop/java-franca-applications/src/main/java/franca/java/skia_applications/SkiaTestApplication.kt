@@ -1,6 +1,6 @@
 package franca.java.skia_applications
 
-import franca.java.graphics.views.Page
+import franca.java.graphics.Page
 import franca.java.test_components.TestView0
 import franca.java.skia.SkiaApplication
 import franca.java.skia.SkiaRouter

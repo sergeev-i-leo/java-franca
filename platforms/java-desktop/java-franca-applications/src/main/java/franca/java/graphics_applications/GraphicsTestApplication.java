@@ -4,8 +4,9 @@ import franca.java.graphics.GraphicsApplication;
 import franca.java.graphics.GraphicsRouter;
 
 import javax.swing.*;
+
+import franca.java.graphics.Page;
 import franca.java.test_components.TestView0;
-import franca.java.graphics.views.Page;
 
 public class GraphicsTestApplication {
 

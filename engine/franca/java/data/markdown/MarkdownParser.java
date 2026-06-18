@@ -352,11 +352,22 @@ public class MarkdownParser extends HtmlParser {
         // '|'
         skipChars(1);
       }
+      if ((tableHeaderBlock != null) && (tableBodyBlock == null)) {
+        for (var i = 0; i < tableRowBlock.getBlocks().size(); i++) {
+          var block = tableRowBlock.getBlock(i);
+          if (block != null) {
+            block = block.getBlock(0);
+            if (block != null) {
+              block.styleJsonObject.putStringValue("text-align", "center");
+            }
+          }
+        }
+      }
       // alignment
       if (blockCellAlignments == null) {
         continue;
       }
-      for (int i = 0; i < blockCellAlignments.size(); i++) {
+      for (var i = 0; i < blockCellAlignments.size(); i++) {
         var block = tableRowBlock.getBlock(i);
         if (block != null) {
           block = block.getBlock(0);

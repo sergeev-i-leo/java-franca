@@ -1,11 +1,11 @@
 package franca.java.test_components;
 
+import franca.java.graphics.Page;
+import franca.java.graphics.View;
 import franca.java.graphics.animations.Ease;
 import franca.java.graphics.animations.Tween;
 import franca.java.graphics.device.Painter;
 import franca.java.graphics.device.Router;
-import franca.java.graphics.views.Page;
-import franca.java.graphics.views.View;
 
 import java.util.Random;
 
