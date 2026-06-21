@@ -206,7 +206,7 @@ public class MarkdownParser extends HtmlParser {
         break;
       }
 
-      var includedListBlock = parseMarkdownListBlock(foundIndentationCount);
+      Block includedListBlock = parseMarkdownListBlock(foundIndentationCount);
       if (includedListBlock != null) {
         listItemBlock.addBlock(includedListBlock);
       }
@@ -254,7 +254,7 @@ public class MarkdownParser extends HtmlParser {
       // collect
       literalBufferedString = new BufferedString();
       while (inputPosition < input.length()) {
-        var c = peekChar();
+        char c = peekChar();
         if (c == '.') {
           literalBufferedString.appendChar(c);
           skipChars(1);
@@ -324,7 +324,7 @@ public class MarkdownParser extends HtmlParser {
         tableBlock = new TableBlock();
       }
 
-      var tableRowBlock = new TableRowBlock();
+      TableRowBlock tableRowBlock = new TableRowBlock();
 
       if (tableHeaderBlock == null) {
         tableHeaderBlock = new TableHeaderBlock();
@@ -343,7 +343,7 @@ public class MarkdownParser extends HtmlParser {
           skipLine();
           break;
         }
-        var tableCellBlock = new TableCellBlock(tableBodyBlock == null);
+        TableCellBlock tableCellBlock = new TableCellBlock(tableBodyBlock == null);
         parseMarkdownTextContents(tableCellBlock, true);
         skipWhitespaces();
         if (peekChar() == '|') {
@@ -353,8 +353,8 @@ public class MarkdownParser extends HtmlParser {
         skipChars(1);
       }
       if ((tableHeaderBlock != null) && (tableBodyBlock == null)) {
-        for (var i = 0; i < tableRowBlock.getBlocks().size(); i++) {
-          var block = tableRowBlock.getBlock(i);
+        for (int i = 0; i < tableRowBlock.getBlocks().size(); i++) {
+          Block block = tableRowBlock.getBlock(i);
           if (block != null) {
             block = block.getBlock(0);
             if (block != null) {
@@ -367,8 +367,8 @@ public class MarkdownParser extends HtmlParser {
       if (blockCellAlignments == null) {
         continue;
       }
-      for (var i = 0; i < blockCellAlignments.size(); i++) {
-        var block = tableRowBlock.getBlock(i);
+      for (int i = 0; i < blockCellAlignments.size(); i++) {
+        Block block = tableRowBlock.getBlock(i);
         if (block != null) {
           block = block.getBlock(0);
           if (block != null) {

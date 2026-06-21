@@ -18,13 +18,13 @@ public class TextBlock extends Block {
   public void setText(String text) {
     clearBlocks();
 
-    var bufferedString = new BufferedString();
+    BufferedString bufferedString = new BufferedString();
     int textPosition = 0;
     while (textPosition < text.length()) {
-      var c = text.charAt(textPosition);
+      char c = text.charAt(textPosition);
       if (c == ' ') {
         if (bufferedString.isNotEmpty()) {
-          var charsBlock = new CharsBlock();
+          CharsBlock charsBlock = new CharsBlock();
           parentBlock.addBlock(charsBlock);
           charsBlock.type = CharsBlock.TYPE_CHARS;
           charsBlock.setChars(bufferedString.getString());
@@ -38,7 +38,7 @@ public class TextBlock extends Block {
       textPosition++;
     }
     if (bufferedString.isNotEmpty()) {
-      var charsBlock = new CharsBlock();
+      CharsBlock charsBlock = new CharsBlock();
       parentBlock.addBlock(charsBlock);
       charsBlock.type = CharsBlock.TYPE_CHARS;
       charsBlock.setChars(bufferedString.getString());
@@ -48,8 +48,8 @@ public class TextBlock extends Block {
   public void setHtmlText(String htmlText) {
     clearBlocks();
 
-    var styleJsonObjects = new ArrayList<JsonObject>();
-    var htmlParser = new HtmlParser();
+    ArrayList styleJsonObjects = new ArrayList<JsonObject>();
+    HtmlParser htmlParser = new HtmlParser();
     htmlParser.input = htmlText;
     htmlParser.inputPosition = 0;
     htmlParser.parseHtmlTextContents(this, styleJsonObjects);
@@ -58,7 +58,7 @@ public class TextBlock extends Block {
   public void setMarkdownText(String markdownText) {
     clearBlocks();
 
-    var markdownParser = new MarkdownParser();
+    MarkdownParser markdownParser = new MarkdownParser();
     markdownParser.input = markdownText;
     markdownParser.inputPosition = 0;
     markdownParser.parseMarkdownTextContents(this, false);
@@ -68,7 +68,7 @@ public class TextBlock extends Block {
     if (getBlocks() == null) {
       return "";
     }
-    var bufferedString = new BufferedString();
+    BufferedString bufferedString = new BufferedString();
     for (Block block : getBlocks()) {
       if (block instanceof CharsBlock) {
         bufferedString.appendString(((CharsBlock) block).getChars());

@@ -78,7 +78,7 @@ public class HtmlParser extends Parser {
 
       inputPosition = storedPosition;
 
-      var block = parseHtmlNode();
+      Block block = parseHtmlNode();
       if (block != null) {
         parentBlock.addBlock(block);
       } else {
@@ -210,7 +210,7 @@ public class HtmlParser extends Parser {
   private String parseAttributeName() {
     literalBufferedString = new BufferedString();
     while ((inputPosition < input.length()) && (isAttributeNameCharacter(peekChar()))) {
-      var c = consumeChar();
+      char c = consumeChar();
       literalBufferedString.appendChar(c);
     }
     if (literalBufferedString.isEmpty()) {
@@ -229,7 +229,7 @@ public class HtmlParser extends Parser {
 
     literalBufferedString = new BufferedString();
 
-    var delimiter = peekChar();
+    char delimiter = peekChar();
     skipChars(1);
 
     while (inputPosition < input.length()) {
@@ -256,7 +256,7 @@ public class HtmlParser extends Parser {
   private void parseStyleAttribute(JsonObject styleJsonObject) {
     skipWhitespaces();
 
-    var delimiter = peekChar();
+    char delimiter = peekChar();
     skipChars(1);
 
     while (inputPosition < input.length()) {
@@ -264,7 +264,7 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      var name = parseStyleName();
+      String name = parseStyleName();
       if (name == null) {
         return;
       }
@@ -279,7 +279,7 @@ public class HtmlParser extends Parser {
         break;
       }
 
-      var value = literalBufferedString.getString();
+      String value = literalBufferedString.getString();
       styleJsonObject.putStringValue(name, value);
 
       if (peekChar() != ';') {
@@ -314,11 +314,11 @@ public class HtmlParser extends Parser {
     skipWhitespaces();
 
     literalBufferedString = new BufferedString();
-    var insideQuotes = false;
-    var quoteCharacter = 0;
+    boolean insideQuotes = false;
+    char quoteCharacter = 0;
 
     while (inputPosition < input.length()) {
-      var c = peekChar();
+      char c = peekChar();
 
       if (c == '\\') {
         skipChars(1);
