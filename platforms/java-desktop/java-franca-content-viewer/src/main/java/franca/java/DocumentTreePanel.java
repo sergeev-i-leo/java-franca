@@ -60,19 +60,19 @@ public class DocumentTreePanel extends JPanel {
     DefaultMutableTreeNode blockNode = new DefaultMutableTreeNode(nodeText);
 
     // classes
-    if (block.classesJsonArray.size() > 0) {
+    if (block.classes.size() > 0) {
       DefaultMutableTreeNode classesNode = new DefaultMutableTreeNode("classes");
-      for (int i = 0; i < block.classesJsonArray.size(); i++) {
-        classesNode.add(new DefaultMutableTreeNode(block.classesJsonArray.getStringValue(i)));
+      for (int i = 0; i < block.classes.size(); i++) {
+        classesNode.add(new DefaultMutableTreeNode(block.classes.getStringValue(i)));
       }
       blockNode.add(classesNode);
     }
 
     // attributes
-    if (block.attributesJsonArray.size() > 0) {
+    if (block.attributes.size() > 0) {
       DefaultMutableTreeNode attrsNode = new DefaultMutableTreeNode("attributes");
-      for (int i = 0; i < block.attributesJsonArray.size(); i++) {
-        JsonElement jsonElement = block.attributesJsonArray.get(i);
+      for (int i = 0; i < block.attributes.size(); i++) {
+        JsonElement jsonElement = block.attributes.get(i);
         JsonObject jsonObject = jsonElement.asJsonObject();
         if (jsonObject != null) {
           String name = jsonObject.getStringValue("name");
@@ -101,10 +101,10 @@ public class DocumentTreePanel extends JPanel {
     }
 
     // style
-    var keys = block.styleJsonObject.keys();
+    var keys = block.style.keys();
     for (String key : keys) {
       DefaultMutableTreeNode styleNode = new DefaultMutableTreeNode("style");
-      styleNode.add(new DefaultMutableTreeNode(key + " : " + block.styleJsonObject.getStringValue(key)));
+      styleNode.add(new DefaultMutableTreeNode(key + " : " + block.style.getStringValue(key)));
       blockNode.add(styleNode);
     }
 

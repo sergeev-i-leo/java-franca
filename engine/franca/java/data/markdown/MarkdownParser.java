@@ -362,7 +362,7 @@ public class MarkdownParser extends HtmlParser {
           if (block != null) {
             block = block.getBlock(0);
             if (block != null) {
-              block.styleJsonObject.putStringValue("text-align", "center");
+              block.style.putStringValue("text-align", "center");
             }
           }
         }
@@ -376,7 +376,7 @@ public class MarkdownParser extends HtmlParser {
         if (block != null) {
           block = block.getBlock(0);
           if (block != null) {
-            block.styleJsonObject.putStringValue("text-align", blockCellAlignments.get(i));
+            block.style.putStringValue("text-align", blockCellAlignments.get(i));
           }
         }
       }

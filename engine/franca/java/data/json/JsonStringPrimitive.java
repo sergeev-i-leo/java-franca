@@ -12,6 +12,11 @@ public class JsonStringPrimitive extends JsonPrimitive {
   }
 
   @Override
+  public JsonElement createCopy() {
+    return new JsonStringPrimitive(value);
+  }
+
+  @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     String string = value;
     if (string == null) {

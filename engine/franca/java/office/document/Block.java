@@ -15,32 +15,32 @@ public class Block extends TranspilableClass {
   public Block parentBlock = null;
 
   // array of strings className, className, className ...
-  public JsonArray classesJsonArray = new JsonArray();
+  public JsonArray classes = new JsonArray();
   // style
-  public JsonObject styleJsonObject = new JsonObject();
+  public JsonObject style = new JsonObject();
   // single attributes, non-quoted attributes, quoted attributes
-  public JsonArray attributesJsonArray = new JsonArray();
+  public JsonArray attributes = new JsonArray();
 
   private ArrayList<Block> blocks = null;
 
   public JsonObject createJsonObject() {
 
-    JsonObject result = new JsonObject();
-    fillJsonObject(result);
-    return result;
+    JsonObject resultJsonObject = new JsonObject();
+    fillJsonObject(resultJsonObject);
+    return resultJsonObject;
   }
 
   public void fillJsonObject(JsonObject jsonObject) {
     jsonObject.putStringValue("data-block", getDataBlock());
-    JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
+    JsonArray classesJsonArray = this.classes.createCopy().asJsonArray();
     if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
       jsonObject.put("classes", classesJsonArray);
     }
-    JsonObject styleJsonObject = this.styleJsonObject.createCopy().asJsonObject();
+    JsonObject styleJsonObject = this.style.createCopy().asJsonObject();
     if ((styleJsonObject != null) && (styleJsonObject.isNotEmpty())) {
       jsonObject.put("style", styleJsonObject);
     }
-    JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
+    JsonArray attributesJsonArray = this.attributes.createCopy().asJsonArray();
     if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
       jsonObject.put("attributes", attributesJsonArray);
     }
@@ -79,13 +79,13 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeClassesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
-    if (classesJsonArray.isEmpty()) {
+    if (classes.isEmpty()) {
       return;
     }
     targetBufferedString.appendChars(' ', spacesBefore);
     targetBufferedString.appendString("class=\"");
-    for (int i = 0; i < classesJsonArray.size(); i++) {
-      String string = classesJsonArray.get(i).asStringValue();
+    for (int i = 0; i < classes.size(); i++) {
+      String string = classes.get(i).asStringValue();
       if (string != null) {
         if (i > 0) {
           targetBufferedString.appendChar(' ');
@@ -98,7 +98,7 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeStyleJsonObject(BufferedString targetBufferedString, int spacesBefore) {
-    ArrayList<String> keys = styleJsonObject.keys();
+    ArrayList<String> keys = style.keys();
     if (keys.isEmpty()) {
       return;
     }
@@ -107,7 +107,7 @@ public class Block extends TranspilableClass {
     targetBufferedString.appendString("style=\"");
 
     for (String key : keys) {
-      String value = styleJsonObject.getStringValue(key);
+      String value = style.getStringValue(key);
       if (value != null) {
         targetBufferedString.appendString(key + ":" + value + ";");
       }
@@ -117,15 +117,15 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeAttributesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
-    for (int i = 0; i < attributesJsonArray.size(); i++) {
-      String string = attributesJsonArray.getStringValue(i);
+    for (int i = 0; i < attributes.size(); i++) {
+      String string = attributes.getStringValue(i);
       if (string != null) {
         targetBufferedString.appendChars(' ', spacesBefore);
         targetBufferedString.appendString(string);
         targetBufferedString.appendEndLine();
         continue;
       }
-      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
+      JsonObject jsonObject = attributes.getJsonObject(i);
       if (jsonObject == null) {
         continue;
       }
@@ -211,8 +211,8 @@ public class Block extends TranspilableClass {
   }
 
   public void addQuotedAttribute(String attributeName, String attributeValue) {
-    for (int i = 0; i < attributesJsonArray.size(); i++) {
-      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
+    for (int i = 0; i < attributes.size(); i++) {
+      JsonObject jsonObject = attributes.getJsonObject(i);
       if (jsonObject == null) {
         continue;
       }
@@ -225,7 +225,7 @@ public class Block extends TranspilableClass {
       }
     }
     JsonObject jsonObject = new JsonObject();
-    attributesJsonArray.add(jsonObject);
+    attributes.add(jsonObject);
     jsonObject.putStringValue("name", attributeName);
     jsonObject.putStringValue("quoted-value", attributeValue);
   }

@@ -59,12 +59,12 @@ public class MainFrame extends JFrame {
 
   private void initTestData() {
     Block root = new Block();
-    root.classesJsonArray.addStringValue("container");
-    root.classesJsonArray.addStringValue("main-container");
+    root.classes.addStringValue("container");
+    root.classes.addStringValue("main-container");
 
     Block inner = new Block();
-    inner.classesJsonArray.addStringValue("row");
-    inner.attributesJsonArray.addStringValue("data-name=inner-row");
+    inner.classes.addStringValue("row");
+    inner.attributes.addStringValue("data-name=inner-row");
 
     root.addBlock(inner);
     Document.instance.clearBlocks();

@@ -10,14 +10,15 @@ public class JsonArray extends JsonElement {
 
   @Override
   public JsonElement createCopy() {
-    JsonArray result = new JsonArray();
+    JsonArray resultJsonArray = new JsonArray();
     for (int i = 0; i < size(); i++) {
       JsonElement jsonElement = get(i);
       if (jsonElement != null) {
-        result.add(jsonElement.createCopy());
+        jsonElement = jsonElement.createCopy();
+        resultJsonArray.add(jsonElement);
       }
     }
-    return result;
+    return resultJsonArray;
   }
 
   @Override

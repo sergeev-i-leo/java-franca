@@ -191,18 +191,18 @@ public class HtmlParser extends Parser {
       skipWhitespaces();
 
       if (peekChar() != '=') {
-        targetBlock.attributesJsonArray.add(new JsonStringPrimitive(attributeName));
+        targetBlock.attributes.add(new JsonStringPrimitive(attributeName));
         continue;
       }
 
       skipChars(1);
 
       if (attributeName.equals("class")) {
-        parseClassAttribute(targetBlock.classesJsonArray);
+        parseClassAttribute(targetBlock.classes);
       } else if (attributeName.equals("style")) {
-        parseStyleAttribute(targetBlock.styleJsonObject);
+        parseStyleAttribute(targetBlock.style);
       } else {
-        parseAttributeValue(attributeName, targetBlock.attributesJsonArray);
+        parseAttributeValue(attributeName, targetBlock.attributes);
       }
     }
   }
@@ -582,7 +582,7 @@ public class HtmlParser extends Parser {
     } else if (tagName.equals("span")) {
       // start of style run
       Block block = new Block();
-      block.styleJsonObject = styleJsonObject;
+      block.style = styleJsonObject;
       parseHtmlAttributes(block);
     } else {
       inputPosition = storedPosition;
@@ -740,7 +740,7 @@ public class HtmlParser extends Parser {
     charsBlock.type = charsType;
     charsBlock.setChars(chars);
     if (styleJsonObject != null) {
-      charsBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
+      charsBlock.style = styleJsonObject.createCopy().asJsonObject();
     }
     return parentBlock;
   }
@@ -758,7 +758,7 @@ public class HtmlParser extends Parser {
       charsBlock.type = CharsBlock.TYPE_SPACE;
       charsBlock.setChars(" ");
       if (styleJsonObject != null) {
-        charsBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
+        charsBlock.style = styleJsonObject.createCopy().asJsonObject();
       }
     }
     return parentBlock;

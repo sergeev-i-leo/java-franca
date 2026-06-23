@@ -11,15 +11,16 @@ public class JsonObject extends JsonElement {
 
   @Override
   public JsonElement createCopy() {
-    JsonObject result = new JsonObject();
+    JsonObject resultJsonObject = new JsonObject();
     ArrayList<String> keys = this.keys();
     for (String key : keys) {
       JsonElement jsonElement = get(key);
       if (jsonElement != null) {
-        result.put(key, jsonElement.createCopy());
+        jsonElement = jsonElement.createCopy();
+        resultJsonObject.put(key, jsonElement);
       }
     }
-    return result;
+    return resultJsonObject;
   }
 
   @Override
