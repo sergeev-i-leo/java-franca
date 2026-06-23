@@ -13,6 +13,11 @@ public class JsonIntPrimitive extends JsonPrimitive {
   }
 
   @Override
+  public JsonElement createCopy() {
+    return new JsonIntPrimitive(value);
+  }
+
+  @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString(ExpectedRuntime.intToString(value));
   }

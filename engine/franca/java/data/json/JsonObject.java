@@ -9,13 +9,14 @@ public class JsonObject extends JsonElement {
 
   private final HashMap<String, JsonElement> jsonElements = new HashMap<>();
 
-  public JsonObject createCopy() {
+  @Override
+  public JsonElement createCopy() {
     JsonObject result = new JsonObject();
     ArrayList<String> keys = this.keys();
     for (String key : keys) {
-      String value = getStringValue(key);
-      if (value != null) {
-        result.putStringValue(key, value);
+      JsonElement jsonElement = get(key);
+      if (jsonElement != null) {
+        result.put(key, jsonElement.createCopy());
       }
     }
     return result;

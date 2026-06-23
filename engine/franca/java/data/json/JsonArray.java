@@ -9,6 +9,18 @@ public class JsonArray extends JsonElement {
   private final ArrayList<JsonElement> jsonElements = new ArrayList<>();
 
   @Override
+  public JsonElement createCopy() {
+    JsonArray result = new JsonArray();
+    for (int i = 0; i < size(); i++) {
+      JsonElement jsonElement = get(i);
+      if (jsonElement != null) {
+        result.add(jsonElement.createCopy());
+      }
+    }
+    return result;
+  }
+
+  @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString("[");
     targetBufferedString.appendEndLine();

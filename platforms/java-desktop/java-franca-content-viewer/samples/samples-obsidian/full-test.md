@@ -1,3 +1,4 @@
+@exportFolder ../../../../textinbook/web-1/next-app/app/main/russian-classics/war-and-peace/chapter-1/content.json
 
 <p>This is <b>bold</b> text</p>
 

@@ -90,15 +90,19 @@ public class DocumentFactory extends TranspilableClass {
     targetBufferedString.appendEndLine();
     targetBufferedString.appendString("<head>");
     targetBufferedString.appendEndLine();
-    targetBufferedString.appendString("  <meta charset=\"UTF-8\">");
+    targetBufferedString.appendString("<meta charset=\"UTF-8\">");
     targetBufferedString.appendEndLine();
-    targetBufferedString.appendString("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+    targetBufferedString.appendString("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
     targetBufferedString.appendEndLine();
-    targetBufferedString.appendString("  <title>http://localhost:8080</title>");
+    targetBufferedString.appendString("<style>");
+    targetBufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}");
+    targetBufferedString.appendString("</style>");
+    targetBufferedString.appendEndLine();
+    targetBufferedString.appendString("<title>http://localhost:8080</title>");
     targetBufferedString.appendEndLine();
     targetBufferedString.appendString("</head>");
     targetBufferedString.appendEndLine();
-    targetBufferedString.appendString("<body class=\"bg-body text-body\">");
+    targetBufferedString.appendString("<body>");
     targetBufferedString.appendEndLine();
     for (Block childBlock : block.getBlocks()) {
       childBlock.serialize(targetBufferedString, 2);

@@ -1,6 +1,7 @@
 package franca.java;
 
-import franca.java.data.markdown.MarkdownParser;
+import franca.java.data.json.JsonObject;
+import franca.java.data.markdown.FlavouredMarkdownParser;
 import franca.java.expected.BufferedString;
 import franca.java.data.html.HtmlParser;
 import franca.java.office.document.Block;
@@ -12,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class MainFrame extends JFrame {
 
@@ -129,13 +132,22 @@ public class MainFrame extends JFrame {
       if (selectedFile != null && selectedFile.getName().endsWith(".md")) {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
-          MarkdownParser parser = new MarkdownParser();
+          FlavouredMarkdownParser parser = new FlavouredMarkdownParser();
           Document.instance = parser.parse(content);
           BufferedString targetBufferedString = new BufferedString();
           DocumentFactory.serialize(Document.instance, targetBufferedString);
           jsonTextPanel.setJsonText(targetBufferedString.getString());
           jsonTextPanel.setJsonText(targetBufferedString.getString());
           documentTreePanel.refresh();
+
+          Path targetPath = Paths.get(System.getProperty("user.dir"), parser.exportFolder).normalize();
+          String absolutePath = targetPath.toAbsolutePath().toString();
+          System.out.println(absolutePath);
+
+          JsonObject json = Document.instance.createJsonObject();
+          BufferedString bufferedString = new BufferedString();
+          json.serialize(bufferedString, 0);
+          Files.writeString(Paths.get(absolutePath), bufferedString.getString(), StandardCharsets.UTF_8);
 
           // TODO: конвертация raw → Block
           // DocumentModel.blocks.clear();

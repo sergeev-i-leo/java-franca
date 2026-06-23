@@ -12,6 +12,11 @@ public class JsonBooleanPrimitive extends JsonPrimitive {
   }
 
   @Override
+  public JsonElement createCopy() {
+    return new JsonBooleanPrimitive(value);
+  }
+
+  @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString(value ? "true" : "false");
   }

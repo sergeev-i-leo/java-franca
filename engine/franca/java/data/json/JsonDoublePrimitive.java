@@ -13,6 +13,11 @@ public class JsonDoublePrimitive extends JsonPrimitive {
   }
 
   @Override
+  public JsonElement createCopy() {
+    return new JsonDoublePrimitive(value);
+  }
+
+  @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString(ExpectedRuntime.doubleToString(value));
   }

@@ -10,6 +10,11 @@ public class JsonNull extends JsonElement {
   }
 
   @Override
+  public JsonElement createCopy() {
+    return new JsonNull();
+  }
+
+  @Override
   public JsonNull asJsonNull() {
     return this;
   }
