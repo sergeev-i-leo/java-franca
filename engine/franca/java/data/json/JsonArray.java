@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class JsonArray extends JsonElement {
 
-  private final ArrayList<JsonElement> jsonElements = new ArrayList<>();
+  private final ArrayList<JsonElement> elements = new ArrayList<>();
 
   @Override
   public JsonElement createCopy() {
@@ -59,46 +59,46 @@ public class JsonArray extends JsonElement {
   }
 
   public int size() {
-    return jsonElements.size();
+    return elements.size();
   }
 
   public boolean isEmpty() {
-    return jsonElements.size() == 0;
+    return elements.size() == 0;
   }
 
   public boolean isNotEmpty() {
-    return jsonElements.size() > 0;
+    return elements.size() > 0;
   }
 
   public void addBooleanValue(boolean value) {
-    jsonElements.add(new JsonBooleanPrimitive(value));
+    elements.add(new JsonBooleanPrimitive(value));
   }
 
   public void addIntegerValue(int value) {
-    jsonElements.add(new JsonIntPrimitive(value));
+    elements.add(new JsonIntPrimitive(value));
   }
 
   public void addDoubleValue(double value) {
-    jsonElements.add(new JsonDoublePrimitive(value));
+    elements.add(new JsonDoublePrimitive(value));
   }
 
   public void addStringValue(String value) {
-    jsonElements.add(new JsonStringPrimitive(value));
+    elements.add(new JsonStringPrimitive(value));
   }
 
   public void add(JsonElement jsonElement) {
-    jsonElements.add(jsonElement);
+    elements.add(jsonElement);
   }
 
   public void set(int index, JsonElement jsonElement) {
-    jsonElements.set(index, jsonElement != null ? jsonElement : new JsonNull());
+    elements.set(index, jsonElement != null ? jsonElement : new JsonNull());
   }
 
   public JsonElement get(int index) {
-    if ((index < 0) || (index >= jsonElements.size())) {
+    if ((index < 0) || (index >= elements.size())) {
       return null;
     }
-    return jsonElements.get(index);
+    return elements.get(index);
   }
 
   public JsonNull getJsonNull(int index) {
@@ -158,10 +158,10 @@ public class JsonArray extends JsonElement {
   }
 
   public void remove(int index) {
-    jsonElements.remove(index);
+    elements.remove(index);
   }
 
   public void clear() {
-    jsonElements.clear();
+    elements.clear();
   }
 }

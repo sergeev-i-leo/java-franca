@@ -524,12 +524,10 @@ public class HtmlParser extends Parser {
     if (peekChar() != '<') {
       return false;
     }
-    JsonObject styleJsonObject;
-    if (styleJsonObjects.isEmpty()) {
-      styleJsonObject = new JsonObject();
-    } else {
+    JsonObject styleJsonObject = new JsonObject();
+    if (!styleJsonObjects.isEmpty()) {
       styleJsonObject = styleJsonObjects.get(styleJsonObjects.size() - 1);
-      styleJsonObject = styleJsonObject.createCopy();
+      styleJsonObject = styleJsonObject.createCopy().asJsonObject();
     }
     int storedPosition = inputPosition;
     skipChars(1);
@@ -742,7 +740,7 @@ public class HtmlParser extends Parser {
     charsBlock.type = charsType;
     charsBlock.setChars(chars);
     if (styleJsonObject != null) {
-      charsBlock.styleJsonObject = styleJsonObject.createCopy();
+      charsBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
     }
     return parentBlock;
   }
@@ -760,7 +758,7 @@ public class HtmlParser extends Parser {
       charsBlock.type = CharsBlock.TYPE_SPACE;
       charsBlock.setChars(" ");
       if (styleJsonObject != null) {
-        charsBlock.styleJsonObject = styleJsonObject.createCopy();
+        charsBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
       }
     }
     return parentBlock;

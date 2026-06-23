@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class JsonObject extends JsonElement {
 
-  private final HashMap<String, JsonElement> jsonElements = new HashMap<>();
+  private final HashMap<String, JsonElement> members = new HashMap<>();
 
   @Override
   public JsonElement createCopy() {
@@ -67,38 +67,46 @@ public class JsonObject extends JsonElement {
     return this;
   }
 
+  public boolean isEmpty() {
+    return members.size() == 0;
+  }
+
+  public boolean isNotEmpty() {
+    return members.size() > 0;
+  }
+
   public ArrayList<String> keys() {
     ArrayList<String> result = new ArrayList<>();
-    result.addAll(jsonElements.keySet());
+    result.addAll(members.keySet());
     return result;
   }
 
   public void putBooleanValue(String memberName, boolean value) {
-    jsonElements.put(memberName, new JsonBooleanPrimitive(value));
+    members.put(memberName, new JsonBooleanPrimitive(value));
   }
 
   public void putIntegerValue(String memberName, int value) {
-    jsonElements.put(memberName, new JsonIntPrimitive(value));
+    members.put(memberName, new JsonIntPrimitive(value));
   }
 
   public void putDoubleValue(String memberName, double value) {
-    jsonElements.put(memberName, new JsonDoublePrimitive(value));
+    members.put(memberName, new JsonDoublePrimitive(value));
   }
 
   public void putStringValue(String memberName, String value) {
-    jsonElements.put(memberName, new JsonStringPrimitive(value));
+    members.put(memberName, new JsonStringPrimitive(value));
   }
 
   public void put(String memberName, JsonElement jsonElement) {
-    jsonElements.put(memberName, jsonElement);
+    members.put(memberName, jsonElement);
   }
 
   public JsonElement get(String memberName) {
-    return jsonElements.get(memberName);
+    return members.get(memberName);
   }
 
   public Boolean getBooleanValue(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -106,7 +114,7 @@ public class JsonObject extends JsonElement {
   }
 
   public Integer getIntegerValue(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -114,7 +122,7 @@ public class JsonObject extends JsonElement {
   }
 
   public Double getDoubleValue(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -122,7 +130,7 @@ public class JsonObject extends JsonElement {
   }
 
   public String getStringValue(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -130,7 +138,7 @@ public class JsonObject extends JsonElement {
   }
 
   public JsonNull getJsonNull(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -138,7 +146,7 @@ public class JsonObject extends JsonElement {
   }
 
   public JsonArray getJsonArray(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -146,7 +154,7 @@ public class JsonObject extends JsonElement {
   }
 
   public JsonObject getJsonObject(String memberName) {
-    JsonElement jsonElement = jsonElements.get(memberName);
+    JsonElement jsonElement = members.get(memberName);
     if (jsonElement == null) {
       return null;
     }
@@ -154,10 +162,10 @@ public class JsonObject extends JsonElement {
   }
 
   public void remove(String memberName) {
-    jsonElements.remove(memberName);
+    members.remove(memberName);
   }
 
   public void clear(String memberName) {
-    jsonElements.clear();
+    members.clear();
   }
 }

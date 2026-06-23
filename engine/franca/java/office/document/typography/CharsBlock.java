@@ -16,6 +16,14 @@ public class CharsBlock extends Block {
   private String chars = "";
 
   @Override
+  public void fillJsonObject(JsonObject jsonObject) {
+    jsonObject.putStringValue("type", type);
+    String chars = this.chars.replace("\"", "\\\"");
+    jsonObject.putStringValue("chars", chars);
+    super.fillJsonObject(jsonObject);
+  }
+
+  @Override
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {
     addQuotedAttribute("data-type", type);
     super.serialize(targetBufferedString, spacesBefore);

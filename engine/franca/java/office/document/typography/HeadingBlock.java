@@ -1,5 +1,6 @@
 package franca.java.office.document.typography;
 
+import franca.java.data.json.JsonObject;
 import franca.java.expected.ExpectedRuntime;
 
 public class HeadingBlock extends TextBlock {
@@ -13,6 +14,12 @@ public class HeadingBlock extends TextBlock {
     } else {
       this.level = 1;
     }
+  }
+
+  @Override
+  public void fillJsonObject(JsonObject jsonObject) {
+    jsonObject.putIntegerValue("level", level);
+    super.fillJsonObject(jsonObject);
   }
 
   @Override

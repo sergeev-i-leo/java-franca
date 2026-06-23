@@ -1,6 +1,5 @@
 package franca.java.office.document;
 
-import franca.java.data.json.JsonElement;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
@@ -27,27 +26,32 @@ public class Block extends TranspilableClass {
   public JsonObject createJsonObject() {
 
     JsonObject result = new JsonObject();
+    fillJsonObject(result);
+    return result;
+  }
+
+  public void fillJsonObject(JsonObject jsonObject) {
+    jsonObject.putStringValue("data-block", getDataBlock());
     JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
-    if (classesJsonArray != null) {
-      result.put("classes", classesJsonArray);
+    if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
+      jsonObject.put("classes", classesJsonArray);
     }
     JsonObject styleJsonObject = this.styleJsonObject.createCopy().asJsonObject();
-    if (styleJsonObject != null) {
-      result.put("style", styleJsonObject);
+    if ((styleJsonObject != null) && (styleJsonObject.isNotEmpty())) {
+      jsonObject.put("style", styleJsonObject);
     }
     JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
-    if (attributesJsonArray != null) {
-      result.put("attributes", attributesJsonArray);
+    if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
+      jsonObject.put("attributes", attributesJsonArray);
     }
 
     if (blocks != null) {
       JsonArray blocksJsonArray = new JsonArray();
-      result.put("blocks", blocksJsonArray);
+      jsonObject.put("blocks", blocksJsonArray);
       for (int i = 0; i < blocks.size(); i++) {
         blocksJsonArray.add(blocks.get(i).createJsonObject());
       }
     }
-    return result;
   }
 
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {

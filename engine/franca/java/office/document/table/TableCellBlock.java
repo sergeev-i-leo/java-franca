@@ -1,5 +1,6 @@
 package franca.java.office.document.table;
 
+import franca.java.data.json.JsonObject;
 import franca.java.office.document.Block;
 
 public class TableCellBlock extends Block {
@@ -9,6 +10,12 @@ public class TableCellBlock extends Block {
   public TableCellBlock(boolean isHeader) {
     super();
     this.isHeader = isHeader;
+  }
+
+  @Override
+  public void fillJsonObject(JsonObject jsonObject) {
+    jsonObject.putBooleanValue("isHeader", isHeader);
+    super.fillJsonObject(jsonObject);
   }
 
   @Override
