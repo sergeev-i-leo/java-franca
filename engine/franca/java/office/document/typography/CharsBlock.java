@@ -3,6 +3,7 @@ package franca.java.office.document.typography;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
+import franca.java.office.document.factory.DocumentFactory;
 
 public class CharsBlock extends Block {
 
@@ -41,8 +42,6 @@ public class CharsBlock extends Block {
 
   @Override
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
-
-    targetBufferedString.appendChars(' ', spacesBefore);
     targetBufferedString.appendString(">");
 
     if (type.equals(CharsBlock.TYPE_CHARS)) {
@@ -67,7 +66,9 @@ public class CharsBlock extends Block {
     }
 
     targetBufferedString.appendString("</" + serializationTag + ">");
-    targetBufferedString.finishLine();
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+    }
   }
 
   public String encodeHtmChar(char c) {

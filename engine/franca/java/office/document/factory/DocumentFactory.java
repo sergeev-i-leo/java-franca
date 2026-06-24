@@ -93,7 +93,7 @@ public class DocumentFactory extends TranspilableClass {
     targetBufferedString.appendString("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
     targetBufferedString.finishLine();
     targetBufferedString.appendString("<style>");
-    targetBufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}span{display:inline-block;}");
+    targetBufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}span[data-block=\"chars-block\"]{white-space: pre-wrap;}");
     targetBufferedString.appendString("</style>");
     targetBufferedString.finishLine();
     targetBufferedString.appendString("<title>http://localhost:8080</title>");

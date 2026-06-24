@@ -55,7 +55,9 @@ public class Block extends TranspilableClass {
   }
 
   public void serialize(BufferedString targetBufferedString, int spacesBefore) {
-    targetBufferedString.appendChars(' ', spacesBefore);
+    if (spacesBefore >= 0) {
+      targetBufferedString.appendChars(' ', spacesBefore);
+    }
 
     String serializationTag = getSerializationTag();
     targetBufferedString.appendString("<" + serializationTag + " data-block=\"" + getDataBlock() + "\"");
@@ -66,25 +68,11 @@ public class Block extends TranspilableClass {
 
     serializeAttributesJsonArray(targetBufferedString);
 
-    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
-      targetBufferedString.appendString(">");
-      if (spacesBefore >= 0) {
-        targetBufferedString.finishLine();
-      }
-      return;
-    } else if (getChildren().isEmpty()) {
-      targetBufferedString.appendString("/>");
-      if (spacesBefore >= 0) {
-        targetBufferedString.finishLine();
-      }
-      return;
-    }
-    targetBufferedString.appendString(">");
     if (spacesBefore >= 0) {
-      targetBufferedString.finishLine();
+      serializeContents(targetBufferedString, serializationTag, spacesBefore + 2);
+    } else {
+      serializeContents(targetBufferedString, serializationTag, spacesBefore);
     }
-
-    serializeContents(targetBufferedString, serializationTag, spacesBefore + 2);
   }
 
   public String getSerializationTag() {
@@ -164,6 +152,23 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
+    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
+      targetBufferedString.appendString(">");
+      if (spacesBefore >= 0) {
+        targetBufferedString.finishLine();
+      }
+      return;
+    } else if (getChildren().isEmpty()) {
+      targetBufferedString.appendString("/>");
+      if (spacesBefore >= 0) {
+        targetBufferedString.finishLine();
+      }
+      return;
+    }
+    targetBufferedString.appendString(">");
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+    }
 
     for (Block block : getChildren()) {
       block.serialize(targetBufferedString, spacesBefore);

@@ -15,6 +15,18 @@ public class TextBlock extends Block {
     return "text-block";
   }
 
+  @Override
+  public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+      targetBufferedString.appendChars(' ', spacesBefore);
+    }
+    super.serializeContents(targetBufferedString, serializationTag, -1);
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+    }
+  }
+
   public void setText(String text) {
     clearBlocks();
 
