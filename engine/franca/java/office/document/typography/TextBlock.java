@@ -17,10 +17,6 @@ public class TextBlock extends Block {
 
   @Override
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
-    if (spacesBefore >= 0) {
-      targetBufferedString.finishLine();
-      targetBufferedString.appendChars(' ', spacesBefore);
-    }
     super.serializeContents(targetBufferedString, serializationTag, -1);
     if (spacesBefore >= 0) {
       targetBufferedString.finishLine();
@@ -28,7 +24,7 @@ public class TextBlock extends Block {
   }
 
   public void setText(String text) {
-    clearBlocks();
+    clearChildrenBlocks();
 
     BufferedString bufferedString = new BufferedString();
     int textPosition = 0;
@@ -37,13 +33,13 @@ public class TextBlock extends Block {
       if (c == ' ') {
         if (bufferedString.isNotEmpty()) {
           CharsBlock charsBlock = new CharsBlock();
-          parent.addChild(charsBlock);
+          parentBlock.addChildBlock(charsBlock);
           charsBlock.type = CharsBlock.TYPE_CHARS;
           charsBlock.setChars(bufferedString.getString());
           bufferedString.clear();
         }
         CharsBlock charsBlock = new CharsBlock();
-        parent.addChild(charsBlock);
+        parentBlock.addChildBlock(charsBlock);
         charsBlock.type = CharsBlock.TYPE_SPACE;
         charsBlock.setChars(" ");
       }
@@ -51,14 +47,14 @@ public class TextBlock extends Block {
     }
     if (bufferedString.isNotEmpty()) {
       CharsBlock charsBlock = new CharsBlock();
-      parent.addChild(charsBlock);
+      parentBlock.addChildBlock(charsBlock);
       charsBlock.type = CharsBlock.TYPE_CHARS;
       charsBlock.setChars(bufferedString.getString());
     }
   }
 
   public void setHtmlText(String htmlText) {
-    clearBlocks();
+    clearChildrenBlocks();
 
     ArrayList styleJsonObjects = new ArrayList<JsonObject>();
     HtmlParser htmlParser = new HtmlParser();
@@ -68,7 +64,7 @@ public class TextBlock extends Block {
   }
 
   public void setMarkdownText(String markdownText) {
-    clearBlocks();
+    clearChildrenBlocks();
 
     MarkdownParser markdownParser = new MarkdownParser();
     markdownParser.input = markdownText;
@@ -77,11 +73,11 @@ public class TextBlock extends Block {
   }
 
   public String getText() {
-    if (getChildren() == null) {
+    if (getChildrenBlocks() == null) {
       return "";
     }
     BufferedString bufferedString = new BufferedString();
-    for (Block block : getChildren()) {
+    for (Block block : getChildrenBlocks()) {
       if (block instanceof CharsBlock) {
         bufferedString.appendString(((CharsBlock) block).getChars());
       }

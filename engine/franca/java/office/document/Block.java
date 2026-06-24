@@ -12,16 +12,16 @@ public class Block extends TranspilableClass {
 
   private static ArrayList<Block> emptyChildren = null;
 
-  public Block parent = null;
+  public Block parentBlock = null;
 
   // array of strings className, className, className ...
-  public JsonArray classes = new JsonArray();
+  public JsonArray classesJsonArray = new JsonArray();
   // style
-  public JsonObject style = new JsonObject();
+  public JsonObject styleJsonObject = new JsonObject();
   // single attributes, non-quoted attributes, quoted attributes
-  public JsonArray attributes = new JsonArray();
+  public JsonArray attributesJsonArray = new JsonArray();
 
-  private ArrayList<Block> children = null;
+  private ArrayList<Block> childrenBlocks = null;
 
   public JsonObject createJsonObject() {
 
@@ -32,24 +32,24 @@ public class Block extends TranspilableClass {
 
   public void fillJsonObject(JsonObject jsonObject) {
     jsonObject.putStringValue("data-block", getDataBlock());
-    JsonArray classesJsonArray = this.classes.createCopy().asJsonArray();
+    JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
     if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
       jsonObject.put("classes", classesJsonArray);
     }
-    JsonObject styleJsonObject = this.style.createCopy().asJsonObject();
+    JsonObject styleJsonObject = this.styleJsonObject.createCopy().asJsonObject();
     if ((styleJsonObject != null) && (styleJsonObject.isNotEmpty())) {
       jsonObject.put("style", styleJsonObject);
     }
-    JsonArray attributesJsonArray = this.attributes.createCopy().asJsonArray();
+    JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
     if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
       jsonObject.put("attributes", attributesJsonArray);
     }
 
-    if (children != null) {
+    if (childrenBlocks != null) {
       JsonArray blocksJsonArray = new JsonArray();
       jsonObject.put("blocks", blocksJsonArray);
-      for (int i = 0; i < children.size(); i++) {
-        blocksJsonArray.add(children.get(i).createJsonObject());
+      for (int i = 0; i < childrenBlocks.size(); i++) {
+        blocksJsonArray.add(childrenBlocks.get(i).createJsonObject());
       }
     }
   }
@@ -84,12 +84,12 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeClassesJsonArray(BufferedString targetBufferedString) {
-    if (classes.isEmpty()) {
+    if (classesJsonArray.isEmpty()) {
       return;
     }
     targetBufferedString.appendString(" class=\"");
-    for (int i = 0; i < classes.size(); i++) {
-      String string = classes.get(i).asStringValue();
+    for (int i = 0; i < classesJsonArray.size(); i++) {
+      String string = classesJsonArray.get(i).asStringValue();
       if (string != null) {
         if (i > 0) {
           targetBufferedString.appendChar(' ');
@@ -101,7 +101,7 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeStyleJsonObject(BufferedString targetBufferedString) {
-    ArrayList<String> keys = style.keys();
+    ArrayList<String> keys = styleJsonObject.keys();
     if (keys.isEmpty()) {
       return;
     }
@@ -109,7 +109,7 @@ public class Block extends TranspilableClass {
     targetBufferedString.appendString(" style=\"");
 
     for (String key : keys) {
-      String value = style.getStringValue(key);
+      String value = styleJsonObject.getStringValue(key);
       if (value != null) {
         targetBufferedString.appendString(key + ":" + value + ";");
       }
@@ -118,18 +118,18 @@ public class Block extends TranspilableClass {
   }
 
   public void serializeAttributesJsonArray(BufferedString targetBufferedString) {
-    if (attributes.isEmpty()) {
+    if (attributesJsonArray.isEmpty()) {
       return;
     }
 
-    for (int i = 0; i < attributes.size(); i++) {
-      String string = attributes.getStringValue(i);
+    for (int i = 0; i < attributesJsonArray.size(); i++) {
+      String string = attributesJsonArray.getStringValue(i);
       if (string != null) {
         targetBufferedString.appendChar(' ');
         targetBufferedString.appendString(string);
         continue;
       }
-      JsonObject jsonObject = attributes.getJsonObject(i);
+      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
       if (jsonObject == null) {
         continue;
       }
@@ -141,7 +141,7 @@ public class Block extends TranspilableClass {
       targetBufferedString.appendString(string);
       string = jsonObject.getStringValue("value");
       if (string != null) {
-        targetBufferedString.appendString(" = " + string);
+        targetBufferedString.appendString("=" + string);
       } else {
         string = jsonObject.getStringValue("quoted-value");
         if (string != null) {
@@ -158,7 +158,7 @@ public class Block extends TranspilableClass {
         targetBufferedString.finishLine();
       }
       return;
-    } else if (getChildren().isEmpty()) {
+    } else if (getChildrenBlocks().isEmpty()) {
       targetBufferedString.appendString("/>");
       if (spacesBefore >= 0) {
         targetBufferedString.finishLine();
@@ -170,7 +170,7 @@ public class Block extends TranspilableClass {
       targetBufferedString.finishLine();
     }
 
-    for (Block block : getChildren()) {
+    for (Block block : getChildrenBlocks()) {
       block.serialize(targetBufferedString, spacesBefore);
     }
 
@@ -183,44 +183,9 @@ public class Block extends TranspilableClass {
     }
   }
 
-  public void addChild(Block block) {
-    if (children == null) {
-      children = new ArrayList<>();
-    }
-    children.add(block);
-    block.parent = this;
-  }
-
-  public ArrayList<Block> getChildren() {
-    if (children != null) {
-      return children;
-    }
-    if (Block.emptyChildren == null) {
-      Block.emptyChildren = new ArrayList<>();
-    }
-    return Block.emptyChildren;
-  }
-
-  public Block getBlock(int index) {
-    if (children == null) {
-      return null;
-    }
-    if ((index < 0) || (index >= children.size())) {
-      return null;
-    }
-    return children.get(index);
-  }
-
-  public void clearBlocks() {
-    if (children != null) {
-      children.clear();
-    }
-    children = null;
-  }
-
   public void addQuotedAttribute(String attributeName, String attributeValue) {
-    for (int i = 0; i < attributes.size(); i++) {
-      JsonObject jsonObject = attributes.getJsonObject(i);
+    for (int i = 0; i < attributesJsonArray.size(); i++) {
+      JsonObject jsonObject = attributesJsonArray.getJsonObject(i);
       if (jsonObject == null) {
         continue;
       }
@@ -233,9 +198,44 @@ public class Block extends TranspilableClass {
       }
     }
     JsonObject jsonObject = new JsonObject();
-    attributes.add(jsonObject);
+    attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", attributeName);
     jsonObject.putStringValue("quoted-value", attributeValue);
+  }
+
+  public void addChildBlock(Block block) {
+    if (childrenBlocks == null) {
+      childrenBlocks = new ArrayList<>();
+    }
+    childrenBlocks.add(block);
+    block.parentBlock = this;
+  }
+
+  public ArrayList<Block> getChildrenBlocks() {
+    if (childrenBlocks != null) {
+      return childrenBlocks;
+    }
+    if (Block.emptyChildren == null) {
+      Block.emptyChildren = new ArrayList<>();
+    }
+    return Block.emptyChildren;
+  }
+
+  public Block getChildBlock(int index) {
+    if (childrenBlocks == null) {
+      return null;
+    }
+    if ((index < 0) || (index >= childrenBlocks.size())) {
+      return null;
+    }
+    return childrenBlocks.get(index);
+  }
+
+  public void clearChildrenBlocks() {
+    if (childrenBlocks != null) {
+      childrenBlocks.clear();
+    }
+    childrenBlocks = null;
   }
 
 }

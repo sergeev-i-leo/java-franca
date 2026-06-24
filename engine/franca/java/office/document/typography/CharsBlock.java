@@ -3,7 +3,6 @@ package franca.java.office.document.typography;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
-import franca.java.office.document.factory.DocumentFactory;
 
 public class CharsBlock extends Block {
 

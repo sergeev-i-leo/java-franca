@@ -59,16 +59,16 @@ public class MainFrame extends JFrame {
 
   private void initTestData() {
     Block root = new Block();
-    root.classes.addStringValue("container");
-    root.classes.addStringValue("main-container");
+    root.classesJsonArray.addStringValue("container");
+    root.classesJsonArray.addStringValue("main-container");
 
     Block inner = new Block();
-    inner.classes.addStringValue("row");
-    inner.attributes.addStringValue("data-name=inner-row");
+    inner.classesJsonArray.addStringValue("row");
+    inner.attributesJsonArray.addStringValue("data-name=inner-row");
 
-    root.addChild(inner);
-    Document.instance.clearBlocks();
-    Document.instance.addChild(root);
+    root.addChildBlock(inner);
+    Document.instance.clearChildrenBlocks();
+    Document.instance.addChildBlock(root);
 
     if (documentTreePanel != null) {
       documentTreePanel.refresh();

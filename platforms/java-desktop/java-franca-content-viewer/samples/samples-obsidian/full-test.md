@@ -1,5 +1,9 @@
 @exportFolder ../../../../textinbook/web-1/next-app/app/main/russian-classics/war-and-peace/chapter-1/content.json
 
+/[VN]
+
+This is a regular with **bold text**, *italic text*, and ~~strikethrough text~~. You can also use ==highlight==.
+
 <p>This is <b>bold</b>, text</p>
 
 # Heading Level 1
@@ -16,9 +20,6 @@
 
 ---
 
-This is a regular with **bold text**, *italic text*, and ~~strikethrough text~~. You can also use ==highlight==.
-
-/[VN]
 
 A second paragraph with a line break inside it<br>and another line after it.
 
@@ -57,10 +58,10 @@ Next Paragraph
 
 ## Table
 
-| H1                     | Header2 | Header3 |
-| :----------------------------: | -------- | -------- |
-| Cell 1, Line1<br>Cell1 Line2 | Cell 2   | Cell 3   |
-| Cell 4                       | Cell 5   | Cell 6   |
-| Cell 7                       | Cell 8   | Cell 9   |
+|              H1              | Header2 | Header3 |
+| :--------------------------: | ------- | ------- |
+| Cell 1, Line1<br>Cell1 Line2 | Cell 2  | Cell 3  |
+|         \[VN] Cell 4         | Cell 5  | Cell 6  |
+|            Cell 7            | Cell 8  | Cell 9  |
 
 ---

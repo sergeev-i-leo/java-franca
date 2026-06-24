@@ -37,25 +37,25 @@ public class MarkdownParser extends HtmlParser {
   void parseMarkdownBlock(Block parentBlock) {
     // \r\n
     if (peekLineEnd()) {
-      parentBlock.addChild(new ParagraphBlock());
+      parentBlock.addChildBlock(new ParagraphBlock());
       skipLine();
       return;
     }
     if (peekString("___")) {
       HorizontalRuleBlock horizontalRuleBlock = new HorizontalRuleBlock();
-      parentBlock.addChild(horizontalRuleBlock);
+      parentBlock.addChildBlock(horizontalRuleBlock);
       horizontalRuleBlock.type = consumeLine();
       return;
     }
     if (peekString("---")) {
       HorizontalRuleBlock horizontalRuleBlock = new HorizontalRuleBlock();
-      parentBlock.addChild(horizontalRuleBlock);
+      parentBlock.addChildBlock(horizontalRuleBlock);
       horizontalRuleBlock.type = consumeLine();
       return;
     }
     if (peekString("***")) {
       HorizontalRuleBlock horizontalRuleBlock = new HorizontalRuleBlock();
-      parentBlock.addChild(horizontalRuleBlock);
+      parentBlock.addChildBlock(horizontalRuleBlock);
       horizontalRuleBlock.type = consumeLine();
       return;
     }
@@ -63,7 +63,7 @@ public class MarkdownParser extends HtmlParser {
     if (peekString("###### ")) {
       skipChars(7);
       HeadingBlock headingBlock = new HeadingBlock(6);
-      parentBlock.addChild(headingBlock);
+      parentBlock.addChildBlock(headingBlock);
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -72,7 +72,7 @@ public class MarkdownParser extends HtmlParser {
     if (peekString("##### ")) {
       skipChars(6);
       HeadingBlock headingBlock = new HeadingBlock(5);
-      parentBlock.addChild(headingBlock);
+      parentBlock.addChildBlock(headingBlock);
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -81,7 +81,7 @@ public class MarkdownParser extends HtmlParser {
     if (peekString("#### ")) {
       skipChars(5);
       HeadingBlock headingBlock = new HeadingBlock(4);
-      parentBlock.addChild(headingBlock);
+      parentBlock.addChildBlock(headingBlock);
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -90,7 +90,7 @@ public class MarkdownParser extends HtmlParser {
     if (peekString("### ")) {
       skipChars(4);
       HeadingBlock headingBlock = new HeadingBlock(3);
-      parentBlock.addChild(headingBlock);
+      parentBlock.addChildBlock(headingBlock);
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -99,7 +99,7 @@ public class MarkdownParser extends HtmlParser {
     if (peekString("## ")) {
       skipChars(3);
       HeadingBlock headingBlock = new HeadingBlock(2);
-      parentBlock.addChild(headingBlock);
+      parentBlock.addChildBlock(headingBlock);
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -108,7 +108,7 @@ public class MarkdownParser extends HtmlParser {
     if (peekString("# ")) {
       skipChars(2);
       HeadingBlock headingBlock = new HeadingBlock(1);
-      parentBlock.addChild(headingBlock);
+      parentBlock.addChildBlock(headingBlock);
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -117,7 +117,7 @@ public class MarkdownParser extends HtmlParser {
     Block block = parseMarkdownListBlock(0);
     if (block != null) {
       if (parentBlock != null) {
-        parentBlock.addChild(block);
+        parentBlock.addChildBlock(block);
       }
       // empty line after list block to be parsed to paragraph block
       return;
@@ -126,7 +126,7 @@ public class MarkdownParser extends HtmlParser {
     block = parseMarkdownTableBlock();
     if (block != null) {
       if (parentBlock != null) {
-        parentBlock.addChild(block);
+        parentBlock.addChildBlock(block);
       }
       // empty line after table block to be parsed to paragraph block
       return;
@@ -135,7 +135,7 @@ public class MarkdownParser extends HtmlParser {
     block = parseHtmlNode();;
     if (block != null) {
       // skip lineEnd
-      parentBlock.addChild(block);
+      parentBlock.addChildBlock(block);
       // empty line after embedded html
       if (peekLineEnd()) {
         skipLineEnd();
@@ -143,19 +143,10 @@ public class MarkdownParser extends HtmlParser {
       return;
     }
 
-    // treat unknown block as paragraph block
-
-    literalBufferedString = new BufferedString();
-    while (inputPosition < input.length()) {
-      if (peekLineEnd()) {
-        skipLineEnd();
-        break;
-      }
-      literalBufferedString.appendChar(consumeChar());
-    }
+    // paragraph block
     ParagraphBlock paragraphBlock = new ParagraphBlock();
-    parentBlock.addChild(paragraphBlock);
-    paragraphBlock.setMarkdownText(literalBufferedString.getString());
+    parentBlock.addChildBlock(paragraphBlock);
+    parseMarkdownTextContents(paragraphBlock, false);
   }
 
   public ListBlock parseMarkdownListBlock(int expectedIndentationCount) {
@@ -192,7 +183,7 @@ public class MarkdownParser extends HtmlParser {
               break;
           }
         }
-        resultListBlock.addChild(listItemBlock);
+        resultListBlock.addChildBlock(listItemBlock);
         continue;
       }
 
@@ -210,7 +201,7 @@ public class MarkdownParser extends HtmlParser {
 
       Block includedListBlock = parseMarkdownListBlock(foundIndentationCount);
       if (includedListBlock != null) {
-        listItemBlock.addChild(includedListBlock);
+        listItemBlock.addChildBlock(includedListBlock);
       }
     }
 
@@ -330,14 +321,14 @@ public class MarkdownParser extends HtmlParser {
 
       if (tableHeaderBlock == null) {
         tableHeaderBlock = new TableHeaderBlock();
-        tableBlock.addChild(tableHeaderBlock);
-        tableHeaderBlock.addChild(tableRowBlock);
+        tableBlock.addChildBlock(tableHeaderBlock);
+        tableHeaderBlock.addChildBlock(tableRowBlock);
       } else {
         if (tableBodyBlock == null) {
           tableBodyBlock = new TableBodyBlock();
-          tableBlock.addChild(tableBodyBlock);
+          tableBlock.addChildBlock(tableBodyBlock);
         }
-        tableBodyBlock.addChild(tableRowBlock);
+        tableBodyBlock.addChildBlock(tableRowBlock);
       }
 
       while (inputPosition < input.length()) {
@@ -349,18 +340,18 @@ public class MarkdownParser extends HtmlParser {
         parseMarkdownTextContents(tableCellBlock, true);
         skipWhitespaces();
         if (peekChar() == '|') {
-          tableRowBlock.addChild(tableCellBlock);
+          tableRowBlock.addChildBlock(tableCellBlock);
         }
         // '|'
         skipChars(1);
       }
       if ((tableHeaderBlock != null) && (tableBodyBlock == null)) {
-        for (int i = 0; i < tableRowBlock.getChildren().size(); i++) {
-          Block block = tableRowBlock.getBlock(i);
+        for (int i = 0; i < tableRowBlock.getChildrenBlocks().size(); i++) {
+          Block block = tableRowBlock.getChildBlock(i);
           if (block != null) {
-            block = block.getBlock(0);
+            block = block.getChildBlock(0);
             if (block != null) {
-              block.style.putStringValue("text-align", "center");
+              block.styleJsonObject.putStringValue("text-align", "center");
             }
           }
         }
@@ -370,11 +361,11 @@ public class MarkdownParser extends HtmlParser {
         continue;
       }
       for (int i = 0; i < blockCellAlignments.size(); i++) {
-        Block block = tableRowBlock.getBlock(i);
+        Block block = tableRowBlock.getChildBlock(i);
         if (block != null) {
-          block = block.getBlock(0);
+          block = block.getChildBlock(0);
           if (block != null) {
-            block.style.putStringValue("text-align", blockCellAlignments.get(i));
+            block.styleJsonObject.putStringValue("text-align", blockCellAlignments.get(i));
           }
         }
       }
