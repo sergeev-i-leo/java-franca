@@ -1,5 +1,6 @@
 package franca.java;
 
+import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
 import franca.java.data.markdown.FlavouredMarkdownParser;
 import franca.java.expected.BufferedString;
@@ -140,13 +141,14 @@ public class MainFrame extends JFrame {
           jsonTextPanel.setJsonText(targetBufferedString.getString());
           documentTreePanel.refresh();
 
-          Path targetPath = Paths.get(System.getProperty("user.dir"), parser.exportFolder).normalize();
+          Path targetPath = Paths.get(System.getProperty("user.dir"), parser.exportContentFolder).normalize();
           String absolutePath = targetPath.toAbsolutePath().toString();
           System.out.println(absolutePath);
 
-          JsonObject json = Document.instance.createJsonObject();
+          JsonArray jsonArray = new JsonArray();
+          Document.instance.addJsonElements(jsonArray);
           BufferedString bufferedString = new BufferedString();
-          json.serialize(bufferedString, 0);
+          jsonArray.get(0).serialize(bufferedString, 0);
           Files.writeString(Paths.get(absolutePath), bufferedString.getString(), StandardCharsets.UTF_8);
 
           // TODO: конвертация raw → Block

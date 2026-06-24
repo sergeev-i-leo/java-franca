@@ -1,5 +1,6 @@
 package franca.java.data.markdown;
 
+import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.typography.CharsBlock;
@@ -7,8 +8,7 @@ import franca.java.office.document.typography.CharsBlock;
 public class FlavouredCharsBlock extends CharsBlock {
 
   @Override
-  public void fillJsonObject(JsonObject jsonObject) {
-    super.fillJsonObject(jsonObject);
+  public void addJsonElements(JsonArray jsonArray) {
     if (chars.startsWith("/[")) {
       // transfer to ipa
       BufferedString bufferedString = new BufferedString();
@@ -81,7 +81,48 @@ public class FlavouredCharsBlock extends CharsBlock {
         }
         bufferedString.appendChar(c);
       }
+      JsonObject jsonObject = new JsonObject();
+      jsonArray.add(jsonObject);
+      fillJsonObject(jsonObject);
+
+      jsonObject.putStringValue("type", "ipa-chars");
       jsonObject.putStringValue("chars", bufferedString.getString());
+
+      return;
     }
+
+    if ((chars.startsWith("``")) && (chars.length() > 2)) {
+      JsonObject jsonObject = new JsonObject();
+      jsonArray.add(jsonObject);
+      fillJsonObject(jsonObject);
+
+      jsonObject.putStringValue("type", "flipping-chars");
+      jsonObject.putStringValue("chars", chars.substring(2));
+
+      return;
+    }
+
+    if (chars.contains("`")) {
+      boolean isBacktick = false;
+      for (int i = 0; i < chars.length(); i++) {
+        char c = chars.charAt(i);
+        if (c == '`') {
+          isBacktick = !isBacktick;
+          continue;
+        }
+        JsonObject jsonObject = new JsonObject();
+        jsonArray.add(jsonObject);
+        fillJsonObject(jsonObject);
+        if (isBacktick) {
+          jsonObject.putStringValue("type", "backtick-char");
+        } else {
+          jsonObject.putStringValue("type", CharsBlock.TYPE_CHARS);
+        }
+        jsonObject.putStringValue("chars", String.valueOf(c));
+      }
+      return;
+    }
+
+    super.addJsonElements(jsonArray);
   }
 }

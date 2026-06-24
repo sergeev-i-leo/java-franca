@@ -23,34 +23,34 @@ public class Block extends TranspilableClass {
 
   private ArrayList<Block> childrenBlocks = null;
 
-  public JsonObject createJsonObject() {
+  public void addJsonElements(JsonArray jsonArray) {
 
-    JsonObject resultJsonObject = new JsonObject();
-    fillJsonObject(resultJsonObject);
-    return resultJsonObject;
+    JsonObject jsonObject = new JsonObject();
+    jsonArray.add(jsonObject);
+    fillJsonObject(jsonObject);
+
+    if (childrenBlocks != null) {
+      jsonArray = new JsonArray();
+      jsonObject.put("childrenBlocks", jsonArray);
+      for (int i = 0; i < childrenBlocks.size(); i++) {
+        childrenBlocks.get(i).addJsonElements(jsonArray);
+      }
+    }
   }
 
   public void fillJsonObject(JsonObject jsonObject) {
     jsonObject.putStringValue("data-block", getDataBlock());
     JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
     if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
-      jsonObject.put("classes", classesJsonArray);
+      jsonObject.put("classesJsonArray", classesJsonArray);
     }
     JsonObject styleJsonObject = this.styleJsonObject.createCopy().asJsonObject();
     if ((styleJsonObject != null) && (styleJsonObject.isNotEmpty())) {
-      jsonObject.put("style", styleJsonObject);
+      jsonObject.put("styleJsonObject", styleJsonObject);
     }
     JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
     if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
-      jsonObject.put("attributes", attributesJsonArray);
-    }
-
-    if (childrenBlocks != null) {
-      JsonArray blocksJsonArray = new JsonArray();
-      jsonObject.put("blocks", blocksJsonArray);
-      for (int i = 0; i < childrenBlocks.size(); i++) {
-        blocksJsonArray.add(childrenBlocks.get(i).createJsonObject());
-      }
+      jsonObject.put("attributesJsonArray", attributesJsonArray);
     }
   }
 

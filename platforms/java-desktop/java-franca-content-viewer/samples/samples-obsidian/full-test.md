@@ -1,8 +1,10 @@
-@exportFolder ../../../../textinbook/web-1/next-app/app/main/russian-classics/war-and-peace/chapter-1/content.json
+@exportContentFolder ../../../../textinbook/web-1/next-app/app/main/russian-classics/war-and-peace/chapter-1/content.json
+@exportAssetFolder ../../../../textinbook/web-1/next-app/public
+
 
 /[VN]
 
-This is a regular with **bold text**, *italic text*, and ~~strikethrough text~~. You can also use ==highlight==.
+``This `i`s a regular with **bold text**, *italic text*, and ~~strikethrough text~~. You can also use ==highlight==.
 
 <p>This is <b>bold</b>, text</p>
 

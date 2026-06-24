@@ -1,5 +1,6 @@
 package franca.java.office.document.typography;
 
+import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
@@ -16,11 +17,14 @@ public class CharsBlock extends Block {
   public String chars = "";
 
   @Override
-  public void fillJsonObject(JsonObject jsonObject) {
+  public void addJsonElements(JsonArray jsonArray) {
+    JsonObject jsonObject = new JsonObject();
+    jsonArray.add(jsonObject);
+    fillJsonObject(jsonObject);
+
     jsonObject.putStringValue("type", type);
     String chars = this.chars.replace("\"", "\\\"");
     jsonObject.putStringValue("chars", chars);
-    super.fillJsonObject(jsonObject);
   }
 
   @Override

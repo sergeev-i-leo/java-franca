@@ -5,20 +5,36 @@ import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
 import franca.java.office.document.typography.CharsBlock;
 
+import java.util.ArrayList;
+
 public class FlavouredMarkdownParser extends MarkdownParser {
 
-  public String exportFolder = "samples/";
+  public String exportContentFolder = "samples/";
+  public String exportAssetsFolder = "samples/";
 
   @Override
   void parseMarkdownBlock(Block parentBlock) {
 
-    if (peekString("@exportFolder ")) {
+    if (peekString("@exportContentFolder ")) {
       skipChars(14);
-      exportFolder = consumeLine();
+      exportContentFolder = consumeLine();
+      return;
+    }
+    if (peekString("@exportAssetsFolder ")) {
+      skipChars(13);
+      exportAssetsFolder = consumeLine();
       return;
     }
 
     super.parseMarkdownBlock(parentBlock);
+  }
+
+  @Override
+  public boolean parseMarkdownTextContentsStyle(int textInputPosition, ArrayList<JsonObject> styleJsonObjects) {
+    if (peekChar() == '`') {
+      return false;
+    }
+    return super.parseMarkdownTextContentsStyle(textInputPosition, styleJsonObjects);
   }
 
   @Override
