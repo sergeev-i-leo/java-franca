@@ -13,7 +13,7 @@ public class CharsBlock extends Block {
 
   public String type = CharsBlock.TYPE_CHARS;
 
-  private String chars = "";
+  public String chars = "";
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
