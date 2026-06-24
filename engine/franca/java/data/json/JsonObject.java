@@ -26,7 +26,7 @@ public class JsonObject extends JsonElement {
   @Override
   public void serialize(BufferedString targetBufferedString, Integer spacesBefore) {
     targetBufferedString.appendString("{");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
 
     ArrayList<String> keys = keys();
     for (int i0 = 0; i0 < keys.size(); i0++) {
@@ -47,7 +47,7 @@ public class JsonObject extends JsonElement {
         if (i0 + 1 < keys.size()) {
           targetBufferedString.appendString(",");
         }
-        targetBufferedString.appendEndLine();
+        targetBufferedString.finishLine();
       } else {
         jsonElement.serialize(targetBufferedString, null);
         if (i0 + 1 < keys.size()) {

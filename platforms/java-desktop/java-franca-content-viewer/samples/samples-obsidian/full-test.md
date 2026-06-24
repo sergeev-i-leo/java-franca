@@ -1,6 +1,6 @@
 @exportFolder ../../../../textinbook/web-1/next-app/app/main/russian-classics/war-and-peace/chapter-1/content.json
 
-<p>This is <b>bold</b> text</p>
+<p>This is <b>bold</b>, text</p>
 
 # Heading Level 1
 
@@ -18,10 +18,13 @@
 
 This is a regular with **bold text**, *italic text*, and ~~strikethrough text~~. You can also use ==highlight==.
 
+/[VN]
+
 A second paragraph with a line break inside it<br>and another line after it.
 
-This paragraph ends with two spaces for a soft break.  
-And here is the continuation.
+This paragraph ends with bold br**eak. And here is * the continuation.
+
+Next Paragraph
 
 ---
 

@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 public class Block extends TranspilableClass {
 
-  private static ArrayList<Block> emptyBlocks = null;
+  private static ArrayList<Block> emptyChildren = null;
 
-  public Block parentBlock = null;
+  public Block parent = null;
 
   // array of strings className, className, className ...
   public JsonArray classes = new JsonArray();
@@ -21,7 +21,7 @@ public class Block extends TranspilableClass {
   // single attributes, non-quoted attributes, quoted attributes
   public JsonArray attributes = new JsonArray();
 
-  private ArrayList<Block> blocks = null;
+  private ArrayList<Block> children = null;
 
   public JsonObject createJsonObject() {
 
@@ -45,11 +45,11 @@ public class Block extends TranspilableClass {
       jsonObject.put("attributes", attributesJsonArray);
     }
 
-    if (blocks != null) {
+    if (children != null) {
       JsonArray blocksJsonArray = new JsonArray();
       jsonObject.put("blocks", blocksJsonArray);
-      for (int i = 0; i < blocks.size(); i++) {
-        blocksJsonArray.add(blocks.get(i).createJsonObject());
+      for (int i = 0; i < children.size(); i++) {
+        blocksJsonArray.add(children.get(i).createJsonObject());
       }
     }
   }
@@ -59,15 +59,32 @@ public class Block extends TranspilableClass {
 
     String serializationTag = getSerializationTag();
     targetBufferedString.appendString("<" + serializationTag + " data-block=\"" + getDataBlock() + "\"");
-    targetBufferedString.appendEndLine();
 
-    serializeClassesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+    serializeClassesJsonArray(targetBufferedString);
 
-    serializeStyleJsonObject(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+    serializeStyleJsonObject(targetBufferedString);
 
-    serializeAttributesJsonArray(targetBufferedString, spacesBefore + 1 + serializationTag.length() + 1);
+    serializeAttributesJsonArray(targetBufferedString);
 
-    serializeContents(targetBufferedString, serializationTag, spacesBefore);
+    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
+      targetBufferedString.appendString(">");
+      if (spacesBefore >= 0) {
+        targetBufferedString.finishLine();
+      }
+      return;
+    } else if (getChildren().isEmpty()) {
+      targetBufferedString.appendString("/>");
+      if (spacesBefore >= 0) {
+        targetBufferedString.finishLine();
+      }
+      return;
+    }
+    targetBufferedString.appendString(">");
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+    }
+
+    serializeContents(targetBufferedString, serializationTag, spacesBefore + 2);
   }
 
   public String getSerializationTag() {
@@ -78,12 +95,11 @@ public class Block extends TranspilableClass {
     return "block";
   }
 
-  public void serializeClassesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
+  public void serializeClassesJsonArray(BufferedString targetBufferedString) {
     if (classes.isEmpty()) {
       return;
     }
-    targetBufferedString.appendChars(' ', spacesBefore);
-    targetBufferedString.appendString("class=\"");
+    targetBufferedString.appendString(" class=\"");
     for (int i = 0; i < classes.size(); i++) {
       String string = classes.get(i).asStringValue();
       if (string != null) {
@@ -94,17 +110,15 @@ public class Block extends TranspilableClass {
       }
     }
     targetBufferedString.appendString("\"");
-    targetBufferedString.appendEndLine();
   }
 
-  public void serializeStyleJsonObject(BufferedString targetBufferedString, int spacesBefore) {
+  public void serializeStyleJsonObject(BufferedString targetBufferedString) {
     ArrayList<String> keys = style.keys();
     if (keys.isEmpty()) {
       return;
     }
 
-    targetBufferedString.appendChars(' ', spacesBefore);
-    targetBufferedString.appendString("style=\"");
+    targetBufferedString.appendString(" style=\"");
 
     for (String key : keys) {
       String value = style.getStringValue(key);
@@ -113,16 +127,18 @@ public class Block extends TranspilableClass {
       }
     }
     targetBufferedString.appendString("\"");
-    targetBufferedString.appendEndLine();
   }
 
-  public void serializeAttributesJsonArray(BufferedString targetBufferedString, int spacesBefore) {
+  public void serializeAttributesJsonArray(BufferedString targetBufferedString) {
+    if (attributes.isEmpty()) {
+      return;
+    }
+
     for (int i = 0; i < attributes.size(); i++) {
       String string = attributes.getStringValue(i);
       if (string != null) {
-        targetBufferedString.appendChars(' ', spacesBefore);
+        targetBufferedString.appendChar(' ');
         targetBufferedString.appendString(string);
-        targetBufferedString.appendEndLine();
         continue;
       }
       JsonObject jsonObject = attributes.getJsonObject(i);
@@ -133,7 +149,7 @@ public class Block extends TranspilableClass {
       if (string == null) {
         continue;
       }
-      targetBufferedString.appendChars(' ', spacesBefore);
+      targetBufferedString.appendChar(' ');
       targetBufferedString.appendString(string);
       string = jsonObject.getStringValue("value");
       if (string != null) {
@@ -144,70 +160,57 @@ public class Block extends TranspilableClass {
           targetBufferedString.appendString(" = \"" + string + "\"");
         }
       }
-      targetBufferedString.appendEndLine();
     }
   }
 
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
 
-    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
-      targetBufferedString.appendChars(' ', spacesBefore);
-      targetBufferedString.appendString(">");
-      targetBufferedString.appendEndLine();
-      return;
-    } else if (getBlocks().isEmpty()) {
-      targetBufferedString.appendChars(' ', spacesBefore);
-      targetBufferedString.appendString("/>");
-      targetBufferedString.appendEndLine();
-      return;
+    for (Block block : getChildren()) {
+      block.serialize(targetBufferedString, spacesBefore);
     }
 
-    targetBufferedString.appendChars(' ', spacesBefore);
-    targetBufferedString.appendString(">");
-    targetBufferedString.appendEndLine();
-
-    for (Block block : getBlocks()) {
-      block.serialize(targetBufferedString, spacesBefore + 4);
+    if (spacesBefore >= 0) {
+      targetBufferedString.appendChars(' ', spacesBefore);
     }
-
-    targetBufferedString.appendChars(' ', spacesBefore);
     targetBufferedString.appendString("</" + serializationTag + ">");
-    targetBufferedString.appendEndLine();
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+    }
   }
 
-  public void addBlock(Block block) {
-    if (blocks == null) {
-      blocks = new ArrayList<>();
+  public void addChild(Block block) {
+    if (children == null) {
+      children = new ArrayList<>();
     }
-    blocks.add(block);
-    block.parentBlock = this;
+    children.add(block);
+    block.parent = this;
   }
 
-  public ArrayList<Block> getBlocks() {
-    if (blocks != null) {
-      return blocks;
+  public ArrayList<Block> getChildren() {
+    if (children != null) {
+      return children;
     }
-    if (Block.emptyBlocks == null) {
-      Block.emptyBlocks = new ArrayList<>();
+    if (Block.emptyChildren == null) {
+      Block.emptyChildren = new ArrayList<>();
     }
-    return Block.emptyBlocks;
+    return Block.emptyChildren;
   }
 
   public Block getBlock(int index) {
-    if (blocks == null) {
+    if (children == null) {
       return null;
     }
-    if ((index < 0) || (index >= blocks.size())) {
+    if ((index < 0) || (index >= children.size())) {
       return null;
     }
-    return blocks.get(index);
+    return children.get(index);
   }
 
   public void clearBlocks() {
-    if (blocks != null) {
-      blocks.clear();
+    if (children != null) {
+      children.clear();
     }
-    blocks = null;
+    children = null;
   }
 
   public void addQuotedAttribute(String attributeName, String attributeValue) {

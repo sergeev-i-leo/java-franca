@@ -27,7 +27,7 @@ public class BufferedString {
     }
   }
 
-  public void appendEndLine() {
+  public void finishLine() {
     appendString("\r\n");
   }
 

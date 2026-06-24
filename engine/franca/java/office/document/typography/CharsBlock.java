@@ -67,7 +67,7 @@ public class CharsBlock extends Block {
     }
 
     targetBufferedString.appendString("</" + serializationTag + ">");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
   }
 
   public String encodeHtmChar(char c) {

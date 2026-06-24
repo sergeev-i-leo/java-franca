@@ -1,7 +1,5 @@
 package franca.java.office.document.factory;
 
-import java.util.HashMap;
-
 import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 import franca.java.office.document.Block;
@@ -85,31 +83,31 @@ public class DocumentFactory extends TranspilableClass {
 
   public static void serialize(Block block, BufferedString targetBufferedString) {
     targetBufferedString.appendString("<!DOCTYPE html>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<html lang=\"en\">");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<head>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<meta charset=\"UTF-8\">");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<style>");
-    targetBufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}");
+    targetBufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}span{display:inline-block;}");
     targetBufferedString.appendString("</style>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<title>http://localhost:8080</title>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("</head>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<body>");
-    targetBufferedString.appendEndLine();
-    for (Block childBlock : block.getBlocks()) {
+    targetBufferedString.finishLine();
+    for (Block childBlock : block.getChildren()) {
       childBlock.serialize(targetBufferedString, 2);
     }
     targetBufferedString.appendString("<body>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
     targetBufferedString.appendString("<html>");
-    targetBufferedString.appendEndLine();
+    targetBufferedString.finishLine();
   }
 }

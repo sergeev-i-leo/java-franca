@@ -25,13 +25,13 @@ public class TextBlock extends Block {
       if (c == ' ') {
         if (bufferedString.isNotEmpty()) {
           CharsBlock charsBlock = new CharsBlock();
-          parentBlock.addBlock(charsBlock);
+          parent.addChild(charsBlock);
           charsBlock.type = CharsBlock.TYPE_CHARS;
           charsBlock.setChars(bufferedString.getString());
           bufferedString.clear();
         }
         CharsBlock charsBlock = new CharsBlock();
-        parentBlock.addBlock(charsBlock);
+        parent.addChild(charsBlock);
         charsBlock.type = CharsBlock.TYPE_SPACE;
         charsBlock.setChars(" ");
       }
@@ -39,7 +39,7 @@ public class TextBlock extends Block {
     }
     if (bufferedString.isNotEmpty()) {
       CharsBlock charsBlock = new CharsBlock();
-      parentBlock.addBlock(charsBlock);
+      parent.addChild(charsBlock);
       charsBlock.type = CharsBlock.TYPE_CHARS;
       charsBlock.setChars(bufferedString.getString());
     }
@@ -65,11 +65,11 @@ public class TextBlock extends Block {
   }
 
   public String getText() {
-    if (getBlocks() == null) {
+    if (getChildren() == null) {
       return "";
     }
     BufferedString bufferedString = new BufferedString();
-    for (Block block : getBlocks()) {
+    for (Block block : getChildren()) {
       if (block instanceof CharsBlock) {
         bufferedString.appendString(((CharsBlock) block).getChars());
       }

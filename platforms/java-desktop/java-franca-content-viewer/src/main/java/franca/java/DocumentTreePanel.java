@@ -29,7 +29,7 @@ public class DocumentTreePanel extends JPanel {
   public void refresh() {
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Blocks");
 
-    for (Block block : Document.instance.getBlocks()) {
+    for (Block block : Document.instance.getChildren()) {
       rootNode.add(buildTree(block));
     }
 
@@ -109,7 +109,7 @@ public class DocumentTreePanel extends JPanel {
     }
 
     // blocks (children)
-    ArrayList<Block> children = block.getBlocks();
+    ArrayList<Block> children = block.getChildren();
     if (children != null && !children.isEmpty()) {
       DefaultMutableTreeNode childrenNode = new DefaultMutableTreeNode("blocks");
       for (Block child : children) {

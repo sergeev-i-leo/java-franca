@@ -66,9 +66,9 @@ public class MainFrame extends JFrame {
     inner.classes.addStringValue("row");
     inner.attributes.addStringValue("data-name=inner-row");
 
-    root.addBlock(inner);
+    root.addChild(inner);
     Document.instance.clearBlocks();
-    Document.instance.addBlock(root);
+    Document.instance.addChild(root);
 
     if (documentTreePanel != null) {
       documentTreePanel.refresh();
