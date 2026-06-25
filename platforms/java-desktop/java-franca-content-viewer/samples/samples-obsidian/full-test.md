@@ -1,5 +1,5 @@
 @exportContentFolder ../../../../textinbook/web-1/next-app/app/main/russian-classics/war-and-peace/chapter-1/content.json
-@exportAssetFolder ../../../../textinbook/web-1/next-app/public
+@exportAssetsFolder ../../../../textinbook/web-1/next-app/public
 
 
 /[VN]

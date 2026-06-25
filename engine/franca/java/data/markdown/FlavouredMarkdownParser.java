@@ -16,12 +16,12 @@ public class FlavouredMarkdownParser extends MarkdownParser {
   void parseMarkdownBlock(Block parentBlock) {
 
     if (peekString("@exportContentFolder ")) {
-      skipChars(14);
+      skipChars(21);
       exportContentFolder = consumeLine();
       return;
     }
     if (peekString("@exportAssetsFolder ")) {
-      skipChars(13);
+      skipChars(20);
       exportAssetsFolder = consumeLine();
       return;
     }
