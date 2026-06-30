@@ -2,7 +2,7 @@ package franca.java;
 
 import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
-import franca.java.data.markdown.FlavouredMarkdownParser;
+import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
 import franca.java.data.html.HtmlParser;
 import franca.java.office.document.Block;
@@ -133,7 +133,7 @@ public class MainFrame extends JFrame {
       if (selectedFile != null && selectedFile.getName().endsWith(".md")) {
         try {
           String content = new String(Files.readAllBytes(selectedFile.toPath()), StandardCharsets.UTF_8);
-          FlavouredMarkdownParser parser = new FlavouredMarkdownParser();
+          MarkdownParser parser = new MarkdownParser();
           Document.instance = parser.parse(content);
           BufferedString targetBufferedString = new BufferedString();
           DocumentFactory.serialize(Document.instance, targetBufferedString);
@@ -141,15 +141,10 @@ public class MainFrame extends JFrame {
           jsonTextPanel.setJsonText(targetBufferedString.getString());
           documentTreePanel.refresh();
 
-          Path targetPath = Paths.get(System.getProperty("user.dir"), parser.exportContentFolder).normalize();
-          String absolutePath = targetPath.toAbsolutePath().toString();
-          System.out.println(absolutePath);
-
           JsonArray jsonArray = new JsonArray();
           Document.instance.addJsonElements(jsonArray);
           BufferedString bufferedString = new BufferedString();
           jsonArray.get(0).serialize(bufferedString, 0);
-          Files.writeString(Paths.get(absolutePath), bufferedString.getString(), StandardCharsets.UTF_8);
 
           // TODO: конвертация raw → Block
           // DocumentModel.blocks.clear();

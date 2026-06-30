@@ -28,13 +28,13 @@ public class MarkdownParser extends HtmlParser {
     return block;
   }
 
-  void parseMarkdownBlocks(Block parentBlock) {
+  public void parseMarkdownBlocks(Block parentBlock) {
     while (inputPosition < input.length()) {
       parseMarkdownBlock(parentBlock);
     }
   }
 
-  void parseMarkdownBlock(Block parentBlock) {
+  public void parseMarkdownBlock(Block parentBlock) {
     // \r\n
     if (peekLineEnd()) {
       parentBlock.addChildBlock(new ParagraphBlock());
