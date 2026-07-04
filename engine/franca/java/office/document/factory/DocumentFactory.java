@@ -102,7 +102,7 @@ public class DocumentFactory extends TranspilableClass {
     targetBufferedString.finishLine();
     targetBufferedString.appendString("<body>");
     targetBufferedString.finishLine();
-    for (Block childBlock : block.getChildrenBlocks()) {
+    for (Block childBlock : block.getChildBlocks()) {
       childBlock.serialize(targetBufferedString, 2);
     }
     targetBufferedString.appendString("<body>");
