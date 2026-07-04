@@ -27,6 +27,6 @@ public class HorizontalRuleBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "horizontal-rule-block";
+    return "HorizontalRuleBlock";
   }
 }

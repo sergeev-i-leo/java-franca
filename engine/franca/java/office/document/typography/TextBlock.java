@@ -12,7 +12,7 @@ public class TextBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "text-block";
+    return "TextBlock";
   }
 
   @Override

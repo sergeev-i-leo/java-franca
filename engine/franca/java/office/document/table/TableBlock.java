@@ -29,6 +29,6 @@ public class TableBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "table-block";
+    return "TableBlock";
   }
 }

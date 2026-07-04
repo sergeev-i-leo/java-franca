@@ -39,7 +39,7 @@ public class Block extends TranspilableClass {
   }
 
   public void fillJsonObject(JsonObject jsonObject) {
-    jsonObject.putStringValue("data-block", getDataBlock());
+    jsonObject.putStringValue("dataBlock", getDataBlock());
     JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
     if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
       jsonObject.put("classesJsonArray", classesJsonArray);
@@ -80,7 +80,7 @@ public class Block extends TranspilableClass {
   }
 
   public String getDataBlock() {
-    return "block";
+    return "Block";
   }
 
   public void serializeClassesJsonArray(BufferedString targetBufferedString) {
@@ -143,7 +143,7 @@ public class Block extends TranspilableClass {
       if (string != null) {
         targetBufferedString.appendString("=" + string);
       } else {
-        string = jsonObject.getStringValue("quoted-value");
+        string = jsonObject.getStringValue("quotedValue");
         if (string != null) {
           targetBufferedString.appendString(" = \"" + string + "\"");
         }
@@ -200,7 +200,7 @@ public class Block extends TranspilableClass {
     JsonObject jsonObject = new JsonObject();
     attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", attributeName);
-    jsonObject.putStringValue("quoted-value", attributeValue);
+    jsonObject.putStringValue("quotedValue", attributeValue);
   }
 
   public void addChildBlock(Block block) {
