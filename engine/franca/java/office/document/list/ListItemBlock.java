@@ -27,6 +27,6 @@ public class ListItemBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "listItemBlock";
+    return "ListItemBlock";
   }
 }

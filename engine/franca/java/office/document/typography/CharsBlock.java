@@ -9,8 +9,8 @@ public class CharsBlock extends Block {
 
   public static final String TYPE_CHARS = "chars";
   public static final String TYPE_SPACE = "space";
-  public static final String TYPE_NON_BREAKABLE_SPACE = "nonBreakableSpace";
-  public static final String TYPE_LINE_BREAK = "lineBreak";
+  public static final String TYPE_NON_BREAKABLE_SPACE = "non-breakable-space";
+  public static final String TYPE_LINE_BREAK = "line-break";
 
   public String type = CharsBlock.TYPE_CHARS;
 
