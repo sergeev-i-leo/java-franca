@@ -16,6 +16,12 @@ public class TextBlock extends Block {
   }
 
   @Override
+  public void fillJsonObject(JsonObject jsonObject) {
+    super.fillJsonObject(jsonObject);
+    jsonObject.putStringValue("text", getText());
+  }
+
+  @Override
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
     super.serializeContents(targetBufferedString, serializationTag, -1);
     if (spacesBefore >= 0) {

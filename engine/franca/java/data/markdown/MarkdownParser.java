@@ -147,6 +147,7 @@ public class MarkdownParser extends HtmlParser {
     ParagraphBlock paragraphBlock = new ParagraphBlock();
     parentBlock.addChildBlock(paragraphBlock);
     parseMarkdownTextContents(paragraphBlock, false);
+    skipLine();
   }
 
   public ListBlock parseMarkdownListBlock(int expectedIndentationCount) {
