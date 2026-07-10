@@ -1,9 +1,11 @@
 import {Router} from "@java-franca/expected/router";
 import {Page} from "@java-franca/graphics/page";
+import {Painter} from "@java-franca/expected/painter";
 
 export class BrowserRouter extends Router {
 
   htmlCanvasElement: HTMLCanvasElement | null = null;
+  painter: Painter | null =null;
 
   animationFrameId: number | null = null;
   lastTickTime: number = 0;
@@ -24,7 +26,7 @@ export class BrowserRouter extends Router {
     this.boundHandleContextMenu = this.preventContextMenu.bind(this);
   }
 
-  run(parentHTMLElement: HTMLElement, rootPage: Page): void {
+  attach(parentHTMLElement: HTMLElement, rootPage: Page): void {
     this.htmlCanvasElement = document.createElement("Canvas") as HTMLCanvasElement;
     parentHTMLElement.appendChild(this.htmlCanvasElement);
     this.htmlCanvasElement.style.width = "100%";
@@ -39,21 +41,21 @@ export class BrowserRouter extends Router {
       }
     });
 
-    this.htmlCanvasElement.addEventListener('pointerdown', this.boundHandlePointerDown);
-    this.htmlCanvasElement.addEventListener('pointermove', this.boundHandlePointerMove);
-    this.htmlCanvasElement.addEventListener('pointerup', this.boundHandlePointerUp);
-    this.htmlCanvasElement.addEventListener('contextmenu', this.preventContextMenu);
+    this.htmlCanvasElement.addEventListener("pointerdown", this.boundHandlePointerDown);
+    this.htmlCanvasElement.addEventListener("pointermove", this.boundHandlePointerMove);
+    this.htmlCanvasElement.addEventListener("pointerup", this.boundHandlePointerUp);
+    this.htmlCanvasElement.addEventListener("contextmenu", this.preventContextMenu);
 
     this.pushPage(rootPage);
 
   }
 
-  destroy(): void {
+  detach(): void {
     if (this.htmlCanvasElement) {
-      this.htmlCanvasElement.removeEventListener('pointerdown', this.boundHandlePointerDown);
-      this.htmlCanvasElement.removeEventListener('pointermove', this.boundHandlePointerMove);
-      this.htmlCanvasElement.removeEventListener('pointerup', this.boundHandlePointerUp);
-      this.htmlCanvasElement.removeEventListener('contextmenu', this.preventContextMenu);
+      this.htmlCanvasElement.removeEventListener("pointerdown", this.boundHandlePointerDown);
+      this.htmlCanvasElement.removeEventListener("pointermove", this.boundHandlePointerMove);
+      this.htmlCanvasElement.removeEventListener("pointerup", this.boundHandlePointerUp);
+      this.htmlCanvasElement.removeEventListener("contextmenu", this.preventContextMenu);
       this.htmlCanvasElement = null;
     }
   }

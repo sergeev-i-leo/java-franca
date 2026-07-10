@@ -1,9 +1,10 @@
 import {BrowserRouter} from "./browser-router";
+import {Page} from "@java-franca/graphics/page";
+import {SkiaPainter} from "./skia-painter";
 
 class SkiaRouter extends BrowserRouter {
 
   static canvasKit: any = null;
-
   static fonts: Map<string, any> = new Map();
 
   getTime(): number {
@@ -59,6 +60,57 @@ class SkiaRouter extends BrowserRouter {
 
     } catch (e) {
       console.error('Failed to load CanvasKit', e);
+    }
+  }
+
+  attach(parentHTMLElement: HTMLElement, rootPage: Page): void {
+    super.attach(parentHTMLElement, rootPage);
+    if (this.htmlCanvasElement) {
+      this.painter = new SkiaPainter(this.htmlCanvasElement, this);
+    }
+  }
+
+  startRepainting(): void {
+    if (this.animationFrameId !== null) {
+      return;
+    }
+    this.lastTickTime = performance.now();
+    this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
+  }
+
+  private tick(now: number): void {
+    if ((!this.painter) || (!this.htmlCanvasElement)) {
+      this.stopRepainting();
+      return;
+    }
+
+    if (now - this.lastTickTime < 16) {
+      this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
+      return;
+    }
+    this.lastTickTime = now;
+
+    const needsRepainting = this.needsRepainting();
+
+    if (needsRepainting) {
+      (this.painter as SkiaPainter).clear('#f0f0f0');
+      if (this.topPage) {
+        this.topPage.paint(this.painter);
+      }
+      (this.painter as SkiaPainter).flush();
+    }
+
+    if (this.needsNextRepainting()) {
+      this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
+    } else {
+      this.stopRepainting();
+    }
+  }
+
+  private stopRepainting(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
     }
   }
 
