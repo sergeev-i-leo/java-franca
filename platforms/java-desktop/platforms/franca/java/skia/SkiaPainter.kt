@@ -1,8 +1,10 @@
 package franca.java.skia
 
+import org.jetbrains.skia.Canvas;
+
 import franca.java.graphics.device.Painter
 
-class SkiaPainter(private val canvas: org.jetbrains.skia.Canvas) : Painter() {
+class SkiaPainter(private val canvas: Canvas) : Painter() {
 
   private val textPaint = org.jetbrains.skia.Paint().apply {
     color = 0xFF000000.toInt()
