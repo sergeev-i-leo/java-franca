@@ -1,7 +1,7 @@
 package franca.java.office.document.typography;
 
 import franca.java.data.json.JsonObject;
-import franca.java.expected.ExpectedRuntime;
+import franca.java.expected.Runtime;
 
 public class HeadingBlock extends TextBlock {
 
@@ -24,7 +24,7 @@ public class HeadingBlock extends TextBlock {
 
   @Override
   public String getSerializationTag() {
-    return "h" + ExpectedRuntime.intToString(level);
+    return "h" + Runtime.intToString(level);
   }
 
   @Override

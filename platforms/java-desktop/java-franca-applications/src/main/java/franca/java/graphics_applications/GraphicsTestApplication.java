@@ -1,11 +1,11 @@
 package franca.java.graphics_applications;
 
+import franca.java.TestView0;
 import franca.java.graphics.GraphicsRouter;
 
 import javax.swing.*;
 
 import franca.java.graphics.Page;
-import franca.java.test_components.TestView0;
 
 public class GraphicsTestApplication {
 

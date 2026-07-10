@@ -1,6 +1,6 @@
 package franca.java.data;
 
-import franca.java.expected.ExpectedRuntime;
+import franca.java.expected.Runtime;
 import franca.java.expected.BufferedString;
 import franca.java.expected.TranspilableClass;
 
@@ -55,15 +55,15 @@ public class Parser extends TranspilableClass {
     }
     collectNumberLiteral();
     String literal = literalBufferedString.getString();
-    integerLiteral = ExpectedRuntime.stringToInteger(literal);
+    integerLiteral = Runtime.stringToInteger(literal);
     if (integerLiteral != null) {
       return "integer-literal";
     }
-    integerLiteral = ExpectedRuntime.hexStringToInteger(literal);
+    integerLiteral = Runtime.hexStringToInteger(literal);
     if (integerLiteral != null) {
       return "hex-integer-literal";
     }
-    doubleLiteral = ExpectedRuntime.stringToDouble(literal);
+    doubleLiteral = Runtime.stringToDouble(literal);
     if (doubleLiteral != null) {
       return "double-literal";
     }

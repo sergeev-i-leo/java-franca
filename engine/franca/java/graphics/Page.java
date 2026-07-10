@@ -1,8 +1,8 @@
 package franca.java.graphics;
 
 import franca.java.expected.TranspilableClass;
-import franca.java.graphics.device.Painter;
-import franca.java.graphics.device.Router;
+import franca.java.expected.Painter;
+import franca.java.expected.Router;
 
 import java.util.ArrayList;
 

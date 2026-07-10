@@ -1,8 +1,8 @@
 package franca.java.graphics;
 
 import franca.java.data.json.JsonObject;
-import franca.java.graphics.device.Painter;
-import franca.java.graphics.device.Router;
+import franca.java.expected.Painter;
+import franca.java.expected.Router;
 
 public class View extends JsonObject {
 

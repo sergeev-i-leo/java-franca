@@ -1,7 +1,7 @@
 package franca.java.graphics.animations;
 
 import franca.java.expected.TranspilableClass;
-import franca.java.graphics.device.Router;
+import franca.java.expected.Router;
 import franca.java.graphics.Page;
 import franca.java.graphics.View;
 

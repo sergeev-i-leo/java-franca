@@ -17,6 +17,7 @@ dependencies {
   implementation("org.apache.xmlgraphics:batik-codec:1.16")
   implementation("org.jetbrains.skiko:skiko-awt-runtime-windows-x64:0.7.80")
   implementation("javazoom:jlayer:1.0.1")
+  implementation("org.java-websocket:Java-WebSocket:1.5.7")
   implementation("org.nanohttpd:nanohttpd:2.3.1")
 }
 
@@ -29,8 +30,8 @@ sourceSets {
     java {
       srcDirs("src/main/java",
               "../../../engine",
-              "../../../applications",
-              "../native"
+              "../../../tests",
+              "../expected"
       )
     }
   }

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "react",
+    "noImplicitAny": false,
+    "target": "es5",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "@java-franca/*": ["src/java-franca/*"],
+      "@java-franca-native/*": ["src/java-franca-native/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

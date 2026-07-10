@@ -3,7 +3,7 @@ package franca.java.data.html;
 import java.util.ArrayList;
 
 import franca.java.expected.BufferedString;
-import franca.java.expected.ExpectedRuntime;
+import franca.java.expected.Runtime;
 import franca.java.data.Parser;
 import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
@@ -713,11 +713,11 @@ public class HtmlParser extends Parser {
         }
         bufferedString.appendChar(consumeChar());
       }
-      Integer integer = ExpectedRuntime.hexStringToInteger(bufferedString.getString());
+      Integer integer = Runtime.hexStringToInteger(bufferedString.getString());
       if (integer != null) {
         return String.valueOf((char) integer.intValue());
       } else {
-        integer = ExpectedRuntime.stringToInteger(bufferedString.getString());
+        integer = Runtime.stringToInteger(bufferedString.getString());
         if (integer != null) {
           return String.valueOf((char) integer.intValue());
         }
