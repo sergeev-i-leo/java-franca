@@ -1,4 +1,4 @@
-package franca.java.android_test_application
+package franca.java
 
 import franca.java.graphics.device.Device
 

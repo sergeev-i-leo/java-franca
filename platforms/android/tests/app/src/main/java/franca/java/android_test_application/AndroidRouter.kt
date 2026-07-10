@@ -1,5 +1,6 @@
 package franca.java.android_test_application
 
+import franca.java.AndroidRouterView
 import franca.java.graphics.device.Router
 
 class AndroidRouter(

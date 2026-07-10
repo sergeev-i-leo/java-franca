@@ -1,4 +1,4 @@
-package franca.java.android_test_application
+package franca.java
 
 import android.graphics.Canvas
 import android.graphics.Paint

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import franca.java.AndroidDevice
+import franca.java.AndroidRouterView
 import franca.java.graphics.Page
 import franca.java.test_components.TestView0
 

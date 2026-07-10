@@ -30,7 +30,7 @@ sourceSets {
       srcDirs("src/main/java",
               "../../../engine",
               "../../../applications",
-              "../heirs"
+              "../native"
       )
     }
   }
