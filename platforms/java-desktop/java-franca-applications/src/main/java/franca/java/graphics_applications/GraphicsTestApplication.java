@@ -1,6 +1,5 @@
 package franca.java.graphics_applications;
 
-import franca.java.graphics.GraphicsApplication;
 import franca.java.graphics.GraphicsRouter;
 
 import javax.swing.*;
@@ -20,8 +19,7 @@ public class GraphicsTestApplication {
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    GraphicsApplication graphicsApplication = new GraphicsApplication(graphicsRouter);
-    frame.add(graphicsApplication);
+    frame.add(graphicsRouter.graphicsPanel);
 
     frame.pack();
     frame.setLocationRelativeTo(null);

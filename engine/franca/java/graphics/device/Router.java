@@ -13,8 +13,8 @@ import franca.java.graphics.animations.Tween;
 
 public class Router extends TranspilableClass {
 
-  Device device = null;
-  Page topPage = null;
+  public Device device = null;
+  public Page topPage = null;
 
   // animation orchestration
 

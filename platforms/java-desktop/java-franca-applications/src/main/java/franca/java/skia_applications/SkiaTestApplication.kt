@@ -2,8 +2,8 @@ package franca.java.skia_applications
 
 import franca.java.graphics.Page
 import franca.java.test_components.TestView0
-import franca.java.skia.SkiaApplication
 import franca.java.skia.SkiaRouter
+import javax.swing.JFrame
 
 class SkiaTestApplication {
 
@@ -16,7 +16,13 @@ class SkiaTestApplication {
 
       skiaRouter.pushPage(page);
 
-      SkiaApplication(skiaRouter);
+      val frame = JFrame("SkiaTestApplication")
+      frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+      frame.add(skiaRouter.skiaLayer)
+      frame.setSize(800, 600)
+      frame.setLocationRelativeTo(null)
+      frame.isVisible = true
+
     }
   }
 }
