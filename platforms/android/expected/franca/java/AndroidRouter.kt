@@ -1,7 +1,7 @@
 package franca.java
 
 import franca.java.android_test_application.AndroidNavigator
-import franca.java.graphics.device.Router
+import franca.java.expected.Router
 
 class AndroidRouter(
   private val androidNavigator: AndroidNavigator
