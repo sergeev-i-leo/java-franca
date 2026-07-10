@@ -9,10 +9,12 @@ import java.util.Set;
 
 public class WsServer extends WebSocketServer {
 
+  private WsRouter wsRouter;
   private final Set<WebSocket> clients = new HashSet<>();
 
-  public WsServer(int port) {
+  public WsServer(int port, WsRouter wsRouter) {
     super(new InetSocketAddress(port));
+    this.wsRouter = wsRouter;
   }
 
   @Override

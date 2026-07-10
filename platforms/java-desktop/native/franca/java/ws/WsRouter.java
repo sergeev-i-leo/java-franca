@@ -6,13 +6,12 @@ import franca.java.skia.SkiaRouter;
 
 public class WsRouter extends JavaDesktopRouter {
 
-  WsServer wsServer;
-  GraphicsRouter graphicsRouter;
-  SkiaRouter skiaRouter;
+  public WsServer wsServer;
+  public GraphicsRouter graphicsRouter;
+  public SkiaRouter skiaRouter;
 
-  WsRouter(WsServer wsServer, GraphicsRouter graphicsRouter, SkiaRouter skiaRouter) {
+  public WsRouter(GraphicsRouter graphicsRouter, SkiaRouter skiaRouter) {
     super();
-    this.wsServer = wsServer;
     this.graphicsRouter = graphicsRouter;
     this.skiaRouter = skiaRouter;
   }
