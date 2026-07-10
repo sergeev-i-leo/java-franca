@@ -1,6 +1,6 @@
-import {View} from "./view";
-import {Router} from "../device/router";
-import {Painter} from "../device/painter";
+import {Router} from "@java-franca/expected/router";
+import {View} from "@java-franca/graphics/view";
+import {Painter} from "@java-franca/expected/painter";
 
 export class Page {
   router: Router | null = null;

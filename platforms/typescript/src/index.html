@@ -32,10 +32,22 @@
         top: 0;
         right: 0;
         bottom: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+      }
+      #graphics-router {
+        flex: 1 1 0
+      }
+      #skia-router {
+        flex: 1 1 0
       }
     </style>
   </head>
   <body class="bg-body">
-    <div id="app"></div>
+    <div id="app">
+      <div id="graphics-router"></div>
+      <div id="skia-router"></div>
+    </div>
   </body>
 </html>

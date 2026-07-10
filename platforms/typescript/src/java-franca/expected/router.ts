@@ -1,6 +1,6 @@
-import {Page} from "../views/page";
-import {Tween} from "../animations/tween";
-import {Painter} from "./painter";
+import {Page} from "@java-franca/graphics/page";
+import {Tween} from "@java-franca/animations/tween";
+import {Painter} from "@java-franca/expected/painter";
 
 export class Router {
 
@@ -46,7 +46,7 @@ export class Router {
 
     this.lastTweenId++;
     tween.tweenId = this.lastTweenId;
-    tween.registeredTime = this.getDevice()!.getTime();
+    tween.registeredTime = this.getTime();
 
     tween.nextTween = this.firstTween;
     if (this.firstTween !== null) {

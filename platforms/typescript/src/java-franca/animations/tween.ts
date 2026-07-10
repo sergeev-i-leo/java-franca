@@ -1,8 +1,8 @@
-import {Page} from "../views/page";
-import {View} from "../views/view";
 import {Ease} from "./ease";
 import {LinearEase} from "./linear-ease";
-import {Router} from "../device/router";
+import {Page} from "@java-franca/graphics/page";
+import {View} from "@java-franca/graphics/view";
+import {Router} from "@java-franca/expected/router";
 
 export class Tween {
   page: Page | null = null;

@@ -1,4 +1,4 @@
-import {Router} from "../device/router";
+import {Router} from "@java-franca/expected/router";
 
 export class Ease {
   static readonly EASE_LINEAR: number = 1;

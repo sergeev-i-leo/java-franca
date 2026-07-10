@@ -1,16 +1,18 @@
-import {Router} from "../device/router";
-import {Painter} from "../device/painter";
-import {Page} from "./page";
+import {Router} from "@java-franca/expected/router";
+import {Painter} from "@java-franca/expected/painter";
+import {Page} from "@java-franca/graphics/page";
 
-export abstract class View {
+export class View {
 
   destroy(): void {
     // очистка, если нужна
   }
 
-  abstract paint(router: Router, painter: Painter, page: Page): void;
+  paint(router: Router, painter: Painter, page: Page): void {
 
-  abstract handlePointerDown(
+  }
+
+  handlePointerDown(
     router: Router,
     page: Page,
     painterX: number,
@@ -18,5 +20,7 @@ export abstract class View {
     pointedX: number,
     pointedY: number,
     buttonNumber: number
-  ): void;
+  ): void {
+
+  }
 }
