@@ -7,7 +7,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import franca.java.graphics.device.Router
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -15,8 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class AndroidRouterView(
   context: Context,
-  private val androidDevice: AndroidDevice,
-  private val router: Router
+  private val androidRouter: AndroidRouter,
 ) : View(context) {
 
   private val androidPainter = AndroidPainter()
@@ -35,25 +33,19 @@ class AndroidRouterView(
     isFocusableInTouchMode = true
   }
 
-  fun getRouter(): Router {
-    return router;
-  }
-
-  fun getDevice(): AndroidDevice = androidDevice
-
   override fun onDraw(canvas: Canvas) {
-    val startTime = androidDevice.time
+    val startTime = androidRouter.time
     super.onDraw(canvas)
 
     isPainting.set(true)
     try {
       androidPainter.setCanvas(canvas)
-      router.paint(androidPainter)
+      androidRouter.paint(androidPainter)
     } finally {
       isPainting.set(false)
     }
 
-    val elapsedTime = androidDevice.time - startTime
+    val elapsedTime = androidRouter.time - startTime
     if (elapsedTime > 12) {
       Log.w("AndroidDeviceView", "Slow frame: ${elapsedTime}ms")
     }
@@ -65,7 +57,7 @@ class AndroidRouterView(
     }
 
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    lastTickTime = androidDevice.time
+    lastTickTime = androidRouter.time
     scheduledExecutorService?.scheduleAtFixedRate(
       { tick() },
       0,
@@ -75,18 +67,18 @@ class AndroidRouterView(
   }
 
   private fun tick() {
-    val tickTime = androidDevice.time
+    val tickTime = androidRouter.time
     if (tickTime - lastTickTime < 16) {
       return
     }
 
     lastTickTime = tickTime
 
-    if ((!isPainting.get()) && (router.needsRepainting())) {
+    if ((!isPainting.get()) && (androidRouter.needsRepainting())) {
       mainHandler.post { invalidate() }
     }
 
-    if (!router.needsNextRepainting()) {
+    if (!androidRouter.needsNextRepainting()) {
       scheduledExecutorService?.shutdown()
       scheduledExecutorService = null
     }
@@ -103,7 +95,7 @@ class AndroidRouterView(
         val y = event.getY(pointerIndex)
         lastX = x
         lastY = y
-        router.handlePointerDown(x, y, 1)
+        androidRouter.handlePointerDown(x, y, 1)
         return true
       }
 

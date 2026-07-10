@@ -1,7 +1,6 @@
 package franca.java.skia
 
-import franca.java.common.JavaDevice
-import franca.java.graphics.device.Router
+import franca.java.common.JavaDesktopRouter
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
 import java.awt.event.MouseAdapter
@@ -11,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
-class SkiaRouter() : Router() {
+class SkiaRouter() : JavaDesktopRouter() {
 
   val skiaLayer = SkiaLayer()
 
@@ -19,7 +18,6 @@ class SkiaRouter() : Router() {
   private var lastTickTime = 0L
 
   init {
-    device = JavaDevice()
 
     skiaLayer.skikoView = object : SkikoView {
       override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
@@ -45,9 +43,9 @@ class SkiaRouter() : Router() {
     }
 
     scheduler = Executors.newSingleThreadScheduledExecutor()
-    lastTickTime = device.time
+    lastTickTime = time
     scheduler?.scheduleAtFixedRate({
-      val tickTime = device.time
+      val tickTime = time
       if (tickTime - lastTickTime < 16) {
         return@scheduleAtFixedRate
       }

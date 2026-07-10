@@ -1,14 +1,14 @@
 package franca.java.common;
 
-import franca.java.graphics.device.Device;
 import franca.java.graphics.device.IntegerConsumer;
+import franca.java.graphics.device.Router;
 import franca.java.graphics.device.StringConsumer;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class JavaDevice extends Device {
+public class JavaDesktopRouter extends Router {
 
   @Override
   public long getTime() {

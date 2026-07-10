@@ -18,7 +18,7 @@ public class LinearEase extends Ease {
       return false;
     }
 
-    long currentTime = router.getDevice().getTime();
+    long currentTime = router.getTime();
 
     if (currentTime >= startedTime + duration) {
       // is over

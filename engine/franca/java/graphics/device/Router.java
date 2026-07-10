@@ -13,7 +13,6 @@ import franca.java.graphics.animations.Tween;
 
 public class Router extends TranspilableClass {
 
-  public Device device = null;
   public Page topPage = null;
 
   // animation orchestration
@@ -21,12 +20,14 @@ public class Router extends TranspilableClass {
   private int lastTweenId = 0;
   private Tween firstTween = null;
 
-  public void setDevice(Device device) {
-    this.device = device;
+  public long getTime() {
+    return 0L;
   }
 
-  public Device getDevice() {
-    return device;
+  public void readFile(String path, StringConsumer callback) {
+  }
+
+  public void writeFile(String path, String content, IntegerConsumer callback) {
   }
 
   public Page getTopPage() {
@@ -68,7 +69,7 @@ public class Router extends TranspilableClass {
 
     lastTweenId++;
     tween.tweenId = lastTweenId;
-    tween.registeredTime = getDevice().getTime();
+    tween.registeredTime = getTime();
 
     tween.nextTween = firstTween;
     if (firstTween != null) {

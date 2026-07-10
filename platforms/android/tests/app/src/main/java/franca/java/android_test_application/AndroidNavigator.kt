@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import franca.java.AndroidDevice
+import franca.java.AndroidRouter
 import franca.java.AndroidRouterView
 import franca.java.graphics.Page
 import franca.java.test_components.TestView0
@@ -18,26 +18,22 @@ class AndroidNavigator(
   private val bottomNavigationView: BottomNavigationView
 ) {
 
-  private val androidDevice = AndroidDevice()
-
   private val homeAndroidRouter = AndroidRouter(this)
   private val homePage = Page(homeAndroidRouter)
   private val cloneAndroidRouter = AndroidRouter(this)
   private val clonePage = Page(cloneAndroidRouter)
 
-  private val viewHome = AndroidRouterView(context, androidDevice, homeAndroidRouter)
+  private val viewHome = AndroidRouterView(context, homeAndroidRouter)
   private val viewHello = createHelloWorldView()
-  private val viewClone = AndroidRouterView(context, androidDevice, cloneAndroidRouter)
+  private val viewClone = AndroidRouterView(context, cloneAndroidRouter)
 
   var currentView: View = viewHome
     private set
 
   init {
-    homeAndroidRouter.device = androidDevice
     homeAndroidRouter.pushPage(homePage)
     homePage.views.add(TestView0())
 
-    cloneAndroidRouter.device = androidDevice
     cloneAndroidRouter.pushPage(clonePage)
     clonePage.views.add(TestView0())
 

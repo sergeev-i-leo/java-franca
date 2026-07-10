@@ -1,8 +1,5 @@
 package franca.java.graphics;
 
-import franca.java.common.JavaDevice;
-import franca.java.graphics.device.Router;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,29 +8,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GraphicsRouter extends Router {
+import franca.java.common.JavaDesktopRouter;
+
+public class GraphicsRouter extends JavaDesktopRouter {
 
   public GraphicsPanel graphicsPanel = new GraphicsPanel(this);
 
   ScheduledExecutorService scheduledExecutorService = null;
   long lastTickTime = 0L;
 
-  public GraphicsRouter() {
-    super();
-    device = new JavaDevice();
-  }
-
   public void startRepainting() {
     if (scheduledExecutorService != null) {
       return;
     }
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-    lastTickTime = device.getTime();
+    lastTickTime = getTime();
     scheduledExecutorService.scheduleAtFixedRate(this::tick, 0, 2, TimeUnit.MILLISECONDS);
   }
 
   private void tick() {
-    long tickTime = device.getTime();
+    long tickTime = getTime();
     if (tickTime - lastTickTime < 16) {
       return;
     }
