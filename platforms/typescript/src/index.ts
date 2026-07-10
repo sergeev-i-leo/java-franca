@@ -9,20 +9,18 @@ let skiaRouter = new SkiaRouter();
 
 const runRouter = async () => {
   await SkiaRouter.loadResources();
-  
+
   let htmlElement = document.getElementById("canvas-2d-router");
   if (htmlElement) {
     const page = new Page(canvas2DRouter);
     page.views.push(new TestView0());
     canvas2DRouter.attach(htmlElement, page);
-    canvas2DRouter.requestRepainting();
   }
   htmlElement = document.getElementById("skia-router");
   if (htmlElement) {
     const page = new Page(skiaRouter);
     page.views.push(new TestView0());
     skiaRouter.attach(htmlElement, page);
-    skiaRouter.requestRepainting();
   }
 };
 

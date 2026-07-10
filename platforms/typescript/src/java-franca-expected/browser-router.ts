@@ -4,8 +4,12 @@ import {Painter} from "@java-franca/expected/painter";
 
 export class BrowserRouter extends Router {
 
+  parentHTMLElement: HTMLElement | null = null;
   htmlCanvasElement: HTMLCanvasElement | null = null;
   painter: Painter | null =null;
+
+  private resizeObserver: ResizeObserver | null = null;
+  private resizePending: boolean = false;
 
   animationFrameId: number | null = null;
   lastTickTime: number = 0;
@@ -24,22 +28,16 @@ export class BrowserRouter extends Router {
     this.boundHandlePointerMove = this.onPointerMove.bind(this);
     this.boundHandlePointerUp = this.onPointerUp.bind(this);
     this.boundHandleContextMenu = this.preventContextMenu.bind(this);
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      this.requestResize();
+    });
   }
 
   attach(parentHTMLElement: HTMLElement, rootPage: Page): void {
-    this.htmlCanvasElement = document.createElement("Canvas") as HTMLCanvasElement;
-    parentHTMLElement.appendChild(this.htmlCanvasElement);
-    this.htmlCanvasElement.style.width = "100%";
-    this.htmlCanvasElement.style.height = "100%";
-    this.htmlCanvasElement.style.display = "block";
-
-    requestAnimationFrame(() => {
-      if (this.htmlCanvasElement) {
-        const rect = this.htmlCanvasElement.getBoundingClientRect();
-        this.htmlCanvasElement.width = rect.width;
-        this.htmlCanvasElement.height = rect.height;
-      }
-    });
+    this.parentHTMLElement = parentHTMLElement;
+    this.htmlCanvasElement = document.createElement("canvas") as HTMLCanvasElement;
+    this.parentHTMLElement.appendChild(this.htmlCanvasElement);
 
     this.htmlCanvasElement.addEventListener("pointerdown", this.boundHandlePointerDown);
     this.htmlCanvasElement.addEventListener("pointermove", this.boundHandlePointerMove);
@@ -48,6 +46,42 @@ export class BrowserRouter extends Router {
 
     this.pushPage(rootPage);
 
+    this.resizeObserver!.observe(this.parentHTMLElement);
+
+    this.resize();
+  }
+
+  private requestResize(): void {
+    if (this.resizePending) {
+      return;
+    }
+
+    this.resizePending = true;
+    requestAnimationFrame(() => {
+      this.resize();
+      this.resizePending = false;
+    });
+  }
+
+  resize() {
+    if (!this.parentHTMLElement) {
+      return;
+    }
+    if (!this.htmlCanvasElement) {
+      return;
+    }
+    const rect = this.parentHTMLElement.getBoundingClientRect();
+    const width = Math.floor(rect.width);
+    const height = Math.floor(rect.height);
+
+    this.htmlCanvasElement.width = width;
+    this.htmlCanvasElement.height = height;
+
+    this.htmlCanvasElement.style.width = width + "px";
+    this.htmlCanvasElement.style.height = height + "px";
+    this.htmlCanvasElement.style.display = "block";
+
+    this.requestRepainting();
   }
 
   detach(): void {
@@ -57,6 +91,11 @@ export class BrowserRouter extends Router {
       this.htmlCanvasElement.removeEventListener("pointerup", this.boundHandlePointerUp);
       this.htmlCanvasElement.removeEventListener("contextmenu", this.preventContextMenu);
       this.htmlCanvasElement = null;
+    }
+    if ((this.resizeObserver) && (this.parentHTMLElement)) {
+      this.resizeObserver.unobserve(this.parentHTMLElement);
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
     }
   }
 

@@ -34,7 +34,7 @@ class SkiaRouter extends BrowserRouter {
       ]);
 
       try {
-        const response = await fetch("/fonts/inter_regular.ttf");
+        const response = await fetch(require("~assets/fonts/fira_sans_extra_condensed_bold.ttf"));
         const arrayBuffer = await response.arrayBuffer();
         const typeface = SkiaRouter.canvasKit.Typeface.MakeFreeTypeFaceFromData(arrayBuffer);
         SkiaRouter.fonts.set("primary", typeface);
@@ -42,7 +42,7 @@ class SkiaRouter extends BrowserRouter {
         console.warn(`Font inter_regular.ttf not loaded`, e);
       }
       try {
-        const response = await fetch("/fonts/fira_sans_extra_condensed_bold.ttf");
+        const response = await fetch(require("~assets/fonts/fira_sans_extra_condensed_bold.ttf"));
         const arrayBuffer = await response.arrayBuffer();
         const typeface = SkiaRouter.canvasKit.Typeface.MakeFreeTypeFaceFromData(arrayBuffer);
         SkiaRouter.fonts.set('secondary', typeface);
@@ -50,7 +50,7 @@ class SkiaRouter extends BrowserRouter {
         console.warn(`Font fira_sans_extra_condensed_bold.ttf not loaded`, e);
       }
       try {
-        const response = await fetch(`assets/fonts/remixicon.ttf`);
+        const response = await fetch(require("~assets/fonts/remixicon.ttf"));
         const arrayBuffer = await response.arrayBuffer();
         const typeface = SkiaRouter.canvasKit.Typeface.MakeFreeTypeFaceFromData(arrayBuffer);
         SkiaRouter.fonts.set('remixicon', typeface);
