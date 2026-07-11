@@ -68,6 +68,9 @@ class GraphicsPanel extends JPanel {
   @Override
   protected void paintComponent(Graphics graphics) {
     super.paintComponent(graphics);
-    graphicsRouter.paint(new GraphicsPainter(graphics));
+    GraphicsPainter graphicsPainter = new GraphicsPainter(graphics);
+    graphicsRouter.preparePainting(graphicsPainter);
+    graphicsRouter.doPainting(graphicsPainter);
+    graphicsRouter.finishPainting(graphicsPainter);
   }
 }

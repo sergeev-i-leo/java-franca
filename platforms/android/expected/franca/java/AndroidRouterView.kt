@@ -40,7 +40,9 @@ class AndroidRouterView(
     isPainting.set(true)
     try {
       androidPainter.setCanvas(canvas)
-      androidRouter.paint(androidPainter)
+      androidRouter.preparePainting(androidPainter)
+      androidRouter.doPainting(androidPainter)
+      androidRouter.finishPainting(androidPainter)
     } finally {
       isPainting.set(false)
     }

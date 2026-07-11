@@ -44,18 +44,6 @@ public class Router extends TranspilableClass {
     }
   }
 
-  public void paint(Painter painter) {
-    if (topPage != null) {
-      topPage.paint(painter);
-    }
-  }
-
-  public void handlePointerDown(float pointedX, float pointedY, int buttonNumber) {
-    if (topPage != null) {
-      topPage.handlePointerDown(pointedX, pointedY, buttonNumber);
-    }
-  }
-
   public void requestRepainting() {
     // one-shot animation
     Tween tween = new Tween(null, null, 0L, 0);
@@ -152,5 +140,23 @@ public class Router extends TranspilableClass {
       currentTween = currentTween.nextTween;
     }
     return result;
+  }
+
+  public void preparePainting(Painter painter) {
+  }
+
+  public void doPainting(Painter painter) {
+    if (topPage != null) {
+      topPage.paint(painter);
+    }
+  }
+
+  public void finishPainting(Painter painter) {
+  }
+
+  public void handlePointerDown(float pointedX, float pointedY, int buttonNumber) {
+    if (topPage != null) {
+      topPage.handlePointerDown(pointedX, pointedY, buttonNumber);
+    }
   }
 }

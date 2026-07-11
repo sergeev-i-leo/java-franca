@@ -21,8 +21,10 @@ class SkiaRouter() : JavaDesktopRouter() {
 
     skiaLayer.skikoView = object : SkikoView {
       override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
-        canvas.clear(0xFFFFFFFF.toInt())
-        paint(SkiaPainter(canvas))
+        val skiaPainter = SkiaPainter(canvas);
+        preparePainting(skiaPainter)
+        doPainting(skiaPainter)
+        finishPainting(skiaPainter)
       }
     }
 

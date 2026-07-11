@@ -1,7 +1,6 @@
 import {Router} from "@java-franca/expected/router";
 import {Page} from "@java-franca/graphics/page";
 import {Painter} from "@java-franca/expected/painter";
-import {Canvas2DPainter} from "./canvas-2d-painter";
 
 export class BrowserRouter extends Router {
 
@@ -96,7 +95,7 @@ export class BrowserRouter extends Router {
     this.lastTickTime = performance.now();
     this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
   }
-  
+
   private tick(now: number): void {
     if ((!this.painter) || (!this.htmlCanvasElement)) {
       this.stopRepainting();
