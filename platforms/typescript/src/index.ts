@@ -14,13 +14,15 @@ const runRouter = async () => {
   if (htmlElement) {
     const page = new Page(canvas2DRouter);
     page.views.push(new TestView0());
-    canvas2DRouter.attach(htmlElement, page);
+    canvas2DRouter.attach(htmlElement);
+    canvas2DRouter.run(page);
   }
   htmlElement = document.getElementById("skia-router");
   if (htmlElement) {
     const page = new Page(skiaRouter);
     page.views.push(new TestView0());
-    skiaRouter.attach(htmlElement, page);
+    skiaRouter.attach(htmlElement);
+    skiaRouter.run(page);
   }
 };
 

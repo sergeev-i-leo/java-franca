@@ -1,6 +1,7 @@
 import {Router} from "@java-franca/expected/router";
 import {Page} from "@java-franca/graphics/page";
 import {Painter} from "@java-franca/expected/painter";
+import {Canvas2DPainter} from "./canvas-2d-painter";
 
 export class BrowserRouter extends Router {
 
@@ -34,7 +35,7 @@ export class BrowserRouter extends Router {
     });
   }
 
-  attach(parentHTMLElement: HTMLElement, rootPage: Page): void {
+  attach(parentHTMLElement: HTMLElement): void {
     this.parentHTMLElement = parentHTMLElement;
     this.htmlCanvasElement = document.createElement("canvas") as HTMLCanvasElement;
     this.parentHTMLElement.appendChild(this.htmlCanvasElement);
@@ -43,8 +44,6 @@ export class BrowserRouter extends Router {
     this.htmlCanvasElement.addEventListener("pointermove", this.boundHandlePointerMove);
     this.htmlCanvasElement.addEventListener("pointerup", this.boundHandlePointerUp);
     this.htmlCanvasElement.addEventListener("contextmenu", this.preventContextMenu);
-
-    this.pushPage(rootPage);
 
     this.resizeObserver!.observe(this.parentHTMLElement);
 
@@ -70,6 +69,7 @@ export class BrowserRouter extends Router {
     if (!this.htmlCanvasElement) {
       return;
     }
+
     const rect = this.parentHTMLElement.getBoundingClientRect();
     const width = Math.floor(rect.width);
     const height = Math.floor(rect.height);
@@ -82,6 +82,62 @@ export class BrowserRouter extends Router {
     this.htmlCanvasElement.style.display = "block";
 
     this.requestRepainting();
+  }
+
+  run(page: Page) {
+    this.pushPage(page);
+    this.requestRepainting();
+  }
+
+  startRepainting(): void {
+    if (this.animationFrameId !== null) {
+      return;
+    }
+    this.lastTickTime = performance.now();
+    this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
+  }
+  
+  private tick(now: number): void {
+    if ((!this.painter) || (!this.htmlCanvasElement)) {
+      this.stopRepainting();
+      return;
+    }
+
+    if (now - this.lastTickTime < 16) {
+      this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
+      return;
+    }
+    this.lastTickTime = now;
+
+    const needsRedraw = this.needsRepainting();
+
+    if (needsRedraw) {
+      this.startPainting();
+      this.performPainting();
+      this.finishPainting();
+    }
+
+    if (this.needsNextRepainting()) {
+      this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
+    } else {
+      this.stopRepainting();
+    }
+  }
+
+  startPainting() {
+  }
+
+  performPainting() {
+  }
+
+  finishPainting() {
+  }
+
+  private stopRepainting(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
   }
 
   detach(): void {
@@ -108,22 +164,26 @@ export class BrowserRouter extends Router {
     const scaleX = this.htmlCanvasElement.width / rect.width;
     const scaleY = this.htmlCanvasElement.height / rect.height;
 
-    const canvasX = (pointerEvent.clientX - rect.left) * scaleX;
-    const canvasY = (pointerEvent.clientY - rect.top) * scaleY;
+    const pointedX = (pointerEvent.clientX - rect.left) * scaleX;
+    const pointedY = (pointerEvent.clientY - rect.top) * scaleY;
 
-    let button = 0;
+    let buttonNumber = 0;
     if (pointerEvent.button === 0) {
-      button = 1;
+      buttonNumber = 1;
     } else if (pointerEvent.button === 1) {
-      button = 2;
+      buttonNumber = 2;
     } else if (pointerEvent.button === 2) {
-      button = 3;
+      buttonNumber = 3;
     }
 
     this.pointerId = pointerEvent.pointerId;
     this.htmlCanvasElement.setPointerCapture(pointerEvent.pointerId);
 
-    super.handlePointerDown(canvasX, canvasY, button);
+    this.handlePointerDown(pointedX, pointedY, buttonNumber);
+  }
+
+  handlePointerDown(pointedX: number, pointedY: number, buttonNumber: number): void {
+    super.handlePointerDown(pointedX, pointedY, buttonNumber);
   }
 
   onPointerMove(pointerEvent: PointerEvent): void {
@@ -134,10 +194,14 @@ export class BrowserRouter extends Router {
     const scaleX = this.htmlCanvasElement.width / rect.width;
     const scaleY = this.htmlCanvasElement.height / rect.height;
 
-    const canvasX = (pointerEvent.clientX - rect.left) * scaleX;
-    const canvasY = (pointerEvent.clientY - rect.top) * scaleY;
+    const pointedX = (pointerEvent.clientX - rect.left) * scaleX;
+    const pointedY = (pointerEvent.clientY - rect.top) * scaleY;
 
-    super.handlePointerMove(canvasX, canvasY);
+    this.handlePointerMove(pointedX, pointedY);
+  }
+
+  handlePointerMove(pointedX: number, pointedY: number): void {
+    super.handlePointerMove(pointedX, pointedY);
   }
 
   onPointerUp(pointerEvent: PointerEvent): void {
@@ -146,6 +210,10 @@ export class BrowserRouter extends Router {
     }
     this.pointerId = null;
     this.htmlCanvasElement?.releasePointerCapture(pointerEvent.pointerId);
+    this.handlePointerUp();
+  }
+
+  handlePointerUp(): void {
     super.handlePointerUp();
   }
 

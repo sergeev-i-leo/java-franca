@@ -1,5 +1,4 @@
 import {BrowserRouter} from "./browser-router";
-import {Page} from "@java-franca/graphics/page";
 import {SkiaPainter} from "./skia-painter";
 
 class SkiaRouter extends BrowserRouter {
@@ -45,72 +44,46 @@ class SkiaRouter extends BrowserRouter {
         const response = await fetch(require("~assets/fonts/fira_sans_extra_condensed_bold.ttf"));
         const arrayBuffer = await response.arrayBuffer();
         const typeface = SkiaRouter.canvasKit.Typeface.MakeFreeTypeFaceFromData(arrayBuffer);
-        SkiaRouter.fonts.set('secondary', typeface);
-      } catch (e) {
-        console.warn(`Font fira_sans_extra_condensed_bold.ttf not loaded`, e);
+        SkiaRouter.fonts.set("secondary", typeface);
+      } catch (error) {
+        console.warn("Font fira_sans_extra_condensed_bold.ttf not loaded", error);
       }
       try {
         const response = await fetch(require("~assets/fonts/remixicon.ttf"));
         const arrayBuffer = await response.arrayBuffer();
         const typeface = SkiaRouter.canvasKit.Typeface.MakeFreeTypeFaceFromData(arrayBuffer);
-        SkiaRouter.fonts.set('remixicon', typeface);
-      } catch (e) {
-        console.warn(`Font remixicon.ttf not loaded`, e);
+        SkiaRouter.fonts.set("remixicon", typeface);
+      } catch (error) {
+        console.warn("Font remixicon.ttf not loaded", error);
       }
 
-    } catch (e) {
-      console.error('Failed to load CanvasKit', e);
+    } catch (error) {
+      console.error("Failed to load CanvasKit", error);
     }
   }
 
-  attach(parentHTMLElement: HTMLElement, rootPage: Page): void {
-    super.attach(parentHTMLElement, rootPage);
+  attach(parentHTMLElement: HTMLElement): void {
+    super.attach(parentHTMLElement);
     if (this.htmlCanvasElement) {
       this.painter = new SkiaPainter(this.htmlCanvasElement, this);
     }
   }
 
-  startRepainting(): void {
-    if (this.animationFrameId !== null) {
-      return;
+  startPainting() {
+    if (this.painter) {
+      (this.painter as SkiaPainter).clear("#f0f0f0");
     }
-    this.lastTickTime = performance.now();
-    this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
   }
 
-  private tick(now: number): void {
-    if ((!this.painter) || (!this.htmlCanvasElement)) {
-      this.stopRepainting();
-      return;
+  performPainting() {
+    if ((this.painter) && (this.topPage)) {
+      this.topPage.paint(this.painter);
     }
+  }
 
-    if (now - this.lastTickTime < 16) {
-      this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
-      return;
-    }
-    this.lastTickTime = now;
-
-    const needsRepainting = this.needsRepainting();
-
-    if (needsRepainting) {
-      (this.painter as SkiaPainter).clear('#f0f0f0');
-      if (this.topPage) {
-        this.topPage.paint(this.painter);
-      }
+  finishPainting() {
+    if (this.painter) {
       (this.painter as SkiaPainter).flush();
-    }
-
-    if (this.needsNextRepainting()) {
-      this.animationFrameId = requestAnimationFrame(this.tick.bind(this));
-    } else {
-      this.stopRepainting();
-    }
-  }
-
-  private stopRepainting(): void {
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
     }
   }
 
