@@ -34,7 +34,7 @@ export class BrowserRouter extends Router {
     });
   }
 
-  attach(parentHTMLElement: HTMLElement): void {
+  mount(parentHTMLElement: HTMLElement): void {
     this.parentHTMLElement = parentHTMLElement;
     this.htmlCanvasElement = document.createElement("canvas") as HTMLCanvasElement;
     this.parentHTMLElement.appendChild(this.htmlCanvasElement);
@@ -132,7 +132,7 @@ export class BrowserRouter extends Router {
     }
   }
 
-  detach(): void {
+  unmount(): void {
     if (this.htmlCanvasElement) {
       this.htmlCanvasElement.removeEventListener("pointerdown", this.boundHandlePointerDown);
       this.htmlCanvasElement.removeEventListener("pointermove", this.boundHandlePointerMove);

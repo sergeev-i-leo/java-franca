@@ -63,15 +63,14 @@ class SkiaRouter extends BrowserRouter {
     }
   }
 
-  attach(parentHTMLElement: HTMLElement): void {
-    super.attach(parentHTMLElement);
+  mount(parentHTMLElement: HTMLElement): void {
+    super.mount(parentHTMLElement);
     if (this.htmlCanvasElement) {
-      this.painter = new SkiaPainter(this.htmlCanvasElement, this);
+      this.painter = new SkiaPainter(this.htmlCanvasElement);
     }
   }
 
   preparePainting(painter: Painter): void {
-    (painter as SkiaPainter).clear("#f0f0f0");
   }
 
   doPainting(painter: Painter): void {
@@ -84,7 +83,7 @@ class SkiaRouter extends BrowserRouter {
     (painter as SkiaPainter).flush();
   }
 
-  getFont(name: string): any {
+  static getFont(name: string): any {
     return SkiaRouter.fonts.get(name) || null;
   }
 

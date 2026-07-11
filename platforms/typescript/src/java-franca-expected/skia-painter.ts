@@ -5,12 +5,10 @@ export class SkiaPainter extends Painter {
 
   private surface: any = null;
   private readonly canvasElement: HTMLCanvasElement;
-  private skiaRouter: SkiaRouter;
 
-  constructor(canvasElement: HTMLCanvasElement, skiaRouter: SkiaRouter) {
+  constructor(canvasElement: HTMLCanvasElement) {
     super();
     this.canvasElement = canvasElement;
-    this.skiaRouter = skiaRouter;
   }
 
   private ensureSurface(): void {
@@ -33,7 +31,7 @@ export class SkiaPainter extends Painter {
     }
 
     const canvas = this.surface.getCanvas();
-    const font = this.skiaRouter.getFont("inter_regular");
+    const font = SkiaRouter.getFont("inter_regular");
 
     const paint = new SkiaRouter.canvasKit.Paint();
     const alpha = deviceColor / 255;

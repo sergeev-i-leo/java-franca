@@ -35,8 +35,8 @@ class Canvas2dRouter extends BrowserRouter {
     }
   }
 
-  attach(parentHTMLElement: HTMLElement): void {
-    super.attach(parentHTMLElement);
+  mount(parentHTMLElement: HTMLElement): void {
+    super.mount(parentHTMLElement);
     if (this.htmlCanvasElement) {
       this.painter = new Canvas2DPainter(this.htmlCanvasElement);
     }
