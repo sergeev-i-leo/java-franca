@@ -29,12 +29,6 @@ export class Router {
     }
   }
 
-  paint(painter: Painter): void {
-    if (this.topPage !== null) {
-      this.topPage.paint(painter);
-    }
-  }
-
   requestRepainting(): void {
     // one-shot animation
     const tween = new Tween(null, null, 0, 0);
@@ -128,6 +122,18 @@ export class Router {
       currentTween = currentTween.nextTween;
     }
     return result;
+  }
+
+  preparePainting(painter: Painter): void {
+  }
+
+  doPainting(painter: Painter): void {
+    if (this.topPage !== null) {
+      this.topPage.paint(painter);
+    }
+  }
+
+  finishPainting(painter: Painter): void {
   }
 
   handlePointerDown(pointedX: number, pointedY: number, buttonNumber: number): void {

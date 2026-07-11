@@ -1,5 +1,6 @@
 import {BrowserRouter} from "./browser-router";
 import {Canvas2DPainter} from "./canvas-2d-painter";
+import {Painter} from "@java-franca/expected/painter";
 
 class Canvas2dRouter extends BrowserRouter {
 
@@ -41,22 +42,18 @@ class Canvas2dRouter extends BrowserRouter {
     }
   }
 
-  startPainting() {
-    if (this.painter) {
-      (this.painter as Canvas2DPainter).clear('#f0f0f0');
+  preparePainting(painter: Painter) {
+    (painter as Canvas2DPainter).clear('#f0f0f0');
+  }
+
+  doPainting(painter: Painter) {
+    if (this.topPage) {
+      this.topPage.paint(painter);
     }
   }
 
-  performPainting() {
-    if ((this.painter) && (this.topPage)) {
-      this.topPage.paint(this.painter);
-    }
-  }
-
-  finishPainting() {
-    if (this.painter) {
-      (this.painter as Canvas2DPainter).flush();
-    }
+  finishPainting(painter: Painter) {
+    (painter as Canvas2DPainter).flush();
   }
 }
 

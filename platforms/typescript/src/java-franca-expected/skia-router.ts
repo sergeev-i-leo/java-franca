@@ -1,5 +1,6 @@
 import {BrowserRouter} from "./browser-router";
 import {SkiaPainter} from "./skia-painter";
+import {Painter} from "@java-franca/expected/painter";
 
 class SkiaRouter extends BrowserRouter {
 
@@ -69,22 +70,18 @@ class SkiaRouter extends BrowserRouter {
     }
   }
 
-  startPainting() {
-    if (this.painter) {
-      (this.painter as SkiaPainter).clear("#f0f0f0");
+  preparePainting(painter: Painter): void {
+    (painter as SkiaPainter).clear("#f0f0f0");
+  }
+
+  doPainting(painter: Painter): void {
+    if (this.topPage) {
+      this.topPage.paint(painter);
     }
   }
 
-  performPainting() {
-    if ((this.painter) && (this.topPage)) {
-      this.topPage.paint(this.painter);
-    }
-  }
-
-  finishPainting() {
-    if (this.painter) {
-      (this.painter as SkiaPainter).flush();
-    }
+  finishPainting(painter: Painter): void {
+    (painter as SkiaPainter).flush();
   }
 
   getFont(name: string): any {

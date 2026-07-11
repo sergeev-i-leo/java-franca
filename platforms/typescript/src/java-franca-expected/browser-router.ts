@@ -6,7 +6,7 @@ export class BrowserRouter extends Router {
 
   parentHTMLElement: HTMLElement | null = null;
   htmlCanvasElement: HTMLCanvasElement | null = null;
-  painter: Painter | null =null;
+  painter: Painter | null = null;
 
   private resizeObserver: ResizeObserver | null = null;
   private resizePending: boolean = false;
@@ -111,9 +111,11 @@ export class BrowserRouter extends Router {
     const needsRedraw = this.needsRepainting();
 
     if (needsRedraw) {
-      this.startPainting();
-      this.performPainting();
-      this.finishPainting();
+      if (this.painter) {
+        this.preparePainting(this.painter);
+        this.doPainting(this.painter);
+        this.finishPainting(this.painter);
+      }
     }
 
     if (this.needsNextRepainting()) {
@@ -121,15 +123,6 @@ export class BrowserRouter extends Router {
     } else {
       this.stopRepainting();
     }
-  }
-
-  startPainting() {
-  }
-
-  performPainting() {
-  }
-
-  finishPainting() {
   }
 
   private stopRepainting(): void {
