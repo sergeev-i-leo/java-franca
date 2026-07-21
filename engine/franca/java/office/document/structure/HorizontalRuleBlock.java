@@ -10,8 +10,8 @@ public class HorizontalRuleBlock extends Block {
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
-    jsonObject.putStringValue("type", type);
     super.fillJsonObject(jsonObject);
+    jsonObject.putStringValue("type", type);
   }
 
   @Override

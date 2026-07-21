@@ -18,8 +18,8 @@ public class HeadingBlock extends TextBlock {
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
-    jsonObject.putIntegerValue("level", level);
     super.fillJsonObject(jsonObject);
+    jsonObject.putIntegerValue("level", level);
   }
 
   @Override

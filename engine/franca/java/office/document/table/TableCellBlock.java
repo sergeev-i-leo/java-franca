@@ -14,8 +14,8 @@ public class TableCellBlock extends Block {
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
-    jsonObject.putBooleanValue("isHeader", isHeader);
     super.fillJsonObject(jsonObject);
+    jsonObject.putBooleanValue("isHeader", isHeader);
   }
 
   @Override

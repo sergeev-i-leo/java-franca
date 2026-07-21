@@ -14,8 +14,8 @@ public class ListBlock extends Block {
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
-    jsonObject.putBooleanValue("isOrdered", isOrdered);
     super.fillJsonObject(jsonObject);
+    jsonObject.putBooleanValue("isOrdered", isOrdered);
   }
 
   @Override

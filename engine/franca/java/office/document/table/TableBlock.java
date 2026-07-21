@@ -17,6 +17,7 @@ public class TableBlock extends Block {
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
+    super.fillJsonObject(jsonObject);
     if (!tableColumns.isEmpty()) {
       JsonArray tableColumnsJsonArray = new JsonArray();
       jsonObject.put("tableColumns", tableColumnsJsonArray);
@@ -24,7 +25,6 @@ public class TableBlock extends Block {
         tableColumnsJsonArray.add(tableColumn.createJsonObject());
       }
     }
-    super.fillJsonObject(jsonObject);
   }
 
   @Override

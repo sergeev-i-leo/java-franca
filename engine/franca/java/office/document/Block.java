@@ -42,15 +42,15 @@ public class Block extends TranspilableClass {
     jsonObject.putStringValue("dataBlock", getDataBlock());
     JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
     if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
-      jsonObject.put("classesJsonArray", classesJsonArray);
+      jsonObject.put("classes", classesJsonArray);
     }
     JsonObject styleJsonObject = this.styleJsonObject.createCopy().asJsonObject();
     if ((styleJsonObject != null) && (styleJsonObject.isNotEmpty())) {
-      jsonObject.put("styleJsonObject", styleJsonObject);
+      jsonObject.put("style", styleJsonObject);
     }
     JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
     if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
-      jsonObject.put("attributesJsonArray", attributesJsonArray);
+      jsonObject.put("attributes", attributesJsonArray);
     }
   }
 
