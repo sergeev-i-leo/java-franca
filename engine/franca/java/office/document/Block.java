@@ -23,21 +23,6 @@ public class Block extends TranspilableClass {
 
   private ArrayList<Block> childBlocks = null;
 
-  public void addJsonElements(JsonArray jsonArray) {
-
-    JsonObject jsonObject = new JsonObject();
-    jsonArray.add(jsonObject);
-    fillJsonObject(jsonObject);
-
-    if (childBlocks != null) {
-      jsonArray = new JsonArray();
-      jsonObject.put("childBlocks", jsonArray);
-      for (int i = 0; i < childBlocks.size(); i++) {
-        childBlocks.get(i).addJsonElements(jsonArray);
-      }
-    }
-  }
-
   public void fillJsonObject(JsonObject jsonObject) {
     jsonObject.putStringValue("dataBlock", getDataBlock());
     JsonArray classesJsonArray = this.classesJsonArray.createCopy().asJsonArray();
@@ -51,6 +36,23 @@ public class Block extends TranspilableClass {
     JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
     if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
       jsonObject.put("attributes", attributesJsonArray);
+    }
+    if (childBlocks == null) {
+      return;
+    }
+    if (childBlocks.isEmpty()) {
+      return;
+    }
+    JsonArray jsonArray = new JsonArray();
+    jsonObject.put("childBlocks", jsonArray);
+    addChildBlocksToJsonArray(jsonArray);
+  }
+
+  public void addChildBlocksToJsonArray(JsonArray jsonArray) {
+    for (int i = 0; i < childBlocks.size(); i++) {
+      JsonObject jsonObject1 = new JsonObject();
+      jsonArray.add(jsonObject1);
+      childBlocks.get(i).fillJsonObject(jsonObject1);
     }
   }
 

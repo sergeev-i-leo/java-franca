@@ -17,11 +17,8 @@ public class CharsBlock extends Block {
   public String chars = "";
 
   @Override
-  public void addJsonElements(JsonArray jsonArray) {
-    JsonObject jsonObject = new JsonObject();
-    jsonArray.add(jsonObject);
-    fillJsonObject(jsonObject);
-
+  public void fillJsonObject(JsonObject jsonObject) {
+    super.fillJsonObject(jsonObject);
     jsonObject.putStringValue("type", type);
     String chars = this.chars.replace("\"", "\\\"");
     jsonObject.putStringValue("chars", chars);
