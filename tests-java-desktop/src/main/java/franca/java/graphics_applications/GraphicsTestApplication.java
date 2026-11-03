@@ -22,6 +22,7 @@ public class GraphicsTestApplication {
     frame.add(graphicsRouter.getGraphicsPanel());
 
     frame.pack();
+    frame.setSize(800, 800);
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
   }
