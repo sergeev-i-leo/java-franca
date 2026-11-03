@@ -7,7 +7,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "franca.java.tests"
+        applicationId "franca.java.tests.android"
         minSdk 21
         targetSdk 31
         versionCode 1
@@ -19,10 +19,9 @@ android {
     sourceSets {
         main {
             java.srcDirs(
+                "../../engine",
+                "../../platforms/android",
                 "src/main/java",
-                "../../../../engine",
-                "../../../../tests",
-                "../../expected"
             )
         }
     }

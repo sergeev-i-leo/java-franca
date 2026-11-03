@@ -2,7 +2,7 @@ package franca.java
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import franca.java.expected.Painter
+import franca.java.ui.Painter
 
 class AndroidPainter(
 ) : Painter() {
@@ -14,7 +14,7 @@ class AndroidPainter(
     this.canvas = canvas;
   }
 
-  override fun paintText(text: String, x: Float, y: Float, deviceFontKey: String?, deviceColor: Int) {
+  override fun paintText(text: String, x: Int, y: Int, painterFontName: String, deviceColor: Int, scale: Float) {
     paint.apply {
       color = 0xFFFF0000.toInt()
       isAntiAlias = true
@@ -24,6 +24,6 @@ class AndroidPainter(
       isElegantTextHeight = false
     }
 
-    canvas?.drawText(text, x, y, paint)
+    canvas?.drawText(text, x.toFloat() * scale / Painter.MULTIPLIER.toFloat(), y.toFloat() * scale / Painter.MULTIPLIER.toFloat(), paint)
   }
 }

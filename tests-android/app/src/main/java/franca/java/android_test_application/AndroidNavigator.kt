@@ -9,7 +9,6 @@ import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import franca.java.AndroidRouter
 import franca.java.AndroidRouterView
-import franca.java.TestView0
 import franca.java.ui.Page
 
 class AndroidNavigator(

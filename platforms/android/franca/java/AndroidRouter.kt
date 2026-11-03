@@ -9,7 +9,7 @@ class AndroidRouter(
 
   override fun getTime(): Long = System.currentTimeMillis()
 
-  override fun startRepainting() {
+  override fun startPainting() {
     val currentView = androidNavigator.currentView
 
     if (currentView is AndroidRouterView) {

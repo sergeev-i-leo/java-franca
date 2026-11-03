@@ -1,5 +1,6 @@
 package franca.java
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.os.Handler
@@ -7,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import franca.java.ui.Painter
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -40,9 +42,7 @@ class AndroidRouterView(
     isPainting.set(true)
     try {
       androidPainter.setCanvas(canvas)
-      androidRouter.preparePainting(androidPainter)
-      androidRouter.doPainting(androidPainter)
-      androidRouter.finishPainting(androidPainter)
+      androidRouter.paint(androidPainter)
     } finally {
       isPainting.set(false)
     }
@@ -76,16 +76,17 @@ class AndroidRouterView(
 
     lastTickTime = tickTime
 
-    if ((!isPainting.get()) && (androidRouter.needsRepainting())) {
+    if ((!isPainting.get()) && (androidRouter.needsPainting())) {
       mainHandler.post { invalidate() }
     }
 
-    if (!androidRouter.needsNextRepainting()) {
+    if (!androidRouter.needsNextPainting()) {
       scheduledExecutorService?.shutdown()
       scheduledExecutorService = null
     }
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   override fun onTouchEvent(event: MotionEvent): Boolean {
     val action = event.actionMasked
     val pointerIndex = event.actionIndex
@@ -97,7 +98,7 @@ class AndroidRouterView(
         val y = event.getY(pointerIndex)
         lastX = x
         lastY = y
-        androidRouter.handlePointerDown(x, y, 1)
+        androidRouter.handlePointerDown(x.toInt() * Painter.MULTIPLIER, y.toInt() * Painter.MULTIPLIER, 1)
         return true
       }
 
