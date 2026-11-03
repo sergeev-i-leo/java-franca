@@ -2,7 +2,7 @@ plugins {
   id 'org.jetbrains.kotlin.jvm' version '1.8.0'
 }
 
-group = 'java_franca_tests'
+group = 'java_franca_tests_java_desktop'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -29,23 +29,11 @@ sourceSets {
   main {
     java {
       srcDirs("src/main/java",
-              "../../../engine",
-              "../../../tests",
-              "../expected"
+              "../engine",
+              "../platforms/java-desktop"
       )
     }
   }
-}
-
-task graphics_test_application(type: JavaExec) {
-  mainClass = 'franca.java.graphics_applications.GraphicsTestApplication'
-  classpath = sourceSets.main.runtimeClasspath
-  debug = true
-
-  jvmArgs = [
-          '-Xdebug',
-          '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
-  ]
 }
 
 task html_parser_application(type: JavaExec) {
@@ -61,6 +49,17 @@ task html_parser_application(type: JavaExec) {
 
 task flavoured_markdown_parser_application(type: JavaExec) {
   mainClass = 'franca.java.graphics_applications.FlavouredMarkdownParserApplication'
+  classpath = sourceSets.main.runtimeClasspath
+  debug = true
+
+  jvmArgs = [
+          '-Xdebug',
+          '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005'
+  ]
+}
+
+task graphics_test_application(type: JavaExec) {
+  mainClass = 'franca.java.graphics_applications.GraphicsTestApplication'
   classpath = sourceSets.main.runtimeClasspath
   debug = true
 
