@@ -7,37 +7,23 @@ import franca.java.ui.View;
 
 public class Tween extends TranspilableClass {
 
-  Page page = null;
-  View view = null;
-  Ease ease = null;
+  public Router router = null;
+  public Page page = null;
+  public View view = null;
+  public Ease ease = null;
 
   public int tweenId = 0;
   public long registeredTime = 0L;
   public Tween previousTween = null;
   public Tween nextTween = null;
 
-  public Tween(Page page, View view, long duration, int tickerType) {
+  public Tween(Router router, Page page, View view, Ease ease) {
     super();
 
+    this.router = router;
     this.page = page;
     this.view = view;
-    switch (tickerType) {
-      case Ease.EASE_LINEAR:
-        ease = new LinearEase(0, 100, duration);
-        break;
-      default:
-        // repaint just once
-        ease = null;
-        break;
-    }
-  }
-
-  public void setEase(Ease ease) {
     this.ease = ease;
-  }
-
-  public Ease getEase() {
-    return ease;
   }
 
   public boolean isRunning() {
@@ -47,19 +33,20 @@ public class Tween extends TranspilableClass {
     return ease.isRunning();
   }
 
-  public boolean needsRepainting(Router router) {
-    if (ease == null) {
-      // one shot animation
-      return true;
+  public void tick() {
+    if ((ease != null) && (ease.isRunning())) {
+      ease.tick(router, registeredTime);
     }
-    return ease.tick(router, registeredTime);
   }
 
-  public boolean needsNextRepainting(Router router) {
+  public boolean needsNextPainting() {
     if (ease == null) {
       // one shot animation
       return false;
     }
     return ease.isRunning();
+  }
+
+  public void onDone() {
   }
 }

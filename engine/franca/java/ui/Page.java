@@ -24,9 +24,9 @@ public class Page extends TranspilableClass {
     }
   }
 
-  public void handlePointerDown(float pointedX, float pointedY, int buttonNumber) {
+  public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
     for (int i = 0; i < views.size(); i++) {
-      views.get(i).handlePointerDown(router, this, 0f, 0f, pointedX, pointedY, buttonNumber);
+      views.get(i).handlePointerDown(router, this, 0, 0, pointedX, pointedY, buttonNumber);
     }
   }
 }

@@ -5,8 +5,6 @@ import franca.java.ui.Router;
 
 public class Ease extends TranspilableClass {
 
-  public static final int EASE_LINEAR = 1;
-
   public int initialValue;
   public int currentValue;
   public int targetValue;
@@ -27,9 +25,7 @@ public class Ease extends TranspilableClass {
     return currentValue != targetValue;
   }
 
-  public boolean tick(Router router, long startedTime) {
-    // returns true when needs repainting
-    return true;
+  public void tick(Router router, long startedTime) {
+    // make action
   }
 }
-

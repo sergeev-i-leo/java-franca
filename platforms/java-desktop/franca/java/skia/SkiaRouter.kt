@@ -22,24 +22,22 @@ class SkiaRouter() : JavaDesktopRouter() {
     skiaLayer.skikoView = object : SkikoView {
       override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
         val skiaPainter = SkiaPainter(canvas);
-        preparePainting(skiaPainter)
-        doPainting(skiaPainter)
-        finishPainting(skiaPainter)
+        paint(skiaPainter)
       }
     }
 
     skiaLayer.addMouseListener(object : MouseAdapter() {
       override fun mousePressed(mouseEvent: MouseEvent) {
         if (mouseEvent.button == MouseEvent.BUTTON1) {
-          handlePointerDown(mouseEvent.x.toFloat(), mouseEvent.y.toFloat(), 1)
+          handlePointerDown(mouseEvent.x, mouseEvent.y, 1)
         } else if (mouseEvent.button == MouseEvent.BUTTON3) {
-          handlePointerDown(mouseEvent.x.toFloat(), mouseEvent.y.toFloat(), 3)
+          handlePointerDown(mouseEvent.x, mouseEvent.y, 3)
         }
       }
     })
   }
 
-  override fun startRepainting() {
+  override fun startPainting() {
     if (scheduler != null) {
       return
     }
@@ -53,11 +51,11 @@ class SkiaRouter() : JavaDesktopRouter() {
       }
       lastTickTime = tickTime
 
-      if (needsRepainting()) {
+      if (needsPainting()) {
         SwingUtilities.invokeLater { skiaLayer.needRedraw() }
       }
 
-      if (!needsNextRepainting()) {
+      if (!needsNextPainting()) {
         scheduler?.shutdown()
         scheduler = null
       }

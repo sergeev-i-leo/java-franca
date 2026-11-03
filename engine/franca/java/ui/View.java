@@ -1,12 +1,13 @@
 package franca.java.ui;
 
-import franca.java.data.json.JsonObject;
-
-public class View extends JsonObject {
+public class View {
 
   public void paint(Router router, Painter painter, Page page) {
   }
 
-  public void handlePointerDown(Router router, Page page, float painterX, float painterY, float pointedX, float pointedY, int buttonNumber) {
+  public void didPainted(Router router, Painter painter, Page page) {
+  }
+
+  public void handlePointerDown(Router router, Page page, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {
   }
 }

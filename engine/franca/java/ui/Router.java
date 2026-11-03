@@ -1,8 +1,7 @@
 package franca.java.ui;
 
-import franca.java.expected.IntegerConsumer;
-import franca.java.expected.StringConsumer;
 import franca.java.TranspilableClass;
+import franca.java.ui.animations.Ease;
 import franca.java.ui.animations.Tween;
 
 /**
@@ -25,16 +24,6 @@ public class Router extends TranspilableClass {
     return 0L;
   }
 
-  public void readFile(String path, StringConsumer callback) {
-  }
-
-  public void writeFile(String path, String content, IntegerConsumer callback) {
-  }
-
-  public Page getTopPage() {
-    return topPage;
-  }
-
   public void pushPage(Page page) {
     page.nextPage = topPage;
     topPage = page;
@@ -46,9 +35,9 @@ public class Router extends TranspilableClass {
     }
   }
 
-  public void requestRepainting() {
+  public void requestPainting() {
     // one-shot animation
-    Tween tween = new Tween(null, null, 0L, 0);
+    Tween tween = new Tween(this, null, null, new Ease(0, 0, 0L));
     registerTween(tween);
   }
 
@@ -66,13 +55,71 @@ public class Router extends TranspilableClass {
     }
     firstTween = tween;
 
-    startRepainting();
+    startPainting();
   }
 
-  public void startRepainting() {
+  public void startPainting() {
   }
 
-  public void removeTween(Tween tween) {
+  public boolean needsPainting() {
+
+    Tween currentTween = firstTween;
+    if (currentTween == null) {
+      lastTweenId = 0;
+      return false;
+    }
+
+    while (currentTween != null) {
+      currentTween.tick();
+      currentTween = currentTween.nextTween;
+    }
+
+    return true;
+  }
+
+  public void paint(Painter painter) {
+    if (topPage != null) {
+      topPage.paint(painter);
+    }
+  }
+
+  public boolean needsNextPainting() {
+
+    Tween currentTween = firstTween;
+    if (currentTween == null) {
+      lastTweenId = 0;
+      return false;
+    }
+
+    while (currentTween != null) {
+      if (currentTween.needsNextPainting()) {
+        currentTween = currentTween.nextTween;
+        continue;
+      }
+
+      currentTween.onDone();
+      Tween previousTween = currentTween.previousTween;
+      Tween nextTween = currentTween.nextTween;
+      if (previousTween != null) {
+        previousTween.nextTween = nextTween;
+      }
+      if (nextTween != null) {
+        nextTween.previousTween = previousTween;
+      }
+      if (currentTween.tweenId == firstTween.tweenId) {
+        firstTween = nextTween;
+      }
+      currentTween = nextTween;
+    }
+
+    if (firstTween == null) {
+      lastTweenId = 0;
+    }
+
+    return true;
+  }
+
+  public void unregisterTween(Tween tween) {
 
     Tween currentTween = firstTween;
     while (currentTween != null) {
@@ -98,65 +145,7 @@ public class Router extends TranspilableClass {
     }
   }
 
-  public boolean needsRepainting() {
-
-    boolean result = false;
-
-    Tween currentTween = firstTween;
-    while (currentTween != null) {
-      result = currentTween.needsRepainting(this) || result;
-      if (currentTween.getEase() == null) {
-        // it's one-shot tween
-        Tween previousTween = currentTween.previousTween;
-        Tween nextTween = currentTween.nextTween;
-        if (previousTween != null) {
-          previousTween.nextTween = nextTween;
-        }
-        if (nextTween != null) {
-          nextTween.previousTween = previousTween;
-        }
-        if (currentTween.tweenId == firstTween.tweenId) {
-          firstTween = nextTween;
-        }
-        currentTween = nextTween;
-      } else {
-        currentTween = currentTween.nextTween;
-      }
-    }
-    return result;
-  }
-
-  public boolean needsNextRepainting() {
-
-    boolean result = false;
-
-    Tween currentTween = firstTween;
-    while (currentTween != null) {
-      if (currentTween.getEase() == null) {
-        // wow! one-shot tween has been created during paint(), welcome to next needsRepainting
-        result = true;
-      } else {
-        // always run needsNextRepainting
-        result = currentTween.needsNextRepainting(this) || result;
-      }
-      currentTween = currentTween.nextTween;
-    }
-    return result;
-  }
-
-  public void preparePainting(Painter painter) {
-  }
-
-  public void doPainting(Painter painter) {
-    if (topPage != null) {
-      topPage.paint(painter);
-    }
-  }
-
-  public void finishPainting(Painter painter) {
-  }
-
-  public void handlePointerDown(float pointedX, float pointedY, int buttonNumber) {
+  public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
     if (topPage != null) {
       topPage.handlePointerDown(pointedX, pointedY, buttonNumber);
     }

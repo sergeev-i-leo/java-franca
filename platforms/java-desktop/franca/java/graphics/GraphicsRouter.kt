@@ -16,7 +16,7 @@ class GraphicsRouter : JavaDesktopRouter() {
   var scheduledExecutorService: ScheduledExecutorService? = null
   var lastTickTime = 0L
 
-  override fun startRepainting() {
+  override fun startPainting() {
     if (scheduledExecutorService != null) {
       return
     }
@@ -31,10 +31,10 @@ class GraphicsRouter : JavaDesktopRouter() {
       return
     }
     lastTickTime = tickTime
-    if (needsRepainting()) {
+    if (needsPainting()) {
       SwingUtilities.invokeLater { graphicsPanel.repaint() }
     }
-    if (!needsNextRepainting()) {
+    if (!needsNextPainting()) {
       scheduledExecutorService!!.shutdown()
       scheduledExecutorService = null
     }
@@ -47,9 +47,9 @@ class GraphicsPanel(var graphicsRouter: GraphicsRouter) : JPanel() {
     addMouseListener(object : MouseAdapter() {
       override fun mousePressed(mouseEvent: MouseEvent) {
         if (mouseEvent.button == MouseEvent.BUTTON1) {
-          graphicsRouter.handlePointerDown(mouseEvent.x.toFloat(), mouseEvent.y.toFloat(), 1)
+          graphicsRouter.handlePointerDown(mouseEvent.x, mouseEvent.y, 1)
         } else if (mouseEvent.button == MouseEvent.BUTTON3) {
-          graphicsRouter.handlePointerDown(mouseEvent.x.toFloat(), mouseEvent.y.toFloat(), 3)
+          graphicsRouter.handlePointerDown(mouseEvent.x, mouseEvent.y, 3)
         }
       }
     })
@@ -58,8 +58,6 @@ class GraphicsPanel(var graphicsRouter: GraphicsRouter) : JPanel() {
   override fun paintComponent(graphics: Graphics) {
     super.paintComponent(graphics)
     val graphicsPainter = GraphicsPainter(graphics)
-    graphicsRouter.preparePainting(graphicsPainter)
-    graphicsRouter.doPainting(graphicsPainter)
-    graphicsRouter.finishPainting(graphicsPainter)
+    graphicsRouter.paint(graphicsPainter)
   }
 }

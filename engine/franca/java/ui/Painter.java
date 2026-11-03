@@ -4,7 +4,9 @@ import franca.java.TranspilableClass;
 
 public class Painter extends TranspilableClass {
 
-  public void paintText(String text, float x, float y, String deviceFontKey, int deviceColor) {
+  public static int MULTIPLIER = 1000;
+
+  public void paintText(String text, int x, int y, String painterFontName, int deviceColor, float scale) {
 
   }
 
