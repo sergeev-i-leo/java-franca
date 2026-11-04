@@ -21,12 +21,12 @@ class SkiaDevice() : Device() {
   private var scheduler: ScheduledExecutorService? = null
   private var lastTickTime = 0L
 
-  public lateinit var primaryTypeface: Typeface
-  public lateinit var secondaryTypeface: Typeface
-  public lateinit var tertiaryTypeface: Typeface
-  public lateinit var condensedTypeface: Typeface
+  var primaryTypeface: Typeface? = null
+  var secondaryTypeface: Typeface? = null
+  var tertiaryTypeface: Typeface? = null
+  var condensedTypeface: Typeface? = null
 
-  public var fontSize = 18 * Painter.PRECISION;
+  var fontSize = 18 * Painter.PRECISION;
 
   init {
 
@@ -56,6 +56,8 @@ class SkiaDevice() : Device() {
     secondaryTypeface = loadFontFromResources("zero_cool_regular.ttf") ?: Typeface.makeDefault()
     tertiaryTypeface = loadFontFromResources("shantell_sans_bold.ttf") ?: Typeface.makeDefault()
     condensedTypeface = loadFontFromResources("fira_sans_extra_condensed.ttf") ?: Typeface.makeDefault()
+
+    isReady = true
 
     callback.onResult(200)
   }

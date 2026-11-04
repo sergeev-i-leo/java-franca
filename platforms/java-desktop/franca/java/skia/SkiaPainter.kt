@@ -49,7 +49,7 @@ class SkiaPainter(
   }
 
   private fun resolveFont(fontName: String? , scale: Float?): Font {
-    val typeface: Typeface
+    val typeface: Typeface?
     val multiplier: Float
 
     when (fontName) {

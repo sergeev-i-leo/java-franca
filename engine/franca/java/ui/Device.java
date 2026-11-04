@@ -19,7 +19,10 @@ public class Device extends TranspilableClass {
   // animation orchestration
   public Tween lastTween = null;
 
+  public boolean isReady = false;
+
   public void init(Callback<Integer> callback) {
+    isReady = true;
     callback.onResult(200);
   }
 
