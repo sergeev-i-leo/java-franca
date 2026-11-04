@@ -17,8 +17,7 @@ public class Router extends TranspilableClass {
 
   // animation orchestration
 
-  private int lastTweenId = 0;
-  private Tween firstTween = null;
+  public Tween lastTween = null;
 
   public long getTime() {
     return 0L;
@@ -42,36 +41,31 @@ public class Router extends TranspilableClass {
   }
 
   public void registerTween(Tween tween) {
-
-    // the new animation becomes the first in the chain because registerTween can be called from Tween.needsRepainting
-
-    lastTweenId++;
-    tween.tweenId = lastTweenId;
-    tween.registeredTime = getTime();
-
-    tween.nextTween = firstTween;
-    if (firstTween != null) {
-      firstTween.previousTween = tween;
+    if (lastTween == null) {
+      lastTween = tween;
+      return;
     }
-    firstTween = tween;
+
+    tween.previousTween = lastTween;
+    lastTween = tween;
 
     startPainting();
   }
 
   public void startPainting() {
+    // real painting
   }
 
   public boolean needsPainting() {
 
-    Tween currentTween = firstTween;
+    Tween currentTween = lastTween;
     if (currentTween == null) {
-      lastTweenId = 0;
       return false;
     }
 
     while (currentTween != null) {
       currentTween.tick();
-      currentTween = currentTween.nextTween;
+      currentTween = currentTween.previousTween;
     }
 
     return true;
@@ -85,63 +79,60 @@ public class Router extends TranspilableClass {
 
   public boolean needsNextPainting() {
 
-    Tween currentTween = firstTween;
-    if (currentTween == null) {
-      lastTweenId = 0;
-      return false;
-    }
+    //  mark for deletion
 
+    Tween currentTween = lastTween;
     while (currentTween != null) {
-      if (currentTween.needsNextPainting()) {
-        currentTween = currentTween.nextTween;
-        continue;
-      }
-
-      currentTween.onDone();
       Tween previousTween = currentTween.previousTween;
-      Tween nextTween = currentTween.nextTween;
-      if (previousTween != null) {
-        previousTween.nextTween = nextTween;
+      if (!currentTween.needsNextPainting()) {
+        // onDone can create a new tween
+        currentTween.onDone();
+        // mark for deletion
+        currentTween.router = null;
       }
-      if (nextTween != null) {
-        nextTween.previousTween = previousTween;
-      }
-      if (currentTween.tweenId == firstTween.tweenId) {
-        firstTween = nextTween;
-      }
-      currentTween = nextTween;
+
+      currentTween = previousTween;
     }
 
-    if (firstTween == null) {
-      lastTweenId = 0;
+    currentTween = lastTween;
+    while (currentTween != null) {
+      if (currentTween.router == null) {
+        unregisterTween(currentTween);
+        currentTween = lastTween;
+      } else {
+        currentTween = currentTween.previousTween;
+      }
     }
 
-    return true;
+    return lastTween != null;
   }
 
   public void unregisterTween(Tween tween) {
 
-    Tween currentTween = firstTween;
-    while (currentTween != null) {
-      if (currentTween.tweenId == tween.tweenId) {
-        Tween previousTween = currentTween.previousTween;
-        Tween nextTween = currentTween.nextTween;
+    if (tween == null) {
+      return;
+    }
 
-        if (previousTween != null) {
-          previousTween.nextTween = nextTween;
-        }
-        if (nextTween != null) {
-          nextTween.previousTween = previousTween;
-        }
-        if (currentTween == firstTween) {
-          firstTween = nextTween;
-        }
+    Tween currentTween = lastTween;
+    Tween nextTween = null;
+    while (currentTween != null) {
+      if (currentTween == tween) {
         break;
       }
-      currentTween = currentTween.nextTween;
+      nextTween = currentTween;
+      currentTween = currentTween.previousTween;
     }
-    if (firstTween == null) {
-      lastTweenId = 0;
+
+    if (currentTween == null) {
+      // 404: not found
+      return;
+    }
+
+    if (nextTween == null) {
+      // unregister lastTween
+      lastTween = currentTween.previousTween;
+    } else {
+      nextTween.previousTween = currentTween.previousTween;
     }
   }
 

@@ -3,8 +3,6 @@ package franca.java.skia
 import org.jetbrains.skia.Canvas;
 
 import franca.java.ui.Painter
-import java.awt.Color
-import java.awt.Font
 
 class SkiaPainter(private val canvas: Canvas) : Painter() {
 
@@ -19,6 +17,6 @@ class SkiaPainter(private val canvas: Canvas) : Painter() {
   )
 
   override fun paintText(text: String, x: Int, y: Int, painterFontName: String, deviceColor: Int, scale: Float) {
-    canvas.drawString(text, x.toFloat() * scale / Painter.MULTIPLIER.toFloat(), y.toFloat() * scale / Painter.MULTIPLIER.toFloat(), textFont, textPaint)
+    canvas.drawString(text, x.toFloat() * scale / Painter.PRECISION.toFloat(), y.toFloat() * scale / Painter.PRECISION.toFloat(), textFont, textPaint)
   }
 }

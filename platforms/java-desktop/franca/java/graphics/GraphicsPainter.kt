@@ -10,6 +10,6 @@ class GraphicsPainter(var graphics: Graphics) : Painter() {
   override fun paintText(text: String, x: Int, y: Int, painterFontName: String, deviceColor: Int, scale: Float) {
     graphics.color = Color.BLACK
     graphics.font = Font("Arial", Font.BOLD, 48)
-    graphics.drawString(text, (x.toFloat() * scale / Painter.MULTIPLIER.toFloat()).toInt(), (y.toFloat() * scale / Painter.MULTIPLIER.toFloat()).toInt())
+    graphics.drawString(text, (x.toFloat() * scale / Painter.PRECISION.toFloat()).toInt(), (y.toFloat() * scale / Painter.PRECISION.toFloat()).toInt())
   }
 }

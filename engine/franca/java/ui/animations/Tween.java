@@ -12,10 +12,8 @@ public class Tween extends TranspilableClass {
   public View view = null;
   public Ease ease = null;
 
-  public int tweenId = 0;
   public long registeredTime = 0L;
   public Tween previousTween = null;
-  public Tween nextTween = null;
 
   public Tween(Router router, Page page, View view, Ease ease) {
     super();
@@ -24,13 +22,6 @@ public class Tween extends TranspilableClass {
     this.page = page;
     this.view = view;
     this.ease = ease;
-  }
-
-  public boolean isRunning() {
-    if (ease == null) {
-      return false;
-    }
-    return ease.isRunning();
   }
 
   public void tick() {
