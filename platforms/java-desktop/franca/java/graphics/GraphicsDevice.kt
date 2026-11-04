@@ -1,20 +1,25 @@
 package franca.java.graphics
 
 import franca.java.Callback
-import franca.java.JavaDesktopDevice
+import franca.java.ui.Device
 import franca.java.ui.Painter
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
-class GraphicsDevice : JavaDesktopDevice() {
+class GraphicsDevice : Device() {
+
   var graphicsPanel = GraphicsPanel(this)
   private var scheduledExecutorService: ScheduledExecutorService? = null
   private var lastTickTime = 0L
 
   override fun init(callback: Callback<Int?>) {
     callback.onResult(200)
+  }
+
+  override fun getTime(): Long {
+    return System.nanoTime() / 1000000
   }
 
   override fun getWidth(): Float {

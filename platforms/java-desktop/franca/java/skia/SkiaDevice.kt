@@ -1,7 +1,7 @@
 package franca.java.skia
 
 import franca.java.Callback
-import franca.java.JavaDesktopDevice
+import franca.java.ui.Device
 import franca.java.ui.Painter
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
-class SkiaDevice() : JavaDesktopDevice() {
+class SkiaDevice() : Device() {
 
   val skiaLayer = SkiaLayer()
 
@@ -42,6 +42,10 @@ class SkiaDevice() : JavaDesktopDevice() {
 
   override fun init(callback: Callback<Int?>) {
     callback.onResult(200)
+  }
+
+  override fun getTime(): Long {
+    return System.nanoTime() / 1000000
   }
 
   override fun getWidth(): Float {
