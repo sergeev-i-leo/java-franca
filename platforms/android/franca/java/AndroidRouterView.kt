@@ -26,7 +26,7 @@ class AndroidRouterView(
   private var lastY = 0f
 
   private var scheduledExecutorService: ScheduledExecutorService? = null
-  private var lastTickTime = 0L
+  private var lastTickTime = -17L
   private val mainHandler = Handler(Looper.getMainLooper())
   private val isPainting = AtomicBoolean(false)
 
@@ -51,6 +51,8 @@ class AndroidRouterView(
     if (elapsedTime > 12) {
       Log.w("AndroidDeviceView", "Slow frame: ${elapsedTime}ms")
     }
+
+    startRepainting()
   }
 
   fun startRepainting() {
@@ -59,7 +61,6 @@ class AndroidRouterView(
     }
 
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    lastTickTime = androidRouter.time
     scheduledExecutorService?.scheduleAtFixedRate(
       { tick() },
       0,
@@ -73,16 +74,16 @@ class AndroidRouterView(
     if (tickTime - lastTickTime < 16) {
       return
     }
-
     lastTickTime = tickTime
 
-    if ((!isPainting.get()) && (androidRouter.needsPainting())) {
-      mainHandler.post { invalidate() }
-    }
-
-    if (!androidRouter.needsNextPainting()) {
-      scheduledExecutorService?.shutdown()
-      scheduledExecutorService = null
+    mainHandler.post {
+      if (androidRouter.needsPainting()) {
+        invalidate()
+      }
+      if (!androidRouter.needsNextPainting()) {
+        scheduledExecutorService?.shutdown()
+        scheduledExecutorService = null
+      }
     }
   }
 
