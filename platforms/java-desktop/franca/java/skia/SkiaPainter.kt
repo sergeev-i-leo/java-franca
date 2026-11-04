@@ -4,11 +4,10 @@ import franca.java.ui.Painter
 import org.jetbrains.skia.Paint;
 import org.jetbrains.skia.PaintMode;
 import org.jetbrains.skia.Canvas;
-import org.jetbrains.skia.Color;
 
 class SkiaPainter(private val canvas: Canvas) : Painter() {
 
-  private val textPaint = org.jetbrains.skia.Paint().apply {
+  private val textPaint = Paint().apply {
     color = 0xFF000000.toInt()
     isAntiAlias = true
   }
@@ -32,6 +31,6 @@ class SkiaPainter(private val canvas: Canvas) : Painter() {
   }
 
   override fun paintText(text: String, x: Float, y: Float, painterFontName: String, deviceColor: Int, scale: Float) {
-    canvas.drawString(text, x.toFloat() * scale / Painter.PRECISION.toFloat(), y.toFloat() * scale / Painter.PRECISION.toFloat(), textFont, textPaint)
+    canvas.drawString(text, x * scale / Painter.PRECISION, y * scale / Painter.PRECISION, textFont, textPaint)
   }
 }

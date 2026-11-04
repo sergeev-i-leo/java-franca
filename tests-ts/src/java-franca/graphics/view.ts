@@ -1,4 +1,4 @@
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 import {Painter} from "@java-franca/expected/painter";
 import {Page} from "@java-franca/graphics/page";
 
@@ -8,12 +8,12 @@ export class View {
     // очистка, если нужна
   }
 
-  paint(router: Router, painter: Painter, page: Page): void {
+  paint(device: Router, painter: Painter, page: Page): void {
 
   }
 
   handlePointerDown(
-    router: Router,
+    device: Router,
     page: Page,
     painterX: number,
     painterY: number,

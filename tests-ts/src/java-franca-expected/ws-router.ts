@@ -1,4 +1,4 @@
-import Canvas2dRouter from "./canvas-2d-router";
+import Canvas2dRouter from "./canvas-2d-device";
 import {SkiaPainter} from "./skia-painter";
 import {Page} from "@java-franca/graphics/page";
 import {Painter} from "@java-franca/expected/painter";

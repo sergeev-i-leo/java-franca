@@ -5,15 +5,15 @@ import franca.java.ui.animations.Ease;
 import franca.java.ui.animations.Tween;
 
 /**
- * Router manages all animations.
- * Ownership rule: whoever creates the animation (via registerAnimation) does NOT own it, Router owns it.
+ * Device manages all animations.
+ * Ownership rule: whoever creates the animation (via registerAnimation) does NOT own it, Device owns it.
  * Page calls destroy() when removing animation from the chain.
  * External code must NEVER call destroy() on animations directly.
  */
 
-public class Router extends TranspilableClass {
+public class Device extends TranspilableClass {
 
-  public Page topPage = null;
+  public RouterPage routerPage = null;
 
   // animation orchestration
 
@@ -21,17 +21,6 @@ public class Router extends TranspilableClass {
 
   public long getTime() {
     return 0L;
-  }
-
-  public void pushPage(Page page) {
-    page.nextPage = topPage;
-    topPage = page;
-  }
-
-  public void popPage() {
-    if (topPage != null) {
-      topPage = topPage.nextPage;
-    }
   }
 
   public void requestPainting() {
@@ -69,8 +58,8 @@ public class Router extends TranspilableClass {
   }
 
   public void paint(Painter painter) {
-    if (topPage != null) {
-      topPage.paint(painter);
+    if (routerPage != null) {
+      routerPage.paint(painter);
     }
   }
 
@@ -85,7 +74,7 @@ public class Router extends TranspilableClass {
         // onDone can create a new tween
         currentTween.onDone();
         // mark for deletion
-        currentTween.router = null;
+        currentTween.device = null;
       }
 
       currentTween = previousTween;
@@ -95,7 +84,7 @@ public class Router extends TranspilableClass {
     Tween previousTween = null;
     while (currentTween != null) {
       Tween nextTween = currentTween.previousTween;
-      if (currentTween.router == null) {
+      if (currentTween.device == null) {
         if (previousTween == null) {
           lastTween = nextTween;
         } else {
@@ -107,9 +96,9 @@ public class Router extends TranspilableClass {
       currentTween = nextTween;
     }
 
-    if (topPage != null) {
-      for (int i = 0; i < topPage.views.size(); i++) {
-        callDidPainted(topPage, topPage.views.get(i));
+    if (routerPage != null) {
+      for (int i = 0; i < routerPage.views.size(); i++) {
+        callDidPainted(routerPage, routerPage.views.get(i));
       }
     }
 
@@ -153,8 +142,8 @@ public class Router extends TranspilableClass {
   }
 
   public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
-    if (topPage != null) {
-      topPage.handlePointerDown(pointedX, pointedY, buttonNumber);
+    if (routerPage != null) {
+      routerPage.handlePointerDown(pointedX, pointedY, buttonNumber);
     }
   }
 }

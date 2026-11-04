@@ -5,7 +5,7 @@ import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
 import java.net.InetSocketAddress
 
-class WsServer(port: Int, private val wsRouter: WsRouter) : WebSocketServer(InetSocketAddress(port)) {
+class WsServer(port: Int, private val wsRouter: WsDevice) : WebSocketServer(InetSocketAddress(port)) {
   private val clients: MutableSet<WebSocket> = HashSet()
   override fun onOpen(webSocket: WebSocket, handshake: ClientHandshake) {
     clients.add(webSocket)

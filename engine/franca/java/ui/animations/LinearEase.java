@@ -1,6 +1,6 @@
 package franca.java.ui.animations;
 
-import franca.java.ui.Router;
+import franca.java.ui.Device;
 
 public class LinearEase extends Ease {
 
@@ -9,7 +9,7 @@ public class LinearEase extends Ease {
   }
 
   @Override
-  public void tick(Router router, long elapsedTime) {
+  public void tick(Device device, long elapsedTime) {
 
     // returns true when needs repainting
 

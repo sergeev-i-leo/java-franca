@@ -1,14 +1,14 @@
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 import {View} from "@java-franca/graphics/view";
 import {Painter} from "@java-franca/expected/painter";
 
 export class Page {
-  router: Router | null = null;
+  device: Router | null = null;
   views: View[] = [];
   nextPage: Page | null = null;
 
-  constructor(router: Router) {
-    this.router = router;
+  constructor(device: Router) {
+    this.device = device;
   }
 
   destroy(): void {
@@ -18,14 +18,14 @@ export class Page {
 
   paint(painter: Painter): void {
     for (let i = 0; i < this.views.length; i++) {
-      this.views[i].paint(this.router!, painter, this);
+      this.views[i].paint(this.device!, painter, this);
     }
   }
 
   handlePointerDown(pointedX: number, pointedY: number, buttonNumber: number): void {
     for (let i = 0; i < this.views.length; i++) {
       this.views[i].handlePointerDown(
-        this.router!,
+        this.device!,
         this,
         0, // painterX
         0, // painterY

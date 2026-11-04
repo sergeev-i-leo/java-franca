@@ -16,14 +16,14 @@ class LinearEase: Ease {
     super.destroy()
   }
 
-  override func tick(_ router: Router, startedTime: Int64) -> Bool {
+  override func tick(_ device: Router, startedTime: Int64) -> Bool {
     // returns true when needs repainting
 
     if currentValue == targetValue {
       return false
     }
 
-    let currentTime = router.getDevice()?.getTime() ?? 0
+    let currentTime = device.getDevice()?.getTime() ?? 0
 
     if currentTime >= startedTime + duration {
       currentValue = targetValue
@@ -31,7 +31,7 @@ class LinearEase: Ease {
     }
 
     currentValue = initialValue + Int(Double(targetValue - initialValue) * (Double(currentTime - startedTime) / Double(duration)))
-    
+
     print("tick: currentValue = \(currentValue)")
 
     return true

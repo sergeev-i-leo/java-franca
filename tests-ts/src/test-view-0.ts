@@ -1,7 +1,7 @@
 import {Tween} from "@java-franca/animations/tween";
 import {Page} from "@java-franca/graphics/page";
 import {Ease} from "@java-franca/animations/ease";
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 import {View} from "@java-franca/graphics/view";
 import {Painter} from "@java-franca/expected/painter";
 
@@ -13,10 +13,10 @@ class MyTween extends Tween {
     this.testView0 = testView0;
   }
 
-  needsRepainting(router: Router): boolean {
-    const result = super.needsRepainting(router);
+  needsRepainting(device: Router): boolean {
+    const result = super.needsRepainting(device);
     if (!result) {
-      this.testView0.removeViewAnimation(router);
+      this.testView0.removeViewAnimation(device);
       return false;
     }
     return true;
@@ -26,7 +26,7 @@ class MyTween extends Tween {
 export class TestView0 extends View {
   private myTween: MyTween | null = null;
 
-  paint(router: Router, painter: Painter, page: Page): void {
+  paint(device: Router, painter: Painter, page: Page): void {
     const x = Math.floor(Math.random() * 50) + 50;
     const y = Math.floor(Math.random() * 50) + 50;
 
@@ -44,7 +44,7 @@ export class TestView0 extends View {
   }
 
   handlePointerDown(
-    router: Router,
+    device: Router,
     page: Page,
     painterX: number,
     painterY: number,
@@ -53,17 +53,17 @@ export class TestView0 extends View {
     buttonNumber: number
   ): void {
     if (buttonNumber === 1) {
-      this.removeViewAnimation(router);
+      this.removeViewAnimation(device);
       this.myTween = new MyTween(page, this);
-      router.registerTween(this.myTween);
+      device.registerTween(this.myTween);
     } else {
-      router.requestRepainting();
+      device.requestRepainting();
     }
   }
 
-  removeViewAnimation(router: Router): void {
+  removeViewAnimation(device: Router): void {
     if (this.myTween !== null) {
-      router.removeTween(this.myTween);
+      device.removeTween(this.myTween);
       this.myTween = null;
     }
   }

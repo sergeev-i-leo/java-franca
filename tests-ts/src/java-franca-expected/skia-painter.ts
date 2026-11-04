@@ -1,5 +1,5 @@
 import {Painter} from "@java-franca/expected/painter";
-import SkiaRouter from "./skia-router";
+import SkiaRouter from "./skia-device";
 
 export class SkiaPainter extends Painter {
 

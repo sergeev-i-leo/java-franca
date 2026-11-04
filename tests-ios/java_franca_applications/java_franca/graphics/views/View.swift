@@ -12,12 +12,12 @@ class View {
     // очистка, если нужна
   }
 
-  func paint(router: Router, painter: Painter, page: Page) {
+  func paint(device: Router, painter: Painter, page: Page) {
     // to be overridden
   }
 
   func handlePointerDown(
-    router: Router,
+    device: Router,
     page: Page,
     painterX: Float,
     painterY: Float,

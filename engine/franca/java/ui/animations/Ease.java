@@ -1,7 +1,7 @@
 package franca.java.ui.animations;
 
 import franca.java.TranspilableClass;
-import franca.java.ui.Router;
+import franca.java.ui.Device;
 
 public class Ease extends TranspilableClass {
 
@@ -25,7 +25,7 @@ public class Ease extends TranspilableClass {
     return currentValue == targetValue;
   }
 
-  public void tick(Router router, long elapsedTime) {
+  public void tick(Device device, long elapsedTime) {
     // make action
   }
 }

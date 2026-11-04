@@ -8,12 +8,12 @@
 import Foundation
 
 class Page {
-  weak var router: Router?
+  weak var device: Router?
   var views: [View] = []
   weak var nextPage: Page?
 
-  init(router: Router) {
-    self.router = router
+  init(device: Router) {
+    self.device = device
   }
 
   func destroy() {
@@ -21,17 +21,17 @@ class Page {
   }
 
   func paint(_ painter: Painter) {
-    guard let router = router else { return }
+    guard let device = device else { return }
     for view in views {
-      view.paint(router: router, painter: painter, page: self)
+      view.paint(device: device, painter: painter, page: self)
     }
   }
 
   func handlePointerDown(_ pointedX: Float, _ pointedY: Float, _ buttonNumber: Int) {
-    guard let router = router else { return }
+    guard let device = device else { return }
     for view in views {
       view.handlePointerDown(
-        router: router,
+        device: device,
         page: self,
         painterX: 0,
         painterY: 0,

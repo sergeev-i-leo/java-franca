@@ -30,7 +30,7 @@ class Ease {
     return currentValue != targetValue
   }
 
-  func tick(_ router: Router, startedTime: Int64) -> Bool {
+  func tick(_ device: Router, startedTime: Int64) -> Bool {
     // returns true when needs repainting
     return true
   }

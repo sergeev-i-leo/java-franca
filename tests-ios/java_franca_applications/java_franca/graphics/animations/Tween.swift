@@ -38,15 +38,15 @@ class Tween {
     return ease
   }
 
-  func needsRepainting(_ router: Router) -> Bool {
+  func needsRepainting(_ device: Router) -> Bool {
     guard let ease = ease else {
       // one shot animation
       return true
     }
-    return ease.tick(router, startedTime: registeredTime)
+    return ease.tick(device, startedTime: registeredTime)
   }
 
-  func needsNextRepainting(_ router: Router) -> Bool {
+  func needsNextRepainting(_ device: Router) -> Bool {
     guard let ease = ease else {
       // one shot animation
       return false

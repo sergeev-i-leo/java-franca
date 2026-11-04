@@ -28,9 +28,11 @@ compileKotlin {
 sourceSets {
   main {
     java {
-      srcDirs("src/main/java",
-              "../engine",
-              "../platforms/java-desktop"
+      srcDirs(
+        "../engine",
+        "../platforms/java-desktop",
+        "../tests",
+        "src/main/java"
       )
     }
   }

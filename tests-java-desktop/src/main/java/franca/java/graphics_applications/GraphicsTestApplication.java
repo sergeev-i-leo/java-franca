@@ -1,8 +1,9 @@
 package franca.java.graphics_applications;
 
+import franca.java.Page0;
 import franca.java.SpinnerView;
 import franca.java.TestView0;
-import franca.java.graphics.GraphicsRouter;
+import franca.java.graphics.GraphicsDevice;
 
 import javax.swing.*;
 
@@ -12,9 +13,7 @@ public class GraphicsTestApplication {
 
   public static void main(String[] args) {
     GraphicsRouter graphicsRouter = new GraphicsRouter();
-    Page page = new Page(graphicsRouter);
-    page.views.add(new TestView0());
-    page.views.add(new SpinnerView(6000));
+    Page page = new Page0(graphicsRouter);
 
     graphicsRouter.pushPage(page);
 

@@ -1,4 +1,4 @@
-import {BrowserRouter} from "./browser-router";
+import {BrowserRouter} from "./browser-device";
 import {SkiaPainter} from "./skia-painter";
 import {Painter} from "@java-franca/expected/painter";
 

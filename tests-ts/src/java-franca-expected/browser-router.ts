@@ -1,4 +1,4 @@
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 import {Page} from "@java-franca/graphics/page";
 import {Painter} from "@java-franca/expected/painter";
 

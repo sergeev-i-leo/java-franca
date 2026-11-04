@@ -14,9 +14,9 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-class AndroidRouterView(
+class AndroidDeviceView(
   context: Context,
-  private val androidRouter: AndroidRouter,
+  private val androidDevice: AndroidDevice,
 ) : View(context) {
 
   private val androidPainter = AndroidPainter()
@@ -36,18 +36,18 @@ class AndroidRouterView(
   }
 
   override fun onDraw(canvas: Canvas) {
-    val startTime = androidRouter.time
+    val startTime = androidDevice.time
     super.onDraw(canvas)
 
     isPainting.set(true)
     try {
       androidPainter.setCanvas(canvas)
-      androidRouter.paint(androidPainter)
+      androidDevice.paint(androidPainter)
     } finally {
       isPainting.set(false)
     }
 
-    val elapsedTime = androidRouter.time - startTime
+    val elapsedTime = androidDevice.time - startTime
     if (elapsedTime > 12) {
       Log.w("AndroidDeviceView", "Slow frame: ${elapsedTime}ms")
     }
@@ -70,17 +70,17 @@ class AndroidRouterView(
   }
 
   private fun tick() {
-    val tickTime = androidRouter.time
+    val tickTime = androidDevice.time
     if (tickTime - lastTickTime < 16) {
       return
     }
     lastTickTime = tickTime
 
     mainHandler.post {
-      if (androidRouter.needsPainting()) {
+      if (androidDevice.needsPainting()) {
         invalidate()
       }
-      if (!androidRouter.needsNextPainting()) {
+      if (!androidDevice.needsNextPainting()) {
         scheduledExecutorService?.shutdown()
         scheduledExecutorService = null
       }
@@ -99,7 +99,7 @@ class AndroidRouterView(
         val y = event.getY(pointerIndex)
         lastX = x
         lastY = y
-        androidRouter.handlePointerDown((x * Painter.PRECISION).toInt(), (y * Painter.PRECISION).toInt(), 1)
+        androidDevice.handlePointerDown((x * Painter.PRECISION).toInt(), (y * Painter.PRECISION).toInt(), 1)
         return true
       }
 

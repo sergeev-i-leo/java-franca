@@ -1,6 +1,6 @@
 package franca.java.skia
 
-import franca.java.JavaDesktopRouter
+import franca.java.JavaDesktopDevice
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
 import java.awt.event.MouseAdapter
@@ -10,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
-class SkiaRouter() : JavaDesktopRouter() {
+class SkiaDevice() : JavaDesktopDevice() {
 
   val skiaLayer = SkiaLayer()
 

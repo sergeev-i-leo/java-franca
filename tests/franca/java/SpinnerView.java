@@ -2,7 +2,7 @@ package franca.java;
 
 import franca.java.ui.Page;
 import franca.java.ui.Painter;
-import franca.java.ui.Router;
+import franca.java.ui.Device;
 import franca.java.ui.View;
 import franca.java.ui.animations.Ease;
 import franca.java.ui.animations.Tween;
@@ -34,12 +34,12 @@ public class SpinnerView extends View {
     this.size = size;
   }
 
-  public void paint(Router router, Painter painter, Page page) {
+  public void paint(Device device, Painter painter, Page page) {
     if (this.spinnerTween == null) {
       return;
     }
 
-    long elapsed = router.getTime() - startTime;
+    long elapsed = device.getTime() - startTime;
     float outerAngle = (elapsed % OUTER_PERIOD) / (float) OUTER_PERIOD * 360.0f;
 
     float size = this.size / Painter.PRECISION;
@@ -73,32 +73,32 @@ public class SpinnerView extends View {
   }
 
   @Override
-  public void didPainted(Router router, Page page) {
+  public void didPainted(Device device, Page page) {
     if ((spinnerTween == null) && (spinningAllowed)) {
-      startTime = router.getTime();
-      spinnerTween = new SpinnerTween(router);
-      router.registerTween(spinnerTween);
+      startTime = device.getTime();
+      spinnerTween = new SpinnerTween(device);
+      device.registerTween(spinnerTween);
     }
   }
 
-  public void startSpinning(Router router) {
+  public void startSpinning(Device device) {
     if (spinnerTween == null) {
       spinningAllowed = true;
-      router.requestPainting();
+      device.requestPainting();
     }
   }
 
-  public void stopSpinning(Router router) {
+  public void stopSpinning(Device device) {
     spinningAllowed = false;
-    router.unregisterTween(spinnerTween);
+    device.unregisterTween(spinnerTween);
     spinnerTween = null;
   }
 }
 
 class SpinnerTween extends Tween {
 
-  SpinnerTween(Router router) {
-    super(router, null, null, new Ease(0, 0, 0L));
+  SpinnerTween(Device device) {
+    super(device, null, null, new Ease(0, 0, 0L));
   }
 
   @Override

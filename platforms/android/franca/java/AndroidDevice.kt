@@ -1,18 +1,18 @@
 package franca.java
 
 import franca.java.android_test_application.AndroidNavigator
-import franca.java.ui.Router
+import franca.java.ui.Device
 
-class AndroidRouter(
+class AndroidDevice(
   private val androidNavigator: AndroidNavigator
-) : Router() {
+) : Device() {
 
   override fun getTime(): Long = System.currentTimeMillis()
 
   override fun startPainting() {
     val currentView = androidNavigator.currentView
 
-    if (currentView is AndroidRouterView) {
+    if (currentView is AndroidDeviceView) {
       currentView.startRepainting()
     }
   }

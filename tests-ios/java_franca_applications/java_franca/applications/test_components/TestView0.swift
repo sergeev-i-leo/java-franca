@@ -10,7 +10,7 @@ import Foundation
 class TestView0: View {
   private var myTween: MyTween?
 
-  override func paint(router: Router, painter: Painter, page: Page) {
+  override func paint(device: Router, painter: Painter, page: Page) {
     let x = Float(Int.random(in: 0..<50)) + 50
     let y = Float(Int.random(in: 0..<50)) + 50
 
@@ -23,7 +23,7 @@ class TestView0: View {
   }
 
   override func handlePointerDown(
-    router: Router,
+    device: Router,
     page: Page,
     painterX: Float,
     painterY: Float,
@@ -32,17 +32,17 @@ class TestView0: View {
     buttonNumber: Int
   ) {
     if buttonNumber == 1 {
-      removeViewAnimation(router)
+      removeViewAnimation(device)
       myTween = MyTween(page: page, testView0: self)
-      router.registerTween(myTween!)
+      device.registerTween(myTween!)
     } else {
-      router.requestRepainting()
+      device.requestRepainting()
     }
   }
 
-  func removeViewAnimation(_ router: Router) {
+  func removeViewAnimation(_ device: Router) {
     if let tween = myTween {
-      router.removeTween(tween)
+      device.removeTween(tween)
       myTween = nil
     }
   }
@@ -58,10 +58,10 @@ private class MyTween: Tween {
     super.init(page: page, view: testView0, duration: 500, tickerType: Ease.EASE_LINEAR)
   }
 
-  override func needsRepainting(_ router: Router) -> Bool {
-    let result = super.needsRepainting(router)
+  override func needsRepainting(_ device: Router) -> Bool {
+    let result = super.needsRepainting(device)
     if !result {
-      testView0?.removeViewAnimation(router)
+      testView0?.removeViewAnimation(device)
       return false
     }
     return true

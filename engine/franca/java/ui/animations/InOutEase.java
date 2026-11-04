@@ -1,6 +1,6 @@
 package franca.java.ui.animations;
 
-import franca.java.ui.Router;
+import franca.java.ui.Device;
 
 public class InOutEase extends Ease {
 
@@ -9,7 +9,7 @@ public class InOutEase extends Ease {
   }
 
   @Override
-  public void tick(Router router, long elapsedTime) {
+  public void tick(Device device, long elapsedTime) {
     if (isOver()) {
       return;
     }

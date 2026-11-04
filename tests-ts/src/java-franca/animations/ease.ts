@@ -1,4 +1,4 @@
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 
 export class Ease {
   static readonly EASE_LINEAR: number = 1;
@@ -23,7 +23,7 @@ export class Ease {
     return this.currentValue !== this.targetValue;
   }
 
-  tick(router: Router, startedTime: number): boolean {
+  tick(device: Router, startedTime: number): boolean {
     // returns true when needs repainting
     return true;
   }

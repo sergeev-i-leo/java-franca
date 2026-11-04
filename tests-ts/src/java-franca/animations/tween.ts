@@ -2,7 +2,7 @@ import {Ease} from "./ease";
 import {LinearEase} from "./linear-ease";
 import {Page} from "@java-franca/graphics/page";
 import {View} from "@java-franca/graphics/view";
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 
 export class Tween {
   page: Page | null = null;
@@ -36,15 +36,15 @@ export class Tween {
     return this.ease;
   }
 
-  needsRepainting(router: Router): boolean {
+  needsRepainting(device: Router): boolean {
     if (this.ease === null) {
       // one shot animation
       return true;
     }
-    return this.ease.tick(router, this.registeredTime);
+    return this.ease.tick(device, this.registeredTime);
   }
 
-  needsNextRepainting(router: Router): boolean {
+  needsNextRepainting(device: Router): boolean {
     if (this.ease === null) {
       // one shot animation
       return false;

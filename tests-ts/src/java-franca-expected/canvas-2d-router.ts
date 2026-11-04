@@ -1,4 +1,4 @@
-import {BrowserRouter} from "./browser-router";
+import {BrowserRouter} from "./browser-device";
 import {Canvas2DPainter} from "./canvas-2d-painter";
 import {Painter} from "@java-franca/expected/painter";
 

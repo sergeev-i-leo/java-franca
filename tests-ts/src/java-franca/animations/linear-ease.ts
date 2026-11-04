@@ -1,5 +1,5 @@
 import {Ease} from "./ease";
-import {Router} from "@java-franca/expected/router";
+import {Router} from "@java-franca/expected/device";
 
 export class LinearEase extends Ease {
   constructor(initialValue: number, targetValue: number, duration: number) {
@@ -10,14 +10,14 @@ export class LinearEase extends Ease {
     super.destroy();
   }
 
-  tick(router: Router, startedTime: number): boolean {
+  tick(device: Router, startedTime: number): boolean {
     // returns true when needs repainting
 
     if (this.currentValue === this.targetValue) {
       return false;
     }
 
-    const currentTime = router.getTime();
+    const currentTime = device.getTime();
 
     if (currentTime >= startedTime + this.duration) {
       this.currentValue = this.targetValue;

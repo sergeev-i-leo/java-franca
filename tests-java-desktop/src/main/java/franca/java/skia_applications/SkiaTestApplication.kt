@@ -1,9 +1,7 @@
 package franca.java.skia_applications
 
-import franca.java.SpinnerView
-import franca.java.TestView0
+import franca.java.Page0
 import franca.java.skia.SkiaRouter
-import franca.java.ui.Page
 import javax.swing.JFrame
 
 class SkiaTestApplication {
@@ -12,9 +10,7 @@ class SkiaTestApplication {
     @JvmStatic
     fun main(args: Array<String>) {
       val skiaRouter = SkiaRouter()
-      val page = Page(skiaRouter)
-      page.views.add(TestView0())
-      page.views.add(SpinnerView(6000f))
+      val page = Page0(skiaRouter)
 
       skiaRouter.pushPage(page);
 
