@@ -1,6 +1,6 @@
 package franca.java.graphics_applications;
 
-import franca.java.RouterPage0;
+import franca.java.Router0;
 import franca.java.graphics.GraphicsDevice;
 
 import javax.swing.*;
@@ -9,7 +9,7 @@ public class GraphicsTestApplication {
 
   public static void main(String[] args) {
     GraphicsDevice graphicsDevice = new GraphicsDevice();
-    graphicsDevice.routerPage = new RouterPage0(graphicsDevice);
+    graphicsDevice.router = new Router0(graphicsDevice);
 
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

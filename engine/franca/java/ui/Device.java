@@ -13,7 +13,7 @@ import franca.java.ui.animations.Tween;
 
 public class Device extends TranspilableClass {
 
-  public RouterPage routerPage = null;
+  public Router router = null;
 
   // animation orchestration
 
@@ -58,8 +58,8 @@ public class Device extends TranspilableClass {
   }
 
   public void paint(Painter painter) {
-    if (routerPage != null) {
-      routerPage.paint(painter);
+    if (router != null) {
+      router.paint(painter);
     }
   }
 
@@ -96,20 +96,11 @@ public class Device extends TranspilableClass {
       currentTween = nextTween;
     }
 
-    if (routerPage != null) {
-      for (int i = 0; i < routerPage.views.size(); i++) {
-        callDidPainted(routerPage, routerPage.views.get(i));
-      }
+    if (router != null) {
+      router.didPainted();
     }
 
     return lastTween != null;
-  }
-
-  public void callDidPainted(Page page, View view) {
-    for (int i = 0; i < view.views.size(); i++) {
-      callDidPainted(page, view.views.get(i));
-    }
-    view.didPainted(this, page);
   }
 
   public void unregisterTween(Tween tween) {
@@ -142,8 +133,8 @@ public class Device extends TranspilableClass {
   }
 
   public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
-    if (routerPage != null) {
-      routerPage.handlePointerDown(pointedX, pointedY, buttonNumber);
+    if (router != null) {
+      router.handlePointerDown(pointedX, pointedY, buttonNumber);
     }
   }
 }

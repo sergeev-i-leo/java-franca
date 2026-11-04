@@ -1,6 +1,6 @@
 package franca.java.skia_applications
 
-import franca.java.RouterPage0
+import franca.java.Router0
 import franca.java.skia.SkiaDevice
 import javax.swing.JFrame
 
@@ -11,7 +11,7 @@ class SkiaTestApplication {
     fun main(args: Array<String>) {
       val skiaDevice = SkiaDevice()
 
-      skiaDevice.routerPage = RouterPage0(skiaDevice)
+      skiaDevice.router = Router0(skiaDevice)
 
       val frame = JFrame("SkiaTestApplication")
       frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
