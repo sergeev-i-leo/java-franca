@@ -1,26 +1,20 @@
 package franca.java.graphics_applications;
 
-import franca.java.Page0;
-import franca.java.SpinnerView;
-import franca.java.TestView0;
+import franca.java.RouterPage0;
 import franca.java.graphics.GraphicsDevice;
 
 import javax.swing.*;
 
-import franca.java.ui.Page;
-
 public class GraphicsTestApplication {
 
   public static void main(String[] args) {
-    GraphicsRouter graphicsRouter = new GraphicsRouter();
-    Page page = new Page0(graphicsRouter);
-
-    graphicsRouter.pushPage(page);
+    GraphicsDevice graphicsDevice = new GraphicsDevice();
+    graphicsDevice.routerPage = new RouterPage0(graphicsDevice);
 
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    frame.add(graphicsRouter.getGraphicsPanel());
+    frame.add(graphicsDevice.getGraphicsPanel());
 
     frame.pack();
     frame.setSize(800, 800);
