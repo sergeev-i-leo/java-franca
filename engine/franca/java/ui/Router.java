@@ -20,16 +20,7 @@ public class Router {
     if (topPage == null) {
       return;
     }
-    for (int i = 0; i < topPage.views.size(); i++) {
-      callDidPainted(topPage, topPage.views.get(i));
-    }
-  }
-
-  public void callDidPainted(Page page, View view) {
-    for (int i = 0; i < view.views.size(); i++) {
-      callDidPainted(page, view.views.get(i));
-    }
-    view.didPainted(device, page);
+    topPage.didPainted();
   }
 
   public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {

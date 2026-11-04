@@ -1,5 +1,6 @@
 package franca.java.ui;
 
+import franca.java.Callback;
 import franca.java.TranspilableClass;
 import franca.java.ui.animations.Ease;
 import franca.java.ui.animations.Tween;
@@ -16,11 +17,22 @@ public class Device extends TranspilableClass {
   public Router router = null;
 
   // animation orchestration
-
   public Tween lastTween = null;
+
+  public void init(Callback<Integer> callback) {
+    callback.onResult(200);
+  }
 
   public long getTime() {
     return 0L;
+  }
+
+  public float getWidth() {
+    return 0f;
+  }
+
+  public float getHeight() {
+    return 0f;
   }
 
   public void requestPainting() {

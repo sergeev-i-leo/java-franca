@@ -1,6 +1,8 @@
 package franca.java.skia
 
+import franca.java.Callback
 import franca.java.JavaDesktopDevice
+import franca.java.ui.Painter
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
 import java.awt.event.MouseAdapter
@@ -36,6 +38,18 @@ class SkiaDevice() : JavaDesktopDevice() {
         }
       }
     })
+  }
+
+  override fun init(callback: Callback<Int?>) {
+    callback.onResult(200)
+  }
+
+  override fun getWidth(): Float {
+    return skiaLayer.width * Painter.PRECISION;
+  }
+
+  override fun getHeight(): Float {
+    return skiaLayer.height * Painter.PRECISION;
   }
 
   override fun startPainting() {
