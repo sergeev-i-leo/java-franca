@@ -9,10 +9,6 @@ import franca.java.ui.animations.Tween;
 
 public class SpinnerView extends View {
 
-  public float size;
-  public long startTime;
-  public SpinnerTween spinnerTween;
-
   public static final int COLOR = 0xFFFD7E14;
 
   public static final long[] DOT_DELAYS = {
@@ -26,6 +22,12 @@ public class SpinnerView extends View {
 
   public static final long INNER_PERIOD = 2000L;
   public static final long OUTER_PERIOD = 2500L;
+
+  public float size;
+  public long startTime;
+  public SpinnerTween spinnerTween;
+
+  public boolean spinningAllowed = true;
 
   public SpinnerView(float size) {
     super();
@@ -72,7 +74,7 @@ public class SpinnerView extends View {
 
   @Override
   public void didPainted(Router router, Page page) {
-    if (spinnerTween == null) {
+    if ((spinnerTween == null) && (spinningAllowed)) {
       startTime = router.getTime();
       spinnerTween = new SpinnerTween(router);
       router.registerTween(spinnerTween);
@@ -81,13 +83,13 @@ public class SpinnerView extends View {
 
   public void startSpinning(Router router) {
     if (spinnerTween == null) {
-      startTime = router.getTime();
-      spinnerTween = new SpinnerTween(router);
-      router.registerTween(spinnerTween);
+      spinningAllowed = true;
+      router.requestPainting();
     }
   }
 
   public void stopSpinning(Router router) {
+    spinningAllowed = false;
     router.unregisterTween(spinnerTween);
     spinnerTween = null;
   }
