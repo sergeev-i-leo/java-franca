@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Page extends TranspilableClass {
 
-  Router router = null;
+  public Router router = null;
 
   public ArrayList<View> views = new ArrayList<>();
 

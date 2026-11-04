@@ -26,15 +26,10 @@ public class TestView0 extends View {
     }
   }
 
-  @Override
-  public void handlePointerDown(Router router, Page page, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {
-    if (buttonNumber == 1) {
-      router.unregisterTween(myTween);
-      myTween = new MyTween(router, page, this);
-      router.registerTween(myTween);
-    } else {
-      router.requestPainting();
-    }
+  public void startSpinning(Router router, Page page) {
+    router.unregisterTween(myTween);
+    myTween = new MyTween(router, page, this);
+    router.registerTween(myTween);
   }
 }
 

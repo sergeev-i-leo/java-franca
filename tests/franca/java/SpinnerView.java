@@ -60,9 +60,8 @@ public class SpinnerView extends View {
       float dotAngle = time * 360.0f;
       float totalAngle = outerAngle + dotAngle;
 
-      // ← фиксированный размер по индексу (не от time!)
       float scale = 0.4f + 0.6f * (i / 5.0f);
-      float radius = size * 0.25f * scale;
+      float radius = size * 0.2f * scale;
 
       float x = size / 2 + (float) Math.cos(Math.toRadians(totalAngle)) * size / 2;
       float y = size / 2 + (float) Math.sin(Math.toRadians(totalAngle)) * size / 2;
@@ -70,7 +69,7 @@ public class SpinnerView extends View {
       painter.fillCircle(x * Painter.PRECISION, y * Painter.PRECISION, radius * Painter.PRECISION, COLOR, 1f);
     }
   }
-  
+
   @Override
   public void didPainted(Router router, Page page) {
     if (spinnerTween == null) {
@@ -78,6 +77,19 @@ public class SpinnerView extends View {
       spinnerTween = new SpinnerTween(router);
       router.registerTween(spinnerTween);
     }
+  }
+
+  public void startSpinning(Router router) {
+    if (spinnerTween == null) {
+      startTime = router.getTime();
+      spinnerTween = new SpinnerTween(router);
+      router.registerTween(spinnerTween);
+    }
+  }
+
+  public void stopSpinning(Router router) {
+    router.unregisterTween(spinnerTween);
+    spinnerTween = null;
   }
 }
 

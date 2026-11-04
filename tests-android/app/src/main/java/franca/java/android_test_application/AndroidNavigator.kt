@@ -7,10 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import franca.java.AndroidRouter
-import franca.java.AndroidRouterView
-import franca.java.SpinnerView
-import franca.java.TestView0
+import franca.java.*
 import franca.java.ui.Page
 
 class AndroidNavigator(
@@ -20,7 +17,7 @@ class AndroidNavigator(
 ) {
 
   private val homeAndroidRouter = AndroidRouter(this)
-  private val homePage = Page(homeAndroidRouter)
+  private val homePage = Page0(homeAndroidRouter)
   private val cloneAndroidRouter = AndroidRouter(this)
   private val clonePage = Page(cloneAndroidRouter)
 
@@ -33,8 +30,6 @@ class AndroidNavigator(
 
   init {
     homeAndroidRouter.pushPage(homePage)
-    homePage.views.add(TestView0())
-    homePage.views.add(SpinnerView(6000f))
 
     cloneAndroidRouter.pushPage(clonePage)
     clonePage.views.add(TestView0())
