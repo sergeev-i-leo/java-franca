@@ -9,24 +9,21 @@ public class LinearEase extends Ease {
   }
 
   @Override
-  public void tick(Router router, long startedTime) {
+  public void tick(Router router, long elapsedTime) {
 
     // returns true when needs repainting
 
-    if (currentValue == targetValue) {
-      // was over
+    if (isOver()) {
       return;
     }
 
-    long currentTime = router.getTime();
-
-    if (currentTime >= startedTime + duration) {
+    if (elapsedTime >= duration) {
       // is over
       currentValue = targetValue;
       return;
     }
 
-    currentValue = initialValue + (int) ((targetValue - initialValue) * (currentTime - startedTime) / (double) duration);
+    currentValue = initialValue + (int) ((targetValue - initialValue) * elapsedTime / (double) duration);
   }
 }
 

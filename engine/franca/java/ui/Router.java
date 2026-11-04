@@ -41,13 +41,10 @@ public class Router extends TranspilableClass {
   }
 
   public void registerTween(Tween tween) {
-    if (lastTween == null) {
-      lastTween = tween;
-      return;
-    }
-
     tween.previousTween = lastTween;
     lastTween = tween;
+
+    tween.registeredTime = getTime();
 
     startPainting();
   }
@@ -95,16 +92,35 @@ public class Router extends TranspilableClass {
     }
 
     currentTween = lastTween;
+    Tween previousTween = null;
     while (currentTween != null) {
+      Tween nextTween = currentTween.previousTween;
       if (currentTween.router == null) {
-        unregisterTween(currentTween);
-        currentTween = lastTween;
+        if (previousTween == null) {
+          lastTween = nextTween;
+        } else {
+          previousTween.previousTween = nextTween;
+        }
       } else {
-        currentTween = currentTween.previousTween;
+        previousTween = currentTween;
+      }
+      currentTween = nextTween;
+    }
+
+    if (topPage != null) {
+      for (int i = 0; i < topPage.views.size(); i++) {
+        callDidPainted(topPage, topPage.views.get(i));
       }
     }
 
     return lastTween != null;
+  }
+
+  public void callDidPainted(Page page, View view) {
+    for (int i = 0; i < view.views.size(); i++) {
+      callDidPainted(page, view.views.get(i));
+    }
+    view.didPainted(this, page);
   }
 
   public void unregisterTween(Tween tween) {

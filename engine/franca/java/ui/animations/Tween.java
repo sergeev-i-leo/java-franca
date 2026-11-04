@@ -25,9 +25,13 @@ public class Tween extends TranspilableClass {
   }
 
   public void tick() {
-    if ((ease != null) && (ease.isRunning())) {
-      ease.tick(router, registeredTime);
+    if (ease != null) {
+      ease.tick(router, getElapsedTime());
     }
+  }
+
+  public long getElapsedTime() {
+    return router.getTime() - registeredTime;
   }
 
   public boolean needsNextPainting() {
@@ -35,7 +39,7 @@ public class Tween extends TranspilableClass {
       // one shot animation
       return false;
     }
-    return ease.isRunning();
+    return !ease.isOver();
   }
 
   public void onDone() {

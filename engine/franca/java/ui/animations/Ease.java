@@ -21,11 +21,11 @@ public class Ease extends TranspilableClass {
     this.duration = duration;
   }
 
-  public boolean isRunning() {
-    return currentValue != targetValue;
+  public boolean isOver() {
+    return currentValue == targetValue;
   }
 
-  public void tick(Router router, long startedTime) {
+  public void tick(Router router, long elapsedTime) {
     // make action
   }
 }

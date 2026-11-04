@@ -16,7 +16,11 @@ class SkiaPainter(private val canvas: Canvas) : Painter() {
     48f
   )
 
-  override fun paintText(text: String, x: Int, y: Int, painterFontName: String, deviceColor: Int, scale: Float) {
+  override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
+
+  }
+
+  override fun paintText(text: String, x: Float, y: Float, painterFontName: String, deviceColor: Int, scale: Float) {
     canvas.drawString(text, x.toFloat() * scale / Painter.PRECISION.toFloat(), y.toFloat() * scale / Painter.PRECISION.toFloat(), textFont, textPaint)
   }
 }

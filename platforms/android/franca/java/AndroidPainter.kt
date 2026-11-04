@@ -14,7 +14,11 @@ class AndroidPainter(
     this.canvas = canvas;
   }
 
-  override fun paintText(text: String, x: Int, y: Int, painterFontName: String, deviceColor: Int, scale: Float) {
+  override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
+
+  }
+
+  override fun paintText(text: String, x: Float, y: Float, painterFontName: String, deviceColor: Int, scale: Float) {
     paint.apply {
       color = 0xFFFF0000.toInt()
       isAntiAlias = true
