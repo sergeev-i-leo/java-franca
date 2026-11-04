@@ -23,6 +23,7 @@ class SkiaRouter() : JavaDesktopRouter() {
       override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
         val skiaPainter = SkiaPainter(canvas);
         paint(skiaPainter)
+        startPainting();
       }
     }
 
@@ -43,7 +44,6 @@ class SkiaRouter() : JavaDesktopRouter() {
     }
 
     scheduler = Executors.newSingleThreadScheduledExecutor()
-    lastTickTime = time
     scheduler?.scheduleAtFixedRate({
       val tickTime = time
       if (tickTime - lastTickTime < 16) {

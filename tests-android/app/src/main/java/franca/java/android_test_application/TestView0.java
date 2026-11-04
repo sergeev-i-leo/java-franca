@@ -16,8 +16,8 @@ public class TestView0 extends View {
   @Override
   public void paint(Router router, Painter painter, Page page) {
 
-    int x = (new Random().nextInt(50) + 50) * Painter.MULTIPLIER;
-    int y = (new Random().nextInt(50) + 50) * Painter.MULTIPLIER;
+    float x = (new Random().nextInt(50) + 50) * Painter.PRECISION;
+    float y = (new Random().nextInt(50) + 50) * Painter.PRECISION;
 
     if (myTween != null) {
       painter.paintText(String.valueOf(myTween.ease.currentValue), x, y, "", 255, 1f);

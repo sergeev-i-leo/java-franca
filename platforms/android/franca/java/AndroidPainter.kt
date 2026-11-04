@@ -15,7 +15,17 @@ class AndroidPainter(
   }
 
   override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
+    paint.apply {
+      color = deviceColor
+      isAntiAlias = true
+      style = Paint.Style.FILL
+    }
 
+    val px = x * scale / Painter.PRECISION
+    val py = y * scale / Painter.PRECISION
+    val pr = radius * scale / Painter.PRECISION
+
+    canvas?.drawCircle(px, py, pr, paint)
   }
 
   override fun paintText(text: String, x: Float, y: Float, painterFontName: String, deviceColor: Int, scale: Float) {
@@ -28,6 +38,6 @@ class AndroidPainter(
       isElegantTextHeight = false
     }
 
-    canvas?.drawText(text, x.toFloat() * scale / Painter.MULTIPLIER.toFloat(), y.toFloat() * scale / Painter.MULTIPLIER.toFloat(), paint)
+    canvas?.drawText(text, x * scale / Painter.PRECISION, y * scale / Painter.PRECISION, paint)
   }
 }

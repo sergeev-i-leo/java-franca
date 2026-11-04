@@ -32,6 +32,7 @@ class AndroidNavigator(
   init {
     homeAndroidRouter.pushPage(homePage)
     homePage.views.add(TestView0())
+    homePage.views.add(SpinnerView(6000f))
 
     cloneAndroidRouter.pushPage(clonePage)
     clonePage.views.add(TestView0())

@@ -1,8 +1,10 @@
 package franca.java.skia
 
-import org.jetbrains.skia.Canvas;
-
 import franca.java.ui.Painter
+import org.jetbrains.skia.Paint;
+import org.jetbrains.skia.PaintMode;
+import org.jetbrains.skia.Canvas;
+import org.jetbrains.skia.Color;
 
 class SkiaPainter(private val canvas: Canvas) : Painter() {
 
@@ -17,7 +19,16 @@ class SkiaPainter(private val canvas: Canvas) : Painter() {
   )
 
   override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
+    val px = x * scale / Painter.PRECISION
+    val py = y * scale / Painter.PRECISION
+    val pr = radius * scale / Painter.PRECISION
 
+    val paint = Paint()
+    paint.mode = PaintMode.FILL
+    paint.color = deviceColor
+    paint.isAntiAlias = true
+
+    canvas.drawCircle(px, py, pr, paint)
   }
 
   override fun paintText(text: String, x: Float, y: Float, painterFontName: String, deviceColor: Int, scale: Float) {

@@ -13,15 +13,14 @@ import javax.swing.SwingUtilities
 
 class GraphicsRouter : JavaDesktopRouter() {
   var graphicsPanel = GraphicsPanel(this)
-  var scheduledExecutorService: ScheduledExecutorService? = null
-  var lastTickTime = 0L
+  private var scheduledExecutorService: ScheduledExecutorService? = null
+  private var lastTickTime = 0L
 
   override fun startPainting() {
     if (scheduledExecutorService != null) {
       return
     }
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    lastTickTime = time
     scheduledExecutorService?.scheduleAtFixedRate(Runnable { tick() }, 0, 2, TimeUnit.MILLISECONDS)
   }
 
@@ -59,5 +58,6 @@ class GraphicsPanel(var graphicsRouter: GraphicsRouter) : JPanel() {
     super.paintComponent(graphics)
     val graphicsPainter = GraphicsPainter(graphics)
     graphicsRouter.paint(graphicsPainter)
+    graphicsRouter.startPainting();
   }
 }

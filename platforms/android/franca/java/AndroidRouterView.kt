@@ -98,7 +98,7 @@ class AndroidRouterView(
         val y = event.getY(pointerIndex)
         lastX = x
         lastY = y
-        androidRouter.handlePointerDown(x.toInt() * Painter.MULTIPLIER, y.toInt() * Painter.MULTIPLIER, 1)
+        androidRouter.handlePointerDown((x * Painter.PRECISION).toInt(), (y * Painter.PRECISION).toInt(), 1)
         return true
       }
 
