@@ -4,7 +4,7 @@ import franca.java.TranspilableClass;
 
 public class Painter extends TranspilableClass {
 
-  public static float PRECISION = 1000f;
+  public static float PRECISION = 100f;
 
   public void fillCircle(float x, float y, float radius, int deviceColor, float scale) {
 

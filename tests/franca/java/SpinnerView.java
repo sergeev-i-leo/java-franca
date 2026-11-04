@@ -38,14 +38,18 @@ public class SpinnerView extends View {
     }
 
     long elapsed = router.getTime() - startTime;
-
     float outerAngle = (elapsed % OUTER_PERIOD) / (float) OUTER_PERIOD * 360.0f;
+
+    float size = this.size / Painter.PRECISION;
 
     for (int i = 0; i < 6; i++) {
       long dotTime = elapsed + DOT_DELAYS[i];
-      if (dotTime < 0) dotTime += INNER_PERIOD;
+      long cycleTime = dotTime % INNER_PERIOD;
+      if (cycleTime < 0) {
+        cycleTime += INNER_PERIOD;
+      }
 
-      float time = (dotTime % INNER_PERIOD) / (float) INNER_PERIOD;
+      float time = cycleTime / (float) INNER_PERIOD;
       if (time < 0.5f) {
         time = 4 * time * time * time;
       } else {
@@ -54,17 +58,19 @@ public class SpinnerView extends View {
       }
 
       float dotAngle = time * 360.0f;
-      float scale = 0.4f + 0.6f * time;
-
       float totalAngle = outerAngle + dotAngle;
+
+      // ← фиксированный размер по индексу (не от time!)
+      float scale = 0.4f + 0.6f * (i / 5.0f);
+      float radius = size * 0.25f * scale;
+
       float x = size / 2 + (float) Math.cos(Math.toRadians(totalAngle)) * size / 2;
       float y = size / 2 + (float) Math.sin(Math.toRadians(totalAngle)) * size / 2;
-      float radius = size * 0.25f * scale;
 
       painter.fillCircle(x * Painter.PRECISION, y * Painter.PRECISION, radius * Painter.PRECISION, COLOR, 1f);
     }
   }
-
+  
   @Override
   public void didPainted(Router router, Page page) {
     if (spinnerTween == null) {
