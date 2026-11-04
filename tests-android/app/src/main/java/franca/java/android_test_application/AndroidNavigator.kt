@@ -17,9 +17,9 @@ class AndroidNavigator(
 ) {
 
   private val homeAndroidDevice = AndroidDevice(this)
-  private val homePage = RouterPage0(homeAndroidDevice)
+  private val homeRouter = Router0(homeAndroidDevice)
   private val cloneAndroidDevice = AndroidDevice(this)
-  private val clonePage = RouterPage0(cloneAndroidDevice)
+  private val cloneRouter = Router0(cloneAndroidDevice)
 
   private val viewHome = AndroidDeviceView(context, homeAndroidDevice)
   private val viewHello = createHelloWorldView()
@@ -29,10 +29,9 @@ class AndroidNavigator(
     private set
 
   init {
-    homeAndroidDevice.routerPage = homePage
+    homeAndroidDevice.router = homeRouter
 
-    cloneAndroidDevice.routerPage = clonePage
-    clonePage.views.add(TestView0())
+    cloneAndroidDevice.router = cloneRouter
 
     listOf(viewHome, viewHello, viewClone).forEach { view ->
       view.layoutParams = ViewGroup.LayoutParams(
