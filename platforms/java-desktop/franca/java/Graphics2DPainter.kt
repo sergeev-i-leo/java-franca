@@ -50,7 +50,7 @@ class Graphics2DPainter(
 
   override fun paintText(text: String, x: Float, y: Float, fontName: String, deviceColor: Int, scale: Float) {
     graphics2D.color = Color.BLACK
-    graphics2D.font = Font("Arial", Font.BOLD, 48)
+    graphics2D.font = graphicsDevice.resolveFont(fontName, scale);
     graphics2D.drawString(text, (x * scale / Painter.PRECISION).toInt(), (y * scale / Painter.PRECISION).toInt())
   }
 }
