@@ -1,14 +1,16 @@
-package franca.java.graphics
+package franca.java
 
 import java.awt.Color
 import java.awt.Graphics
+import java.awt.Graphics2D
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JPanel
 
-class GraphicsPanel(
-  var graphicsDevice: GraphicsDevice
+class Graphics2DPanel(
+  var graphicsDevice: Graphics2DDevice
 ) : JPanel() {
+
   init {
     background = Color.WHITE
     addMouseListener(object : MouseAdapter() {
@@ -24,7 +26,7 @@ class GraphicsPanel(
 
   override fun paintComponent(graphics: Graphics) {
     super.paintComponent(graphics)
-    val graphicsPainter = GraphicsPainter(graphicsDevice, graphics)
+    val graphicsPainter = Graphics2DPainter(graphicsDevice, graphics as Graphics2D)
     graphicsDevice.paint(graphicsPainter)
     graphicsDevice.startPainting();
   }

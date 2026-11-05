@@ -1,16 +1,16 @@
-package franca.java.graphics
+package franca.java
 
-import franca.java.Callback
 import franca.java.ui.Device
 import franca.java.ui.Painter
+import java.awt.Font
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
-class GraphicsDevice : Device() {
+open class Graphics2DDevice : Device() {
 
-  var graphicsPanel = GraphicsPanel(this)
+  var graphicsPanel = Graphics2DPanel(this)
   private var scheduledExecutorService: ScheduledExecutorService? = null
   private var lastTickTime = 0L
 
@@ -51,5 +51,12 @@ class GraphicsDevice : Device() {
       scheduledExecutorService!!.shutdown()
       scheduledExecutorService = null
     }
+  }
+
+  open fun resolveFont(fontName: String?, scale: Float?): Font {
+    if (scale == null) {
+      return Font("SansSerif", Font.PLAIN, (18 * Painter.PRECISION).toInt())
+    }
+    return Font("SansSerif", Font.PLAIN, (18 * scale).toInt())
   }
 }
