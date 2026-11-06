@@ -1,25 +1,27 @@
 package franca.java.ui.animations;
 
 import franca.java.ui.Device;
+import franca.java.ui.Page;
+import franca.java.ui.View;
 
-public class InOutEase extends Ease {
+public class InOutAnimation extends Animation {
 
-  public InOutEase(int initialValue, int targetValue, long duration) {
-    super(initialValue, targetValue, duration);
+  public InOutAnimation(Device device, Page page, View view, int initialValue, int targetValue, long duration) {
+    super(device, page, view, initialValue, targetValue, duration);
   }
 
   @Override
-  public void tick(Device device, long elapsedTime) {
+  public void tick() {
     if (isOver()) {
       return;
     }
 
-    if (elapsedTime >= duration) {
+    if (getElapsedTime() >= duration) {
       currentValue = targetValue;
       return;
     }
 
-    float time = elapsedTime / (float) duration;
+    float time = getElapsedTime() / (float) duration;
 
     if (time < 0.5f) {
       time = 4 * time * time * time;

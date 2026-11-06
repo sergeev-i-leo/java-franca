@@ -1,20 +1,20 @@
 package franca.java.graphics_applications;
 
-import franca.java.Router0;
-import franca.java.graphics.GraphicsDevice;
-
 import javax.swing.*;
+
+import franca.java.Graphics2DDevice;
+import franca.java.Router0;
 
 public class GraphicsTestApplication {
 
   public static void main(String[] args) {
-    GraphicsDevice graphicsDevice = new GraphicsDevice();
-    graphicsDevice.router = new Router0(graphicsDevice);
+    Graphics2DDevice graphics2DDevice = new Graphics2DDevice();
+    graphics2DDevice.router = new Router0(graphics2DDevice);
 
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    frame.add(graphicsDevice.getGraphicsPanel());
+    frame.add(graphics2DDevice.getGraphicsPanel());
 
     frame.pack();
     frame.setSize(800, 800);

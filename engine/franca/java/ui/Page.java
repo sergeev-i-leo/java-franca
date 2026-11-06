@@ -10,12 +10,22 @@ public class Page extends TranspilableClass {
 
   public ArrayList<View> views = new ArrayList<>();
 
-  public Page nextPage = null;
+  public int left = 0;
+  public int top = 0;
+  public int width = 0;
+  public int height = 0;
 
   public Page(Device device) {
     super();
 
     this.device = device;
+  }
+
+  public void calculateGeometry(int left, int top, int width, int height) {
+    this.left = left;
+    this.top = top;
+    this.width = width;
+    this.height = height;
   }
 
   public void paint(Painter painter) {

@@ -2,8 +2,7 @@ package franca.java.ui;
 
 import franca.java.Callback;
 import franca.java.TranspilableClass;
-import franca.java.ui.animations.Ease;
-import franca.java.ui.animations.Tween;
+import franca.java.ui.animations.Animation;
 
 /**
  * Device manages all animations.
@@ -17,7 +16,7 @@ public class Device extends TranspilableClass {
   public Router router = null;
 
   // animation orchestration
-  public Tween lastTween = null;
+  public Animation lastAnimation = null;
 
   public boolean isReady = false;
 
@@ -40,15 +39,15 @@ public class Device extends TranspilableClass {
 
   public void requestPainting() {
     // one-shot animation
-    Tween tween = new Tween(this, null, null, new Ease(0, 0, 0L));
-    registerTween(tween);
+    Animation animation = new Animation(this, null, null, 0, 0, 0L);
+    registerTween(animation);
   }
 
-  public void registerTween(Tween tween) {
-    tween.previousTween = lastTween;
-    lastTween = tween;
+  public void registerTween(Animation animation) {
+    animation.previousAnimation = lastAnimation;
+    lastAnimation = animation;
 
-    tween.registeredTime = getTime();
+    animation.registeredTime = getTime();
 
     startPainting();
   }
@@ -59,14 +58,14 @@ public class Device extends TranspilableClass {
 
   public boolean needsPainting() {
 
-    Tween currentTween = lastTween;
-    if (currentTween == null) {
+    Animation currentAnimation = lastAnimation;
+    if (currentAnimation == null) {
       return false;
     }
 
-    while (currentTween != null) {
-      currentTween.tick();
-      currentTween = currentTween.previousTween;
+    while (currentAnimation != null) {
+      currentAnimation.tick();
+      currentAnimation = currentAnimation.previousAnimation;
     }
 
     return true;
@@ -82,68 +81,68 @@ public class Device extends TranspilableClass {
 
     //  mark for deletion
 
-    Tween currentTween = lastTween;
-    while (currentTween != null) {
-      Tween previousTween = currentTween.previousTween;
-      if (!currentTween.needsNextPainting()) {
+    Animation currentAnimation = lastAnimation;
+    while (currentAnimation != null) {
+      Animation previousAnimation = currentAnimation.previousAnimation;
+      if (!currentAnimation.needsNextPainting()) {
         // onDone can create a new tween
-        currentTween.onDone();
+        currentAnimation.onDone();
         // mark for deletion
-        currentTween.device = null;
+        currentAnimation.device = null;
       }
 
-      currentTween = previousTween;
+      currentAnimation = previousAnimation;
     }
 
-    currentTween = lastTween;
-    Tween previousTween = null;
-    while (currentTween != null) {
-      Tween nextTween = currentTween.previousTween;
-      if (currentTween.device == null) {
-        if (previousTween == null) {
-          lastTween = nextTween;
+    currentAnimation = lastAnimation;
+    Animation previousAnimation = null;
+    while (currentAnimation != null) {
+      Animation nextAnimation = currentAnimation.previousAnimation;
+      if (currentAnimation.device == null) {
+        if (previousAnimation == null) {
+          lastAnimation = nextAnimation;
         } else {
-          previousTween.previousTween = nextTween;
+          previousAnimation.previousAnimation = nextAnimation;
         }
       } else {
-        previousTween = currentTween;
+        previousAnimation = currentAnimation;
       }
-      currentTween = nextTween;
+      currentAnimation = nextAnimation;
     }
 
     if (router != null) {
       router.didPainted();
     }
 
-    return lastTween != null;
+    return lastAnimation != null;
   }
 
-  public void unregisterTween(Tween tween) {
+  public void unregisterTween(Animation animation) {
 
-    if (tween == null) {
+    if (animation == null) {
       return;
     }
 
-    Tween currentTween = lastTween;
-    Tween nextTween = null;
-    while (currentTween != null) {
-      if (currentTween == tween) {
+    Animation currentAnimation = lastAnimation;
+    Animation nextAnimation = null;
+    while (currentAnimation != null) {
+      if (currentAnimation == animation) {
         break;
       }
-      nextTween = currentTween;
-      currentTween = currentTween.previousTween;
+      nextAnimation = currentAnimation;
+      currentAnimation = currentAnimation.previousAnimation;
     }
 
-    if (currentTween == null) {
+    if (currentAnimation == null) {
       // 404: not found
       return;
     }
 
-    if (nextTween == null) {
+    if (nextAnimation == null) {
       // unregister lastTween
-      lastTween = currentTween.previousTween;
+      lastAnimation = currentAnimation.previousAnimation;
     } else {
-      nextTween.previousTween = currentTween.previousTween;
+      nextAnimation.previousAnimation = currentAnimation.previousAnimation;
     }
   }
 

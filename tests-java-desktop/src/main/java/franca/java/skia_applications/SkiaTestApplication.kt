@@ -1,7 +1,7 @@
 package franca.java.skia_applications
 
 import franca.java.Router0
-import franca.java.skia.SkiaDevice
+import franca.java.SkiaDevice
 import javax.swing.JFrame
 
 class SkiaTestApplication {

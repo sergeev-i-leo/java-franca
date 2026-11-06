@@ -4,8 +4,7 @@ import franca.java.ui.Page;
 import franca.java.ui.Painter;
 import franca.java.ui.Device;
 import franca.java.ui.View;
-import franca.java.ui.animations.Ease;
-import franca.java.ui.animations.Tween;
+import franca.java.ui.animations.Animation;
 
 public class SpinnerView extends View {
 
@@ -23,13 +22,13 @@ public class SpinnerView extends View {
   public static final long INNER_PERIOD = 2000L;
   public static final long OUTER_PERIOD = 2500L;
 
-  public float size;
+  public int size;
   public long startTime;
-  public SpinnerTween spinnerTween;
+  public SpinnerAnimation spinnerTween;
 
   public boolean spinningAllowed = true;
 
-  public SpinnerView(float size) {
+  public SpinnerView(int size) {
     super();
     this.size = size;
   }
@@ -42,7 +41,7 @@ public class SpinnerView extends View {
     long elapsed = device.getTime() - startTime;
     float outerAngle = (elapsed % OUTER_PERIOD) / (float) OUTER_PERIOD * 360.0f;
 
-    float size = this.size / Painter.PRECISION;
+    float size = this.size;
 
     for (int i = 0; i < 6; i++) {
       long dotTime = elapsed + DOT_DELAYS[i];
@@ -68,7 +67,7 @@ public class SpinnerView extends View {
       float x = size / 2 + (float) Math.cos(Math.toRadians(totalAngle)) * size / 2;
       float y = size / 2 + (float) Math.sin(Math.toRadians(totalAngle)) * size / 2;
 
-      painter.fillCircle(x * Painter.PRECISION, y * Painter.PRECISION, radius * Painter.PRECISION, COLOR, 1f);
+      painter.fillCircle((int) x, (int) y, (int) radius, COLOR);
     }
   }
 
@@ -76,7 +75,7 @@ public class SpinnerView extends View {
   public void didPainted(Device device, Page page) {
     if ((spinnerTween == null) && (spinningAllowed)) {
       startTime = device.getTime();
-      spinnerTween = new SpinnerTween(device);
+      spinnerTween = new SpinnerAnimation(device);
       device.registerTween(spinnerTween);
     }
   }
@@ -95,10 +94,10 @@ public class SpinnerView extends View {
   }
 }
 
-class SpinnerTween extends Tween {
+class SpinnerAnimation extends Animation {
 
-  SpinnerTween(Device device) {
-    super(device, null, null, new Ease(0, 0, 0L));
+  SpinnerAnimation(Device device) {
+    super(device, null, null, 0, 0, 0L);
   }
 
   @Override
