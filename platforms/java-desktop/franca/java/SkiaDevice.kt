@@ -45,11 +45,11 @@ open class SkiaDevice() : Device() {
     return System.nanoTime() / 1000000
   }
 
-  override fun getWidth(): Float {
+  override fun getWidth(): Int {
     return skiaLayer.width * Painter.PRECISION;
   }
 
-  override fun getHeight(): Float {
+  override fun getHeight(): Int {
     return skiaLayer.height * Painter.PRECISION;
   }
 

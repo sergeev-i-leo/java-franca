@@ -4,7 +4,7 @@ import franca.java.TranspilableClass;
 
 public class Painter extends TranspilableClass {
 
-  public static float PRECISION = 100f;
+  public static int PRECISION = 100;
 
   public int calculateTextWidth(String fontName, String text) {
     return 0;
@@ -14,11 +14,11 @@ public class Painter extends TranspilableClass {
     return 0;
   }
 
-  public void fillCircle(float x, float y, float radius, int deviceColor, float scale) {
+  public void fillCircle(int x, int y, int radius, int deviceColor) {
 
   }
 
-  public void paintText(String text, float x, float y, String fontName, int deviceColor, float scale) {
+  public void paintText(String text, int x, int y, String fontName, int deviceColor, float scale) {
 
   }
 

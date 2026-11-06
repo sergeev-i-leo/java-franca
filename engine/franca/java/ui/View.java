@@ -4,6 +4,16 @@ import java.util.ArrayList;
 
 public class View {
 
+  public int left = 0;
+  public int top = 0;
+  public int width = 0;
+  public int height = 0;
+
+  public int marginLeft = 0;
+  public int marginTop = 0;
+  public int marginRight = 0;
+  public int marginBottom = 0;
+
   public ArrayList<View> views = new ArrayList<>();
 
   public void paint(Device device, Painter painter, Page page) {

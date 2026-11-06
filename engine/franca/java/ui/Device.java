@@ -30,12 +30,12 @@ public class Device extends TranspilableClass {
     return 0L;
   }
 
-  public float getWidth() {
-    return 0f;
+  public int getWidth() {
+    return 0;
   }
 
-  public float getHeight() {
-    return 0f;
+  public int getHeight() {
+    return 0;
   }
 
   public void requestPainting() {

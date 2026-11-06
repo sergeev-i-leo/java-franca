@@ -37,17 +37,17 @@ class Graphics2DPainter(
     return metrics.height
   }
 
-  override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
+  override fun fillCircle(x: Int, y: Int, radius: Int, deviceColor: Int) {
     graphics2D.color = Color(deviceColor, true)
 
-    val px = (x * scale / PRECISION).toInt()
-    val py = (y * scale / PRECISION).toInt()
-    val pr = (radius * scale / PRECISION).toInt()
+    val px = (x.toFloat() / PRECISION.toFloat()).toInt()
+    val py = (y.toFloat() / PRECISION.toFloat()).toInt()
+    val pr = (radius.toFloat() / PRECISION.toFloat()).toInt()
 
     graphics2D.fillOval(px - pr, py - pr, pr * 2, pr * 2)
   }
 
-  override fun paintText(text: String, x: Float, y: Float, fontName: String, deviceColor: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String, deviceColor: Int, scale: Float) {
     graphics2D.color = Color.BLACK
     graphics2D.font = graphicsDevice.resolveFont(fontName, scale);
     graphics2D.drawString(text, (x * scale / Painter.PRECISION).toInt(), (y * scale / Painter.PRECISION).toInt())

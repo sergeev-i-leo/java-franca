@@ -14,16 +14,16 @@ class AndroidPainter(
     this.canvas = canvas;
   }
 
-  override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
+  override fun fillCircle(x: Int, y: Int, radius: Int, deviceColor: Int) {
     paint.apply {
       color = deviceColor
       isAntiAlias = true
       style = Paint.Style.FILL
     }
 
-    val px = x * scale / Painter.PRECISION
-    val py = y * scale / Painter.PRECISION
-    val pr = radius * scale / Painter.PRECISION
+    val px = x.toFloat() / Painter.PRECISION.toFloat()
+    val py = y.toFloat() / Painter.PRECISION.toFloat()
+    val pr = radius.toFloat() / Painter.PRECISION.toFloat()
 
     canvas?.drawCircle(px, py, pr, paint)
   }

@@ -26,10 +26,10 @@ class SkiaPainter(
     return font.metrics.height.toInt()
   }
 
-  override fun fillCircle(x: Float, y: Float, radius: Float, deviceColor: Int, scale: Float) {
-    val px = x * scale / Painter.PRECISION
-    val py = y * scale / Painter.PRECISION
-    val pr = radius * scale / Painter.PRECISION
+  override fun fillCircle(x: Int, y: Int, radius: Int, deviceColor: Int) {
+    val px = x.toFloat() / Painter.PRECISION.toFloat()
+    val py = y.toFloat() / Painter.PRECISION.toFloat()
+    val pr = radius.toFloat() / Painter.PRECISION.toFloat()
 
     val paint = Paint()
     paint.mode = PaintMode.FILL
@@ -39,12 +39,12 @@ class SkiaPainter(
     canvas.drawCircle(px, py, pr, paint)
   }
 
-  override fun paintText(text: String, x: Float, y: Float, fontName: String, deviceColor: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String, deviceColor: Int, scale: Float) {
     val font = skiaDevice.resolveFont(fontName, scale)
     val textPaint = Paint().apply {
       color = 0xFF000000.toInt()
       isAntiAlias = true
     }
-    canvas.drawString(text, x * scale / Painter.PRECISION, y * scale / Painter.PRECISION, font, textPaint)
+    canvas.drawString(text, x * scale / PRECISION, y * scale / PRECISION, font, textPaint)
   }
 }

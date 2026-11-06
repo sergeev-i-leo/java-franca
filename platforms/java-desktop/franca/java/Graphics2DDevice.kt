@@ -22,12 +22,12 @@ open class Graphics2DDevice : Device() {
     return System.nanoTime() / 1000000
   }
 
-  override fun getWidth(): Float {
-    return graphicsPanel.width.toFloat() * Painter.PRECISION;
+  override fun getWidth(): Int {
+    return graphicsPanel.width * Painter.PRECISION;
   }
 
-  override fun getHeight(): Float {
-    return graphicsPanel.height.toFloat() * Painter.PRECISION;
+  override fun getHeight(): Int {
+    return graphicsPanel.height * Painter.PRECISION;
   }
 
   override fun startPainting() {
