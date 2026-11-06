@@ -21,6 +21,8 @@ public class View {
 
   public ArrayList<View> views = new ArrayList<>();
 
+  public boolean positionedAbsolutely = false;
+
   public int viewsWidth = 0;
   public int viewsHeight = 0;
 
@@ -38,6 +40,10 @@ public class View {
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
       view.calculateGeometry(availableWidth, availableHeight, contentScale);
+
+      if (view.positionedAbsolutely) {
+        continue;
+      }
 
       view.left = viewsLeft;
       view.top = viewsTop;
