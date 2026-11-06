@@ -40,10 +40,10 @@ public class Device extends TranspilableClass {
   public void requestPainting() {
     // one-shot animation
     Animation animation = new Animation(this, null, null, 0, 0, 0L);
-    registerTween(animation);
+    registerAnimation(animation);
   }
 
-  public void registerTween(Animation animation) {
+  public void registerAnimation(Animation animation) {
     animation.previousAnimation = lastAnimation;
     lastAnimation = animation;
 
@@ -117,7 +117,7 @@ public class Device extends TranspilableClass {
     return lastAnimation != null;
   }
 
-  public void unregisterTween(Animation animation) {
+  public void abortAnimation(Animation animation) {
 
     if (animation == null) {
       return;
