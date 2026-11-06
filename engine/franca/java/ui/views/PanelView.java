@@ -1,8 +1,6 @@
 package franca.java.ui.views;
 
-import franca.java.ui.View;
-
-public class PanelView extends View {
+public class PanelView extends BoxView {
 
   public static int SCROLLABLE = 1;
   public static int SCROLLABLE_VERTICALLY = 2;

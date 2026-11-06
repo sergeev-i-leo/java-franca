@@ -9,22 +9,9 @@ public class View {
   public int width = 0;
   public int height = 0;
 
-  public int marginLeft = 0;
-  public int marginTop = 0;
-  public int marginRight = 0;
-  public int marginBottom = 0;
-
-  public int paddingLeft = 0;
-  public int paddingTop = 0;
-  public int paddingRight = 0;
-  public int paddingBottom = 0;
-
   public ArrayList<View> views = new ArrayList<>();
 
   public boolean positionedAbsolutely = false;
-
-  public int viewsWidth = 0;
-  public int viewsHeight = 0;
 
   public void calculateGeometry(int availableWidth, int availableHeight, Float contentScale) {
     left = 0;
@@ -32,10 +19,7 @@ public class View {
     width = availableWidth;
     height = availableHeight;
 
-    int viewsLeft = marginLeft + paddingLeft;
-    int viewsTop = marginTop + paddingTop;
-    viewsWidth = 0;
-    viewsHeight = 0;
+    int viewsTop = 0;
 
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
@@ -45,20 +29,14 @@ public class View {
         continue;
       }
 
-      view.left = viewsLeft;
+      view.left = 0;
       view.top = viewsTop;
 
-      width = Math.max(view.left + view.width + paddingRight + marginRight, width);
-      height = Math.max(view.top + view.height + paddingBottom + marginBottom, height);
-
-      viewsWidth = Math.max(view.left + view.width, viewsWidth);
-      viewsHeight = Math.max(view.top + view.height, viewsHeight);
+      width = Math.max(view.left + view.width, width);
+      height = Math.max(view.top + view.height, height);
 
       viewsTop += view.height;
     }
-
-    viewsWidth -= marginLeft + paddingLeft;
-    viewsHeight -= marginTop + paddingTop;
   }
 
   public void paint(Device device, Painter painter, Page page) {
