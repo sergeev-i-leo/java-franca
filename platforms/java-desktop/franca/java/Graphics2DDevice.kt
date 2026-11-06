@@ -14,7 +14,7 @@ open class Graphics2DDevice : Device() {
   private var scheduledExecutorService: ScheduledExecutorService? = null
   private var lastTickTime = 0L
 
-  override fun init(callback: Callback<Int?>) {
+  override fun getReady(callback: Callback<Int?>) {
     callback.onResult(200)
   }
 

@@ -14,11 +14,11 @@ public class Painter extends TranspilableClass {
     return 0;
   }
 
-  public void fillCircle(int x, int y, int radius, int deviceColor) {
+  public void fillCircle(int x, int y, int radius, int color, int opacity) {
 
   }
 
-  public void paintText(String text, int x, int y, String fontName, int deviceColor, float scale) {
+  public void paintText(String text, int x, int y, String fontName, int color, int opacity, float scale) {
 
   }
 

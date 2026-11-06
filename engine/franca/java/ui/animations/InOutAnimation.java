@@ -6,8 +6,8 @@ import franca.java.ui.View;
 
 public class InOutAnimation extends Animation {
 
-  public InOutAnimation(Device device, Page page, View view, int initialValue, int targetValue, long duration) {
-    super(device, page, view, initialValue, targetValue, duration);
+  public InOutAnimation(Device device, int initialValue, int targetValue, long duration) {
+    super(device, initialValue, targetValue, duration);
   }
 
   @Override

@@ -20,7 +20,7 @@ public class Device extends TranspilableClass {
 
   public boolean isReady = false;
 
-  public void init(Callback<Integer> callback) {
+  public void getReady(Callback<Integer> callback) {
     isReady = true;
     callback.onResult(200);
   }
@@ -39,7 +39,7 @@ public class Device extends TranspilableClass {
 
   public void requestPainting() {
     // one-shot animation
-    Animation animation = new Animation(this, null, null, 0, 0, 0L);
+    Animation animation = new Animation(this, 0, 0, 0L);
     registerAnimation(animation);
   }
 

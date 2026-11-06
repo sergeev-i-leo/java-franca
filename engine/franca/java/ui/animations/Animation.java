@@ -8,8 +8,6 @@ import franca.java.ui.View;
 public class Animation extends TranspilableClass {
 
   public Device device = null;
-  public Page page = null;
-  public View view = null;
 
   public int initialValue;
   public int currentValue;
@@ -20,12 +18,10 @@ public class Animation extends TranspilableClass {
   public long registeredTime = 0L;
   public Animation previousAnimation = null;
 
-  public Animation(Device device, Page page, View view, int initialValue, int targetValue, long duration) {
+  public Animation(Device device, int initialValue, int targetValue, long duration) {
     super();
 
     this.device = device;
-    this.page = page;
-    this.view = view;
 
     this.initialValue = initialValue;
     this.currentValue = this.initialValue;
