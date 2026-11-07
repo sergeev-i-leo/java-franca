@@ -11,7 +11,7 @@ public class GroupView extends View {
 
   public boolean isReady() {
     int state = getState();
-    if (state != View.STATE_READY) {
+    if (state != 1) {
       return false;
     }
     for (int i = 0; i < views.size(); i++) {
@@ -47,6 +47,8 @@ public class GroupView extends View {
 
       viewsTop += view.height;
     }
+
+    setState(1);
   }
 
   @Override

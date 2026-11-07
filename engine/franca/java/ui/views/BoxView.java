@@ -54,6 +54,8 @@ public class BoxView extends GroupView {
 
     viewsWidth -= viewsLeft;
     viewsHeight -= viewsTop;
+
+    setState(1);
   }
 
 }

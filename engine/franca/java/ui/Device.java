@@ -14,13 +14,13 @@ public class Device {
   public Router router = null;
 
   // idle || getting ready || ready
-  volatile protected int state = 0;
+  volatile protected int state = -1;
 
   // animation orchestration
   public Animation lastAnimation = null;
 
   public boolean isReady() {
-    return state == 2;
+    return state == 1;
   }
 
   public long getTime() {
@@ -106,10 +106,6 @@ public class Device {
         previousAnimation = currentAnimation;
       }
       currentAnimation = nextAnimation;
-    }
-
-    if (router != null) {
-      router.didPainted();
     }
 
     return lastAnimation != null;

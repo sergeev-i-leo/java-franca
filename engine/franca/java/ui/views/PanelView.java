@@ -23,6 +23,8 @@ public class PanelView extends BoxView {
     if (panelViewport != null) {
       height = availableHeight;
     }
+
+    setState(1);
   }
 }
 

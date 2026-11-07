@@ -27,5 +27,7 @@ public class LabelView extends View {
     top = 0;
     width = 0;
     height = 0;
+
+    setState(1);
   }
 }

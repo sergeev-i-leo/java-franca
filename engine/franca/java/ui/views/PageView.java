@@ -21,6 +21,7 @@ public class PageView extends PanelView {
 
   @Override
   public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
+
     left = 0;
     top = 0;
     width = availableWidth;
@@ -29,6 +30,7 @@ public class PageView extends PanelView {
       View view = views.get(i);
       view.getReady(device, painter, availableWidth, availableHeight, 1f);
     }
+    setState(1);
   }
 
   @Override
