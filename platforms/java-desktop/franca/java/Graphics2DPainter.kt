@@ -37,8 +37,14 @@ class Graphics2DPainter(
     return metrics.height
   }
 
-  override fun fillCircle(x: Int, y: Int, radius: Int, color: Int, opacity: Int) {
-    graphics2D.color = Color((opacity shl 24) or (color and 0x00FFFFFF), true)
+  override fun fillCircle(x: Int, y: Int, radius: Int, color: Int) {
+    val withOpacity = ((color shr 24) and 0xFF) != 0
+    val finalColor = if (withOpacity) {
+      color
+    } else {
+      (opacity shl 24) or (color and 0x00FFFFFF)
+    }
+    graphics2D.color = Color(finalColor, true)
 
     val px = (x.toFloat() / PRECISION.toFloat()).toInt()
     val py = (y.toFloat() / PRECISION.toFloat()).toInt()
@@ -47,8 +53,14 @@ class Graphics2DPainter(
     graphics2D.fillOval(px - pr, py - pr, pr * 2, pr * 2)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String, color: Int, opacity: Int, scale: Float) {
-    graphics2D.color = Color((opacity shl 24) or (color and 0x00FFFFFF), true)
+  override fun paintText(text: String, x: Int, y: Int, fontName: String, color: Int, scale: Float) {
+    val withOpacity = ((color shr 24) and 0xFF) != 0
+    val finalColor = if (withOpacity) {
+      color
+    } else {
+      (opacity shl 24) or (color and 0x00FFFFFF)
+    }
+    graphics2D.color = Color(finalColor, true)
     graphics2D.font = graphics2DDevice.resolveFont(fontName, scale);
     graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
   }

@@ -17,7 +17,7 @@ public class BoxView extends View {
   public int viewsWidth = 0;
   public int viewsHeight = 0;
 
-  public void calculateGeometry(int availableWidth, int availableHeight, Float contentScale) {
+  public void getReady(int availableWidth, int availableHeight, Float contentScale) {
     left = 0;
     top = 0;
     width = availableWidth;
@@ -30,7 +30,7 @@ public class BoxView extends View {
 
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
-      view.calculateGeometry(availableWidth, availableHeight, contentScale);
+      view.getReady(availableWidth, availableHeight, contentScale);
 
       if (view.positionedAbsolutely) {
         continue;

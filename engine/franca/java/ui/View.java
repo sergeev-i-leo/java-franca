@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class View {
 
+  public static int STATE_IDLE = 0;
+  public static int STATE_GETTING_READY = 1;
+  public static int STATE_READY = 1;
+
   public int left = 0;
   public int top = 0;
   public int width = 0;
@@ -13,7 +17,21 @@ public class View {
 
   public boolean positionedAbsolutely = false;
 
-  public void calculateGeometry(int availableWidth, int availableHeight, Float contentScale) {
+  volatile private int state = View.STATE_IDLE;
+
+  public void setState(int state) {
+    this.state = state;
+  }
+
+  public int getState() {
+    return state;
+  }
+
+  public boolean isReady() {
+    return getState() == View.STATE_READY;
+  }
+
+  public void getReady(int availableWidth, int availableHeight, Float contentScale) {
     left = 0;
     top = 0;
     width = availableWidth;
@@ -23,7 +41,7 @@ public class View {
 
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
-      view.calculateGeometry(availableWidth, availableHeight, contentScale);
+      view.getReady(availableWidth, availableHeight, contentScale);
 
       if (view.positionedAbsolutely) {
         continue;

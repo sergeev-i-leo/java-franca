@@ -26,23 +26,36 @@ class SkiaPainter(
     return font.metrics.height.toInt()
   }
 
-  override fun fillCircle(x: Int, y: Int, radius: Int, color: Int, opacity: Int) {
-    val px = x.toFloat() / Painter.PRECISION.toFloat()
-    val py = y.toFloat() / Painter.PRECISION.toFloat()
-    val pr = radius.toFloat() / Painter.PRECISION.toFloat()
+  override fun fillCircle(x: Int, y: Int, radius: Int, color: Int) {
+    val px = x.toFloat() / PRECISION.toFloat()
+    val py = y.toFloat() / PRECISION.toFloat()
+    val pr = radius.toFloat() / PRECISION.toFloat()
 
     val paint = Paint()
     paint.mode = PaintMode.FILL
-    paint.color = (opacity shl 24) or (color and 0x00FFFFFF)
+
+    val withOpacity = ((color shr 24) and 0xFF) != 0
+    val finalColor = if (withOpacity) {
+      color
+    } else {
+      (opacity shl 24) or (color and 0x00FFFFFF)
+    }
+    paint.color = finalColor
     paint.isAntiAlias = true
 
     canvas.drawCircle(px, py, pr, paint)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String, color: Int, opacity: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String, color: Int, scale: Float) {
     val font = skiaDevice.resolveFont(fontName, scale)
+    val withOpacity = ((color shr 24) and 0xFF) != 0
+    val finalColor = if (withOpacity) {
+      color
+    } else {
+      (opacity shl 24) or (color and 0x00FFFFFF)
+    }
     val textPaint = Paint().apply {
-      this.color = (opacity shl 24) or (color and 0x00FFFFFF)
+      this.color = finalColor
       isAntiAlias = true
     }
     canvas.drawString(text, x * scale / PRECISION, y * scale / PRECISION, font, textPaint)

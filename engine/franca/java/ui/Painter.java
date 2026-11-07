@@ -6,6 +6,8 @@ public class Painter extends TranspilableClass {
 
   public static int PRECISION = 100;
 
+  public int opacity = 255;
+
   public int calculateTextWidth(String fontName, String text) {
     return 0;
   }
@@ -14,11 +16,17 @@ public class Painter extends TranspilableClass {
     return 0;
   }
 
-  public void fillCircle(int x, int y, int radius, int color, int opacity) {
+  public int setOpacity(int opacity) {
+    int currentOpacity = this.opacity;
+    this.opacity = opacity;
+    return currentOpacity;
+  }
+
+  public void fillCircle(int x, int y, int radius, int color) {
 
   }
 
-  public void paintText(String text, int x, int y, String fontName, int color, int opacity, float scale) {
+  public void paintText(String text, int x, int y, String fontName, int color, float scale) {
 
   }
 
