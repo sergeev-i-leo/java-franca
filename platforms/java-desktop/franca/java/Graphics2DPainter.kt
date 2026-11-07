@@ -46,9 +46,9 @@ class Graphics2DPainter(
     }
     graphics2D.color = Color(finalColor, true)
 
-    val px = (x.toFloat() / PRECISION.toFloat()).toInt()
-    val py = (y.toFloat() / PRECISION.toFloat()).toInt()
-    val pr = (radius.toFloat() / PRECISION.toFloat()).toInt()
+    val px = (x.toFloat() / Painter.PRECISION.toFloat()).toInt()
+    val py = (y.toFloat() / Painter.PRECISION.toFloat()).toInt()
+    val pr = (radius.toFloat() / Painter.PRECISION.toFloat()).toInt()
 
     graphics2D.fillOval(px - pr, py - pr, pr * 2, pr * 2)
   }
@@ -62,6 +62,6 @@ class Graphics2DPainter(
     }
     graphics2D.color = Color(finalColor, true)
     graphics2D.font = graphics2DDevice.resolveFont(fontName, scale);
-    graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
+    graphics2D.drawString(text, (x * scale / Painter.PRECISION).toInt(), (y * scale / Painter.PRECISION).toInt())
   }
 }

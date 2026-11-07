@@ -1,11 +1,13 @@
 package franca.java.ui;
 
+import franca.java.ui.views.View;
+
 import java.util.ArrayList;
 
 public class Router {
 
   public Device device;
-  public ArrayList<Page> pages = new ArrayList<>();
+  public ArrayList<View> views = new ArrayList<>();
 
   public Router(Device device) {
     super();
@@ -13,21 +15,21 @@ public class Router {
   }
 
   public void paint(Painter painter) {
-    if (pages.isEmpty()) {
+    if (views.isEmpty()) {
       return;
     }
-    pages.get(0).paint(painter);
+    views.get(0).paint(device, painter);
   }
 
   public void didPainted() {
-    if (pages.isEmpty()) {
+    if (views.isEmpty()) {
       return;
     }
-    pages.get(0).didPainted();
+    views.get(0).didPainted(device);
   }
 
   public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
-    if (pages.isEmpty()) {
+    if (views.isEmpty()) {
       return;
     }
 

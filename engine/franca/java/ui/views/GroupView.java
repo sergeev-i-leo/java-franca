@@ -1,5 +1,8 @@
 package franca.java.ui.views;
 
+import franca.java.ui.Device;
+import franca.java.ui.Painter;
+
 import java.util.ArrayList;
 
 public class GroupView extends View {
@@ -19,7 +22,7 @@ public class GroupView extends View {
     return true;
   }
 
-  public void getReady(int availableWidth, int availableHeight, Float scale) {
+  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
     left = 0;
     top = 0;
     width = 0;
@@ -29,7 +32,7 @@ public class GroupView extends View {
 
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
-      view.getReady(availableWidth, availableHeight, scale);
+      view.getReady(device, painter, availableWidth, availableHeight, scale);
 
       if (view.positionedAbsolutely) {
         continue;
@@ -45,4 +48,10 @@ public class GroupView extends View {
     }
   }
 
+  @Override
+  public void paint(Device device, Painter painter) {
+    for (int i = 0; i < views.size(); i++) {
+      views.get(i).paint(device, painter);
+    }
+  }
 }

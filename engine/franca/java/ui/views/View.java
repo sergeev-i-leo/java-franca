@@ -1,10 +1,10 @@
 package franca.java.ui.views;
 
+import franca.java.TranspilableClass;
 import franca.java.ui.Device;
-import franca.java.ui.Page;
 import franca.java.ui.Painter;
 
-public class View {
+public class View extends TranspilableClass {
 
   public static int STATE_IDLE = 0;
   public static int STATE_GETTING_READY = 1;
@@ -31,19 +31,19 @@ public class View {
     return state == View.STATE_READY;
   }
 
-  public void getReady(int availableWidth, int availableHeight, Float scale) {
+  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
     left = 0;
     top = 0;
     width = 0;
     height = 0;
   }
 
-  public void paint(Device device, Painter painter, Page page) {
+  public void paint(Device device, Painter painter) {
   }
 
-  public void didPainted(Device device, Page page) {
+  public void didPainted(Device device) {
   }
 
-  public void handlePointerDown(Device device, Page page, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {
+  public void handlePointerDown(Device device, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {
   }
 }
