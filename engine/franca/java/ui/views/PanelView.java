@@ -15,6 +15,14 @@ public class PanelView extends BoxView {
 
   @Override
   public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
+    if (isReady()) {
+      return;
+    }
+    if (getState() == 0) {
+      return;
+    }
+    setState(0);
+
     if (viewsScale != null) {
       scale *= viewsScale;
     }

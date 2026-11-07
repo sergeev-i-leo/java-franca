@@ -1,6 +1,5 @@
 package franca.java.ui;
 
-import franca.java.ui.views.GroupView;
 import franca.java.ui.views.View;
 
 import java.util.ArrayList;
@@ -19,7 +18,12 @@ public class Router {
     if (views.isEmpty()) {
       return;
     }
-    views.get(0).paint(device, painter);
+    View view = views.get(0);
+    if (view.isReady()) {
+      view.paint(device, painter);
+      return;
+    }
+    view.getReady(device, painter, device.getWidth(), device.getHeight(), 1f);
   }
 
   public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {

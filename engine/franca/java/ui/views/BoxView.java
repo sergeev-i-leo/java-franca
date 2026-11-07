@@ -22,6 +22,14 @@ public class BoxView extends GroupView {
 
   @Override
   public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
+    if (isReady()) {
+      return;
+    }
+    if (getState() == 0) {
+      return;
+    }
+    setState(0);
+
     left = 0;
     top = 0;
     width = 0;
