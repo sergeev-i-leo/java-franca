@@ -41,7 +41,7 @@ public class View extends TranspilableClass {
   public void paint(Device device, Painter painter) {
   }
 
-  public void didPainted(Device device) {
+  public void didPainted(Device device, Painter painter) {
   }
 
   public void handlePointerDown(Device device, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {

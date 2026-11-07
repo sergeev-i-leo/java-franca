@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 public class PageView extends PanelView {
 
-  public Device device;
-
   public ArrayList<View> views = new ArrayList<>();
 
   public int left = 0;
@@ -16,9 +14,8 @@ public class PageView extends PanelView {
   public int width = 0;
   public int height = 0;
 
-  public PageView(Device device) {
+  public PageView() {
     super();
-    this.device = device;
     panelViewport = new PanelViewport(this, PanelViewport.SCROLLABLE_HORIZONTALLY + PanelViewport.SCROLLABLE_VERTICALLY);
   }
 
@@ -34,30 +31,33 @@ public class PageView extends PanelView {
     }
   }
 
-  public void paint(Painter painter) {
+  @Override
+  public void paint(Device device, Painter painter) {
     for (int i = 0; i < views.size(); i++) {
       views.get(i).paint(device, painter);
     }
   }
 
-  public void didPainted() {
+  @Override
+  public void didPainted(Device device, Painter painter) {
     for (int i = 0; i < views.size(); i++) {
-      callDidPainted(views.get(i));
+      callDidPainted(device, painter, views.get(i));
     }
-    didPainted(device);
+    didPainted(device, painter);
   }
 
-  public void callDidPainted(View view) {
+  public void callDidPainted(Device device, Painter painter, View view) {
     if (view instanceof GroupView) {
       GroupView groupView = (GroupView) view;
       for (int i = 0; i < groupView.views.size(); i++) {
-        callDidPainted(groupView.views.get(i));
+        callDidPainted(device, painter, groupView.views.get(i));
       }
     }
-    view.didPainted(device);
+    view.didPainted(device, painter);
   }
 
-  public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
+  @Override
+  public void handlePointerDown(Device device, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {
     for (int i = 0; i < views.size(); i++) {
       views.get(i).handlePointerDown(device, 0, 0, pointedX, pointedY, buttonNumber);
     }
