@@ -22,15 +22,15 @@ public class PageView extends PanelView {
     panelViewport = new PanelViewport(this, PanelViewport.SCROLLABLE_HORIZONTALLY + PanelViewport.SCROLLABLE_VERTICALLY);
   }
 
-  public void getReady(Device device, Painter painter, int left, int top, int width, int height) {
-    this.left = left;
-    this.top = top;
-    this.width = width;
-    this.height = height;
+  @Override
+  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
+    left = 0;
+    top = 0;
+    width = availableWidth;
+    height = availableHeight;
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
-      view.getReady(device, painter, width, height, 1f);
-
+      view.getReady(device, painter, availableWidth, availableHeight, 1f);
     }
   }
 

@@ -22,6 +22,7 @@ public class GroupView extends View {
     return true;
   }
 
+  @Override
   public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
     left = 0;
     top = 0;
