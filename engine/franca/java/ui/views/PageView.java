@@ -39,21 +39,21 @@ public class PageView extends PanelView {
   }
 
   @Override
-  public void didPainted(Device device, Painter painter) {
+  public void didPainted(Device device) {
     for (int i = 0; i < views.size(); i++) {
-      callDidPainted(device, painter, views.get(i));
+      callDidPainted(device, views.get(i));
     }
-    didPainted(device, painter);
+    didPainted(device);
   }
 
-  public void callDidPainted(Device device, Painter painter, View view) {
+  public void callDidPainted(Device device, View view) {
     if (view instanceof GroupView) {
       GroupView groupView = (GroupView) view;
       for (int i = 0; i < groupView.views.size(); i++) {
-        callDidPainted(device, painter, groupView.views.get(i));
+        callDidPainted(device, groupView.views.get(i));
       }
     }
-    view.didPainted(device, painter);
+    view.didPainted(device);
   }
 
   @Override
