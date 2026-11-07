@@ -79,11 +79,11 @@ public class TextBlock extends Block {
   }
 
   public String getText() {
-    if (getChildBlocks() == null) {
+    if (getBlocks() == null) {
       return "";
     }
     BufferedString bufferedString = new BufferedString();
-    for (Block block : getChildBlocks()) {
+    for (Block block : getBlocks()) {
       if (block instanceof LettersBlock) {
         bufferedString.appendString(((LettersBlock) block).getLetters());
       }

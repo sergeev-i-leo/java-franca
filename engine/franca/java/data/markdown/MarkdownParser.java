@@ -347,7 +347,7 @@ public class MarkdownParser extends HtmlParser {
         skipChars(1);
       }
       if (tableBodyBlock == null) {
-        for (int i = 0; i < tableRowBlock.getChildBlocks().size(); i++) {
+        for (int i = 0; i < tableRowBlock.getBlocks().size(); i++) {
           Block block = tableRowBlock.getChildBlock(i);
           if (block != null) {
             block = block.getChildBlock(0);

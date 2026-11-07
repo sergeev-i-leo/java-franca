@@ -1,5 +1,7 @@
 package franca.java.ui.typography;
 
+import franca.java.data.markdown.MarkdownParser;
+import franca.java.office.document.Block;
 import franca.java.office.document.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
@@ -18,9 +20,11 @@ public class LabelView extends View {
 
   public TextBlock textBlock = null;
 
-  public ArrayList<CharsView> charsViews = new ArrayList<>();
+  public ArrayList<LettersView> lettersViews = new ArrayList<>();
 
   public void setText(String text) {
+    MarkdownParser markdownParser = new MarkdownParser();
+    Block block = markdownParser.parse(text);
     textBlock = new TextBlock();
     textBlock.setText(text);
     setState(-1);
@@ -36,7 +40,7 @@ public class LabelView extends View {
     }
     setState(0);
 
-    charsViews.clear();
+    lettersViews.clear();
 
     left = 0;
     top = 0;
