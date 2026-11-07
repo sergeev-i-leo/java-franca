@@ -1,8 +1,6 @@
 package franca.java.ui;
 
-import franca.java.TranspilableClass;
-
-public class Painter extends TranspilableClass {
+public class Painter {
 
   public static int PRECISION = 100;
 

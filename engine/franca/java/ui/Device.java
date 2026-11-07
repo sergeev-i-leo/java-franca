@@ -1,7 +1,5 @@
 package franca.java.ui;
 
-import franca.java.Callback;
-import franca.java.TranspilableClass;
 import franca.java.ui.animations.Animation;
 
 /**
@@ -11,18 +9,24 @@ import franca.java.ui.animations.Animation;
  * External code must NEVER call destroy() on animations directly.
  */
 
-public class Device extends TranspilableClass {
+public class Device {
 
   public Router router = null;
+
+  // idle || getting ready || ready
+  volatile protected int state = 0;
 
   // animation orchestration
   public Animation lastAnimation = null;
 
-  public boolean isReady = false;
+  public boolean isReady() {
+    return state == 2;
+  }
 
-  public void getReady(Callback<Integer> callback) {
-    isReady = true;
-    callback.onResult(200);
+  public void getReady() {
+    if (state == 0) {
+      state = 2;
+    }
   }
 
   public long getTime() {

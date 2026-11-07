@@ -1,10 +1,9 @@
 package franca.java.ui.views;
 
-import franca.java.TranspilableClass;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
 
-public class View extends TranspilableClass {
+public class View {
 
   public static int STATE_IDLE = 0;
   public static int STATE_GETTING_READY = 1;

@@ -1,9 +1,8 @@
 package franca.java.ui.animations;
 
-import franca.java.TranspilableClass;
 import franca.java.ui.Device;
 
-public class Animation extends TranspilableClass {
+public class Animation {
 
   public Device device = null;
 
