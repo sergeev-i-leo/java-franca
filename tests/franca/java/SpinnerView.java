@@ -1,10 +1,9 @@
 package franca.java;
 
-import franca.java.ui.Page;
 import franca.java.ui.Painter;
 import franca.java.ui.Device;
-import franca.java.ui.View;
 import franca.java.ui.animations.Animation;
+import franca.java.ui.views.View;
 
 public class SpinnerView extends View {
 
@@ -24,7 +23,7 @@ public class SpinnerView extends View {
 
   public int size;
   public long startTime;
-  public SpinnerAnimation spinnerTween;
+  public SpinnerAnimation spinnerAnimation;
 
   public boolean spinningAllowed = true;
 
@@ -33,8 +32,14 @@ public class SpinnerView extends View {
     this.size = size;
   }
 
-  public void paint(Device device, Painter painter, Page page) {
-    if (this.spinnerTween == null) {
+  public void paint(Device device, Painter painter) {
+    if ((spinnerAnimation == null) && (spinningAllowed)) {
+      startTime = device.getTime();
+      spinnerAnimation = new SpinnerAnimation(device);
+      device.registerAnimation(spinnerAnimation);
+    }
+
+    if (this.spinnerAnimation == null) {
       return;
     }
 
@@ -71,17 +76,8 @@ public class SpinnerView extends View {
     }
   }
 
-  @Override
-  public void didPainted(Device device, Page page) {
-    if ((spinnerTween == null) && (spinningAllowed)) {
-      startTime = device.getTime();
-      spinnerTween = new SpinnerAnimation(device);
-      device.registerTween(spinnerTween);
-    }
-  }
-
   public void startSpinning(Device device) {
-    if (spinnerTween == null) {
+    if (spinnerAnimation == null) {
       spinningAllowed = true;
       device.requestPainting();
     }
@@ -89,15 +85,15 @@ public class SpinnerView extends View {
 
   public void stopSpinning(Device device) {
     spinningAllowed = false;
-    device.unregisterTween(spinnerTween);
-    spinnerTween = null;
+    device.abortAnimation(spinnerAnimation);
+    spinnerAnimation = null;
   }
 }
 
 class SpinnerAnimation extends Animation {
 
   SpinnerAnimation(Device device) {
-    super(device, null, null, 0, 0, 0L);
+    super(device, 0, 0, 0L);
   }
 
   @Override

@@ -14,6 +14,7 @@ public class LabelView extends View {
   public String fontName = null;
   public Integer fontColor = null;
   public Integer fontColorOpacity = null;
+  public boolean isMultiline = true;
 
   public TextBlock textBlock = null;
 

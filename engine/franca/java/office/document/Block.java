@@ -1,11 +1,11 @@
 package franca.java.office.document;
 
+import java.util.ArrayList;
+
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.data.json.JsonArray;
 import franca.java.office.document.factory.DocumentFactory;
-
-import java.util.ArrayList;
 
 public class Block {
 

@@ -1,9 +1,9 @@
 package franca.java;
 
-import franca.java.ui.Page;
 import franca.java.ui.Painter;
 import franca.java.ui.Device;
 import franca.java.ui.Router;
+import franca.java.ui.views.PageView;
 
 public class Router0 extends Router {
 
@@ -14,20 +14,20 @@ public class Router0 extends Router {
     super(device);
     testView0 = new TestView0();
     spinnerView = new SpinnerView(300 * Painter.PRECISION);
-    Page page = new Page(device);
-    pages.add(page);
-    page.views.add(testView0);
-    page.views.add(spinnerView);
+    PageView pageView = new PageView();
+    views.add(pageView);
+    pageView.views.add(testView0);
+    pageView.views.add(spinnerView);
   }
 
   @Override
   public void handlePointerDown(int pointedX, int pointedY, int buttonNumber) {
     if (buttonNumber == 1) {
-      testView0.startSpinning(device, pages.get(0));
+      testView0.startSpinning(device);
     } else {
       device.requestPainting();
     }
-    if (spinnerView.spinnerTween != null) {
+    if (spinnerView.spinnerAnimation != null) {
       spinnerView.stopSpinning(device);
     } else {
       spinnerView.startSpinning(device);

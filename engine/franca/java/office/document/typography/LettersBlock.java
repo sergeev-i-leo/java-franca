@@ -4,22 +4,22 @@ import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
 
-public class CharsBlock extends Block {
+public class LettersBlock extends Block {
 
-  public static final String TYPE_CHARS = "chars";
+  public static final String TYPE_LETTERS = "letters";
   public static final String TYPE_SPACE = "space";
   public static final String TYPE_NON_BREAKABLE_SPACE = "non-breakable-space";
   public static final String TYPE_LINE_BREAK = "line-break";
 
-  public String type = CharsBlock.TYPE_CHARS;
+  public String type = LettersBlock.TYPE_LETTERS;
 
-  public String chars = "";
+  public String letters = "";
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
     super.fillJsonObject(jsonObject);
     jsonObject.putStringValue("type", type);
-    jsonObject.putStringValue("chars", chars);
+    jsonObject.putStringValue("letters", letters);
   }
 
   @Override
@@ -35,16 +35,16 @@ public class CharsBlock extends Block {
 
   @Override
   public String getDataBlock() {
-    return "CharsBlock";
+    return "LettersBlock";
   }
 
   @Override
   public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
     targetBufferedString.appendString(">");
 
-    if (type.equals(CharsBlock.TYPE_CHARS)) {
-      for (int i = 0; i < chars.length(); i++) {
-        char c = chars.charAt(i);
+    if (type.equals(LettersBlock.TYPE_LETTERS)) {
+      for (int i = 0; i < letters.length(); i++) {
+        char c = letters.charAt(i);
         String string = encodeHtmChar(c);
         if (string != null) {
           targetBufferedString.appendString(string);
@@ -53,13 +53,13 @@ public class CharsBlock extends Block {
         }
       }
     }
-    if (type.equals(CharsBlock.TYPE_SPACE)) {
+    if (type.equals(LettersBlock.TYPE_SPACE)) {
       targetBufferedString.appendChar(' ');
     }
-    if (type.equals(CharsBlock.TYPE_NON_BREAKABLE_SPACE)) {
+    if (type.equals(LettersBlock.TYPE_NON_BREAKABLE_SPACE)) {
       targetBufferedString.appendString("&nbsp;");
     }
-    if (type.equals(CharsBlock.TYPE_LINE_BREAK)) {
+    if (type.equals(LettersBlock.TYPE_LINE_BREAK)) {
       targetBufferedString.appendString("<br>");
     }
 
@@ -85,12 +85,12 @@ public class CharsBlock extends Block {
     return null;
   }
 
-  public String getChars() {
-    return chars;
+  public String getLetters() {
+    return letters;
   }
 
-  public void setChars(String chars) {
-    this.chars = chars;
+  public void setLetters(String letters) {
+    this.letters = letters;
   }
 
 }

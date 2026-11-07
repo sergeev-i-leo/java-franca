@@ -38,24 +38,24 @@ public class TextBlock extends Block {
       char c = text.charAt(textPosition);
       if (c == ' ') {
         if (bufferedString.isNotEmpty()) {
-          CharsBlock charsBlock = new CharsBlock();
-          parentBlock.addChildBlock(charsBlock);
-          charsBlock.type = CharsBlock.TYPE_CHARS;
-          charsBlock.setChars(bufferedString.getString());
+          LettersBlock lettersBlock = new LettersBlock();
+          parentBlock.addChildBlock(lettersBlock);
+          lettersBlock.type = LettersBlock.TYPE_LETTERS;
+          lettersBlock.setLetters(bufferedString.getString());
           bufferedString.clear();
         }
-        CharsBlock charsBlock = new CharsBlock();
-        parentBlock.addChildBlock(charsBlock);
-        charsBlock.type = CharsBlock.TYPE_SPACE;
-        charsBlock.setChars(" ");
+        LettersBlock lettersBlock = new LettersBlock();
+        parentBlock.addChildBlock(lettersBlock);
+        lettersBlock.type = LettersBlock.TYPE_SPACE;
+        lettersBlock.setLetters(" ");
       }
       textPosition++;
     }
     if (bufferedString.isNotEmpty()) {
-      CharsBlock charsBlock = new CharsBlock();
-      parentBlock.addChildBlock(charsBlock);
-      charsBlock.type = CharsBlock.TYPE_CHARS;
-      charsBlock.setChars(bufferedString.getString());
+      LettersBlock lettersBlock = new LettersBlock();
+      parentBlock.addChildBlock(lettersBlock);
+      lettersBlock.type = LettersBlock.TYPE_LETTERS;
+      lettersBlock.setLetters(bufferedString.getString());
     }
   }
 
@@ -84,8 +84,8 @@ public class TextBlock extends Block {
     }
     BufferedString bufferedString = new BufferedString();
     for (Block block : getChildBlocks()) {
-      if (block instanceof CharsBlock) {
-        bufferedString.appendString(((CharsBlock) block).getChars());
+      if (block instanceof LettersBlock) {
+        bufferedString.appendString(((LettersBlock) block).getLetters());
       }
     }
     return bufferedString.getString();

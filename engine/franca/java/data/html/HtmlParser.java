@@ -10,7 +10,7 @@ import franca.java.data.json.JsonObject;
 import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
 import franca.java.office.document.factory.DocumentFactory;
-import franca.java.office.document.typography.CharsBlock;
+import franca.java.office.document.typography.LettersBlock;
 import franca.java.office.document.typography.TextBlock;
 
 public class HtmlParser extends Parser {
@@ -438,7 +438,7 @@ public class HtmlParser extends Parser {
           // we accumulated spaces
           parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonObject);
         } else if (literalBufferedString.isNotEmpty()) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+          parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
         }
         literalBufferedString.clear();
         spacesCount = 0;
@@ -447,9 +447,9 @@ public class HtmlParser extends Parser {
 
       if (peekString("<br>")) {
         if (literalBufferedString.isNotEmpty()) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+          parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
         }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_LINE_BREAK, "", styleJsonObject);
+        parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "", styleJsonObject);
         skipChars(4);
         literalBufferedString.clear();
         continue;
@@ -467,7 +467,7 @@ public class HtmlParser extends Parser {
         }
         if (literalBufferedString.isNotEmpty()) {
           // there are accumulated chars
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+          parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
           spacesCount = 0;
         }
         skipChars(1);
@@ -478,7 +478,7 @@ public class HtmlParser extends Parser {
         // literalStringBuffer must be null
         if (literalBufferedString.isNotEmpty()) {
           System.out.println("Accumulated chars at position " + inputPosition);
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+          parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
         }
         literalBufferedString.clear();
         parentBlock = appendSpaceBlocks(parentBlock, spacesCount, styleJsonObject);
@@ -495,9 +495,9 @@ public class HtmlParser extends Parser {
       }
       if (peekString("&nbsp;")) {
         if (literalBufferedString.isNotEmpty()) {
-          parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+          parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
         }
-        parentBlock = appendCharsBlock(parentBlock, CharsBlock.TYPE_NON_BREAKABLE_SPACE, " ", styleJsonObject);
+        parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_NON_BREAKABLE_SPACE, " ", styleJsonObject);
         skipChars(6);
         literalBufferedString.clear();
         continue;
@@ -514,7 +514,7 @@ public class HtmlParser extends Parser {
       } else {
         styleJsonObject = styleJsonObjects.get(styleJsonObjects.size() - 1);
       }
-      appendCharsBlock(parentBlock, CharsBlock.TYPE_CHARS, literalBufferedString.getString(), styleJsonObject);
+      appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
     }
   }
 
@@ -729,19 +729,19 @@ public class HtmlParser extends Parser {
     return null;
   }
 
-  public Block appendCharsBlock(Block parentBlock, String charsType, String chars, JsonObject styleJsonObject) {
+  public Block appendLettersBlock(Block parentBlock, String charsType, String chars, JsonObject styleJsonObject) {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
       parentBlock.addChildBlock(textBlock);
       parentBlock = textBlock;
     }
-    CharsBlock charsBlock = createCharsBlock();
-    parentBlock.addChildBlock(charsBlock);
-    charsBlock.type = charsType;
-    charsBlock.setChars(chars);
+    LettersBlock lettersBlock = createCharsBlock();
+    parentBlock.addChildBlock(lettersBlock);
+    lettersBlock.type = charsType;
+    lettersBlock.setLetters(chars);
     if (styleJsonObject != null) {
-      charsBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
+      lettersBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
     }
     return parentBlock;
   }
@@ -754,19 +754,19 @@ public class HtmlParser extends Parser {
       parentBlock = textBlock;
     }
     for (int i0 = 0; i0 < spacesCount; i0++) {
-      CharsBlock charsBlock = createCharsBlock();
-      parentBlock.addChildBlock(charsBlock);
-      charsBlock.type = CharsBlock.TYPE_SPACE;
-      charsBlock.setChars(" ");
+      LettersBlock lettersBlock = createCharsBlock();
+      parentBlock.addChildBlock(lettersBlock);
+      lettersBlock.type = LettersBlock.TYPE_SPACE;
+      lettersBlock.setLetters(" ");
       if (styleJsonObject != null) {
-        charsBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
+        lettersBlock.styleJsonObject = styleJsonObject.createCopy().asJsonObject();
       }
     }
     return parentBlock;
   }
 
-  public CharsBlock createCharsBlock() {
+  public LettersBlock createCharsBlock() {
     // may be overridden by Flavoured Markdown Parser
-    return new CharsBlock();
+    return new LettersBlock();
   }
 }
