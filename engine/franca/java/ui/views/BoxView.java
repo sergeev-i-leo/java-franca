@@ -1,8 +1,6 @@
 package franca.java.ui.views;
 
-import franca.java.ui.View;
-
-public class BoxView extends View {
+public class BoxView extends GroupView {
 
   public int marginLeft = 0;
   public int marginTop = 0;
@@ -14,23 +12,25 @@ public class BoxView extends View {
   public int paddingRight = 0;
   public int paddingBottom = 0;
 
+  public int viewsLeft = 0;
+  public int viewsTop = 0;
   public int viewsWidth = 0;
   public int viewsHeight = 0;
 
-  public void getReady(int availableWidth, int availableHeight, Float contentScale) {
+  public void getReady(int availableWidth, int availableHeight, Float scale) {
     left = 0;
     top = 0;
-    width = availableWidth;
-    height = availableHeight;
+    width = 0;
+    height = 0;
 
-    int viewsLeft = marginLeft + paddingLeft;
-    int viewsTop = marginTop + paddingTop;
+    viewsLeft = marginLeft + paddingLeft;
+    viewsTop = marginTop + paddingTop;
     viewsWidth = 0;
     viewsHeight = 0;
 
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
-      view.getReady(availableWidth, availableHeight, contentScale);
+      view.getReady(availableWidth, availableHeight, scale);
 
       if (view.positionedAbsolutely) {
         continue;
@@ -48,8 +48,8 @@ public class BoxView extends View {
       viewsTop += view.height;
     }
 
-    viewsWidth -= marginLeft + paddingLeft;
-    viewsHeight -= marginTop + paddingTop;
+    viewsWidth -= viewsLeft;
+    viewsHeight -= viewsTop;
   }
 
 }

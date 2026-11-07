@@ -2,24 +2,23 @@ package franca.java.ui.views;
 
 public class PanelView extends BoxView {
 
-  public static int SCROLLABLE = 1;
-  public static int SCROLLABLE_VERTICALLY = 2;
-  public static int SCROLLABLE_HORIZONTALLY = 3;
+  public Float viewsScale = null;
 
-  public int scrollable = 0;
-  public Float contentScale = null;
-
-  public int viewportLeft = 0;
-  public int viewportTop = 0;
-  public int viewportWidth = 0;
-  public int viewportHeight = 0;
-
-  public int contentWidth = 0;
-  public int contentHeight = 0;
-  public int contentXOffset = 0;
-  public int contentYOffset = 0;
+  public PanelViewport panelViewport = null;
 
   public PanelView() {
     super();
   }
+
+  public void getReady(int availableWidth, int availableHeight, Float scale) {
+    if (viewsScale != null) {
+      scale *= viewsScale;
+    }
+    super.getReady(availableWidth, availableHeight, scale);
+    width = availableWidth;
+    if (panelViewport != null) {
+      height = availableHeight;
+    }
+  }
 }
+

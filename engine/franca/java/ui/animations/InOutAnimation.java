@@ -1,8 +1,6 @@
 package franca.java.ui.animations;
 
 import franca.java.ui.Device;
-import franca.java.ui.Page;
-import franca.java.ui.View;
 
 public class InOutAnimation extends Animation {
 

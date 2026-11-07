@@ -1,6 +1,7 @@
 package franca.java.ui;
 
 import franca.java.TranspilableClass;
+import franca.java.ui.views.View;
 
 import java.util.ArrayList;
 

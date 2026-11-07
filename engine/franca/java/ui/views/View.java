@@ -1,6 +1,8 @@
-package franca.java.ui;
+package franca.java.ui.views;
 
-import java.util.ArrayList;
+import franca.java.ui.Device;
+import franca.java.ui.Page;
+import franca.java.ui.Painter;
 
 public class View {
 
@@ -12,8 +14,6 @@ public class View {
   public int top = 0;
   public int width = 0;
   public int height = 0;
-
-  public ArrayList<View> views = new ArrayList<>();
 
   public boolean positionedAbsolutely = false;
 
@@ -28,33 +28,14 @@ public class View {
   }
 
   public boolean isReady() {
-    return getState() == View.STATE_READY;
+    return state == View.STATE_READY;
   }
 
-  public void getReady(int availableWidth, int availableHeight, Float contentScale) {
+  public void getReady(int availableWidth, int availableHeight, Float scale) {
     left = 0;
     top = 0;
-    width = availableWidth;
-    height = availableHeight;
-
-    int viewsTop = 0;
-
-    for (int i = 0; i < views.size(); i++) {
-      View view = views.get(i);
-      view.getReady(availableWidth, availableHeight, contentScale);
-
-      if (view.positionedAbsolutely) {
-        continue;
-      }
-
-      view.left = 0;
-      view.top = viewsTop;
-
-      width = Math.max(view.left + view.width, width);
-      height = Math.max(view.top + view.height, height);
-
-      viewsTop += view.height;
-    }
+    width = 0;
+    height = 0;
   }
 
   public void paint(Device device, Painter painter, Page page) {
