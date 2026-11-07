@@ -1,9 +1,8 @@
 package franca.java.data.json;
 
 import franca.java.expected.BufferedString;
-import franca.java.TranspilableClass;
 
-public class JsonElement extends TranspilableClass {
+public class JsonElement {
 
   public JsonElement createCopy() {
     return null;

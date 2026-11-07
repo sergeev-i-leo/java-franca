@@ -23,12 +23,6 @@ public class Device {
     return state == 2;
   }
 
-  public void getReady() {
-    if (state == 0) {
-      state = 2;
-    }
-  }
-
   public long getTime() {
     return 0L;
   }

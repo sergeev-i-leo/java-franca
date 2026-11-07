@@ -2,9 +2,8 @@ package franca.java.data;
 
 import franca.java.expected.Runtime;
 import franca.java.expected.BufferedString;
-import franca.java.TranspilableClass;
 
-public class Parser extends TranspilableClass {
+public class Parser {
 
   public String input = null;
   public int inputPosition = 0;

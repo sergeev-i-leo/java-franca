@@ -2,13 +2,12 @@ package franca.java.office.document;
 
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
-import franca.java.TranspilableClass;
 import franca.java.data.json.JsonArray;
 import franca.java.office.document.factory.DocumentFactory;
 
 import java.util.ArrayList;
 
-public class Block extends TranspilableClass {
+public class Block {
 
   private static ArrayList<Block> emptyChildBlocks = null;
 

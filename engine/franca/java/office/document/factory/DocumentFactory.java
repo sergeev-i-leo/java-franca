@@ -1,7 +1,6 @@
 package franca.java.office.document.factory;
 
 import franca.java.expected.BufferedString;
-import franca.java.TranspilableClass;
 import franca.java.office.document.Block;
 import franca.java.office.document.list.ListBlock;
 import franca.java.office.document.list.ListItemBlock;
@@ -10,7 +9,7 @@ import franca.java.office.document.table.*;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 
-public class DocumentFactory extends TranspilableClass {
+public class DocumentFactory {
 
   public static Block createBlockByTagName(String tagName) {
     if (tagName.equals("h1")) {
