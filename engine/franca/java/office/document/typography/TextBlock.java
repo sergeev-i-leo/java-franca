@@ -1,8 +1,12 @@
 package franca.java.office.document.typography;
 
+import franca.java.data.html.HtmlParser;
 import franca.java.data.json.JsonObject;
+import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
+
+import java.util.ArrayList;
 
 public class TextBlock extends Block {
 
@@ -23,6 +27,55 @@ public class TextBlock extends Block {
     if (spacesBefore >= 0) {
       targetBufferedString.finishLine();
     }
+  }
+
+  public void setText(String text) {
+    clearInnerBlocks();
+
+    BufferedString bufferedString = new BufferedString();
+    int textPosition = 0;
+    while (textPosition < text.length()) {
+      char c = text.charAt(textPosition);
+      if (c == ' ') {
+        if (bufferedString.isNotEmpty()) {
+          LettersBlock lettersBlock = new LettersBlock();
+          outerBlock.addInnerBlock(lettersBlock);
+          lettersBlock.type = LettersBlock.TYPE_LETTERS;
+          lettersBlock.setLetters(bufferedString.getString());
+          bufferedString.clear();
+        }
+        LettersBlock lettersBlock = new LettersBlock();
+        outerBlock.addInnerBlock(lettersBlock);
+        lettersBlock.type = LettersBlock.TYPE_SPACE;
+        lettersBlock.setLetters(" ");
+      }
+      textPosition++;
+    }
+    if (bufferedString.isNotEmpty()) {
+      LettersBlock lettersBlock = new LettersBlock();
+      outerBlock.addInnerBlock(lettersBlock);
+      lettersBlock.type = LettersBlock.TYPE_LETTERS;
+      lettersBlock.setLetters(bufferedString.getString());
+    }
+  }
+
+  public void setHtmlText(String htmlText) {
+    clearInnerBlocks();
+
+    ArrayList styleJsonObjects = new ArrayList<JsonObject>();
+    HtmlParser htmlParser = new HtmlParser();
+    htmlParser.input = htmlText;
+    htmlParser.inputPosition = 0;
+    htmlParser.parseHtmlTextContents(this, styleJsonObjects);
+  }
+
+  public void setMarkdownText(String markdownText) {
+    clearInnerBlocks();
+
+    MarkdownParser markdownParser = new MarkdownParser();
+    markdownParser.input = markdownText;
+    markdownParser.inputPosition = 0;
+    markdownParser.parseMarkdownTextContents(this, false);
   }
 
   public String getText() {
