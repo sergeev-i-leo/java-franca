@@ -3,8 +3,7 @@ package franca.java;
 import franca.java.ui.Painter;
 import franca.java.ui.Device;
 import franca.java.ui.Router;
-import franca.java.ui.animations.Animation;
-import franca.java.ui.typography.LabelView;
+import franca.java.ui.typography.ParagraphView;
 import franca.java.ui.views.PageView;
 
 public class Router0 extends Router {
@@ -20,9 +19,9 @@ public class Router0 extends Router {
     views.add(pageView);
     pageView.views.add(testView0);
     pageView.views.add(spinnerView);
-    LabelView labelView = new LabelView();
-    pageView.views.add(labelView);
-    labelView.setText("HELLO WORLD!!!");
+    ParagraphView paragraphView = new ParagraphView();
+    pageView.views.add(paragraphView);
+    paragraphView.setText("**HELLO** WORLD!!!");
   }
 
   @Override

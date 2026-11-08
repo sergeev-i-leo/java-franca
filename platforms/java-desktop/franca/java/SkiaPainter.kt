@@ -10,27 +10,25 @@ class SkiaPainter(
 ) : Painter() {
 
   override fun calculateTextWidth(fontName: String?, text: String?): Int {
-    if ((fontName == null) || (text == null)) {
+    if (text == null) {
       return 0
     }
 
-    val font = skiaDevice.resolveFont(fontName, null)
+    val resolvedFontName = fontName ?: this.currentFontName
+    val font = skiaDevice.resolveFont(resolvedFontName, null)
     return font.measureTextWidth(text).toInt()
   }
 
   override fun calculateFontHeight(fontName: String?): Int {
-    if (fontName == null) {
-      return 0
-    }
-
-    val font = skiaDevice.resolveFont(fontName, null)
+    val resolvedFontName = fontName ?: this.currentFontName
+    val font = skiaDevice.resolveFont(resolvedFontName, null)
     return font.metrics.height.toInt()
   }
 
   override fun fillCircle(x: Int, y: Int, radius: Int, color: Int) {
-    val px = x.toFloat() / Painter.PRECISION.toFloat()
-    val py = y.toFloat() / Painter.PRECISION.toFloat()
-    val pr = radius.toFloat() / Painter.PRECISION.toFloat()
+    val px = x.toFloat() / PRECISION.toFloat()
+    val py = y.toFloat() / PRECISION.toFloat()
+    val pr = radius.toFloat() / PRECISION.toFloat()
 
     val paint = Paint()
     paint.mode = PaintMode.FILL
@@ -39,7 +37,7 @@ class SkiaPainter(
     val finalColor = if (withOpacity) {
       color
     } else {
-      (opacity shl 24) or (color and 0x00FFFFFF)
+      (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     paint.color = finalColor
     paint.isAntiAlias = true
@@ -53,12 +51,12 @@ class SkiaPainter(
     val finalColor = if (withOpacity) {
       color
     } else {
-      (opacity shl 24) or (color and 0x00FFFFFF)
+      (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     val textPaint = Paint().apply {
       this.color = finalColor
       isAntiAlias = true
     }
-    canvas.drawString(text, x * scale / Painter.PRECISION, y * scale / Painter.PRECISION, font, textPaint)
+    canvas.drawString(text, x * scale / PRECISION, y * scale / PRECISION, font, textPaint)
   }
 }

@@ -11,7 +11,7 @@ public class Block {
 
   private static ArrayList<Block> emptyChildBlocks = null;
 
-  public Block parentBlock = null;
+  public Block outerBlock = null;
 
   // array of strings className, className, className ...
   public JsonArray classesJsonArray = new JsonArray();
@@ -20,7 +20,7 @@ public class Block {
   // single attributes, non-quoted attributes, quoted attributes
   public JsonArray attributesJsonArray = new JsonArray();
 
-  private ArrayList<Block> blocks = null;
+  private ArrayList<Block> innerBlocks = null;
 
   public void fillJsonObject(JsonObject jsonObject) {
     jsonObject.putStringValue("dataBlock", getDataBlock());
@@ -36,22 +36,22 @@ public class Block {
     if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
       jsonObject.put("attributesJsonArray", attributesJsonArray);
     }
-    if (blocks == null) {
+    if (innerBlocks == null) {
       return;
     }
-    if (blocks.isEmpty()) {
+    if (innerBlocks.isEmpty()) {
       return;
     }
     JsonArray jsonArray = new JsonArray();
     jsonObject.put("childBlocks", jsonArray);
-    addChildBlocksToJsonArray(jsonArray);
+    addInnerBlocksToJsonArray(jsonArray);
   }
 
-  public void addChildBlocksToJsonArray(JsonArray jsonArray) {
-    for (int i = 0; i < blocks.size(); i++) {
+  public void addInnerBlocksToJsonArray(JsonArray jsonArray) {
+    for (int i = 0; i < innerBlocks.size(); i++) {
       JsonObject jsonObject1 = new JsonObject();
       jsonArray.add(jsonObject1);
-      blocks.get(i).fillJsonObject(jsonObject1);
+      innerBlocks.get(i).fillJsonObject(jsonObject1);
     }
   }
 
@@ -159,7 +159,7 @@ public class Block {
         targetBufferedString.finishLine();
       }
       return;
-    } else if (getBlocks().isEmpty()) {
+    } else if (getInnerBlocks().isEmpty()) {
       targetBufferedString.appendString("/>");
       if (spacesBefore >= 0) {
         targetBufferedString.finishLine();
@@ -171,7 +171,7 @@ public class Block {
       targetBufferedString.finishLine();
     }
 
-    for (Block block : getBlocks()) {
+    for (Block block : getInnerBlocks()) {
       block.serialize(targetBufferedString, spacesBefore);
     }
 
@@ -204,17 +204,17 @@ public class Block {
     jsonObject.putStringValue("quotedValue", attributeValue);
   }
 
-  public void addChildBlock(Block block) {
-    if (blocks == null) {
-      blocks = new ArrayList<>();
+  public void addInnerBlock(Block block) {
+    if (innerBlocks == null) {
+      innerBlocks = new ArrayList<>();
     }
-    blocks.add(block);
-    block.parentBlock = this;
+    innerBlocks.add(block);
+    block.outerBlock = this;
   }
 
-  public ArrayList<Block> getBlocks() {
-    if (blocks != null) {
-      return blocks;
+  public ArrayList<Block> getInnerBlocks() {
+    if (innerBlocks != null) {
+      return innerBlocks;
     }
     if (Block.emptyChildBlocks == null) {
       Block.emptyChildBlocks = new ArrayList<>();
@@ -222,21 +222,21 @@ public class Block {
     return Block.emptyChildBlocks;
   }
 
-  public Block getChildBlock(int index) {
-    if (blocks == null) {
+  public Block getInnerBlock(int index) {
+    if (innerBlocks == null) {
       return null;
     }
-    if ((index < 0) || (index >= blocks.size())) {
+    if ((index < 0) || (index >= innerBlocks.size())) {
       return null;
     }
-    return blocks.get(index);
+    return innerBlocks.get(index);
   }
 
-  public void clearChildrenBlocks() {
-    if (blocks != null) {
-      blocks.clear();
+  public void clearInnerBlocks() {
+    if (innerBlocks != null) {
+      innerBlocks.clear();
     }
-    blocks = null;
+    innerBlocks = null;
   }
 
 }

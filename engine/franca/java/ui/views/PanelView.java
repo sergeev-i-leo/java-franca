@@ -5,8 +5,6 @@ import franca.java.ui.Painter;
 
 public class PanelView extends BoxView {
 
-  public Float viewsScale = null;
-
   public PanelViewport panelViewport = null;
 
   public PanelView() {
@@ -26,6 +24,7 @@ public class PanelView extends BoxView {
     if (viewsScale != null) {
       scale *= viewsScale;
     }
+
     super.getReady(device, painter, availableWidth, availableHeight, scale);
     width = availableWidth;
     if (panelViewport != null) {

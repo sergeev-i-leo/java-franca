@@ -18,21 +18,19 @@ class Graphics2DPainter(
   }
 
   override fun calculateTextWidth(fontName: String?, text: String?): Int {
-    if ((fontName == null) || (text == null)) {
+    if (text == null) {
       return 0
     }
 
-    val font = graphics2DDevice.resolveFont(fontName, null)
+    val resolvedFontName = fontName ?: this.currentFontName
+    val font = graphics2DDevice.resolveFont(resolvedFontName, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.stringWidth(text)
   }
 
   override fun calculateFontHeight(fontName: String?): Int {
-    if (fontName == null) {
-      return 0
-    }
-
-    val font = graphics2DDevice.resolveFont(fontName, null)
+    val resolvedFontName = fontName ?: this.currentFontName
+    val font = graphics2DDevice.resolveFont(resolvedFontName, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.height
   }
@@ -42,13 +40,13 @@ class Graphics2DPainter(
     val finalColor = if (withOpacity) {
       color
     } else {
-      (opacity shl 24) or (color and 0x00FFFFFF)
+      (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     graphics2D.color = Color(finalColor, true)
 
-    val px = (x.toFloat() / Painter.PRECISION.toFloat()).toInt()
-    val py = (y.toFloat() / Painter.PRECISION.toFloat()).toInt()
-    val pr = (radius.toFloat() / Painter.PRECISION.toFloat()).toInt()
+    val px = (x.toFloat() / PRECISION.toFloat()).toInt()
+    val py = (y.toFloat() / PRECISION.toFloat()).toInt()
+    val pr = (radius.toFloat() / PRECISION.toFloat()).toInt()
 
     graphics2D.fillOval(px - pr, py - pr, pr * 2, pr * 2)
   }
@@ -58,7 +56,7 @@ class Graphics2DPainter(
     val finalColor = if (withOpacity) {
       color
     } else {
-      (opacity shl 24) or (color and 0x00FFFFFF)
+      (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     graphics2D.color = Color(finalColor, true)
     graphics2D.font = graphics2DDevice.resolveFont(fontName, scale);

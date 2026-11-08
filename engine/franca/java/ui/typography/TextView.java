@@ -9,14 +9,10 @@ import franca.java.ui.views.View;
 
 import java.util.ArrayList;
 
-public class LabelView extends View {
-
-  public String text = "";
+public class TextView extends View {
 
   public String fontName = null;
   public Integer fontColor = null;
-  public Integer fontColorOpacity = null;
-  public boolean isMultiline = true;
 
   public TextBlock textBlock = null;
 
@@ -24,9 +20,7 @@ public class LabelView extends View {
 
   public void setText(String text) {
     MarkdownParser markdownParser = new MarkdownParser();
-    Block block = markdownParser.parse(text);
-    textBlock = new TextBlock();
-    textBlock.setText(text);
+    textBlock = markdownParser.parseMarkdownTextBlock(text);
     setState(-1);
   }
 
@@ -46,6 +40,18 @@ public class LabelView extends View {
     top = 0;
     width = 0;
     height = 0;
+
+    if (textBlock == null) {
+      setState(1);
+      return;
+    }
+
+    ArrayList<Block> blocks = textBlock.getInnerBlocks();
+
+    for (int i = 0; i < blocks.size(); i++) {
+      Block block = blocks.get(i);
+
+    }
 
     setState(1);
   }

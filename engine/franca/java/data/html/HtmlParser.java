@@ -80,7 +80,7 @@ public class HtmlParser extends Parser {
 
       Block block = parseHtmlNode();
       if (block != null) {
-        parentBlock.addChildBlock(block);
+        parentBlock.addInnerBlock(block);
       } else {
         // corrupted html
         skipChars(1);
@@ -733,11 +733,11 @@ public class HtmlParser extends Parser {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
-      parentBlock.addChildBlock(textBlock);
+      parentBlock.addInnerBlock(textBlock);
       parentBlock = textBlock;
     }
     LettersBlock lettersBlock = createCharsBlock();
-    parentBlock.addChildBlock(lettersBlock);
+    parentBlock.addInnerBlock(lettersBlock);
     lettersBlock.type = charsType;
     lettersBlock.setLetters(chars);
     if (styleJsonObject != null) {
@@ -750,12 +750,12 @@ public class HtmlParser extends Parser {
     // <tag>#text</tag> convert to <tag><text>#text</text></tag>
     if (!(parentBlock instanceof TextBlock)) {
       TextBlock textBlock = new TextBlock();
-      parentBlock.addChildBlock(textBlock);
+      parentBlock.addInnerBlock(textBlock);
       parentBlock = textBlock;
     }
     for (int i0 = 0; i0 < spacesCount; i0++) {
       LettersBlock lettersBlock = createCharsBlock();
-      parentBlock.addChildBlock(lettersBlock);
+      parentBlock.addInnerBlock(lettersBlock);
       lettersBlock.type = LettersBlock.TYPE_SPACE;
       lettersBlock.setLetters(" ");
       if (styleJsonObject != null) {

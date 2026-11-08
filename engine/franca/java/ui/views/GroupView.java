@@ -9,6 +9,8 @@ public class GroupView extends View {
 
   public ArrayList<View> views = new ArrayList<>();
 
+  public Float viewsScale = null;
+
   public boolean isReady() {
     int state = getState();
     if (state != 1) {
@@ -31,6 +33,10 @@ public class GroupView extends View {
       return;
     }
     setState(0);
+
+    if (viewsScale != null) {
+      scale *= viewsScale;
+    }
 
     left = 0;
     top = 0;
