@@ -736,7 +736,7 @@ public class HtmlParser extends Parser {
       parentBlock.addInnerBlock(textBlock);
       parentBlock = textBlock;
     }
-    LettersBlock lettersBlock = createCharsBlock();
+    LettersBlock lettersBlock = createLettersBlock();
     parentBlock.addInnerBlock(lettersBlock);
     lettersBlock.type = charsType;
     lettersBlock.setLetters(chars);
@@ -754,7 +754,7 @@ public class HtmlParser extends Parser {
       parentBlock = textBlock;
     }
     for (int i0 = 0; i0 < spacesCount; i0++) {
-      LettersBlock lettersBlock = createCharsBlock();
+      LettersBlock lettersBlock = createLettersBlock();
       parentBlock.addInnerBlock(lettersBlock);
       lettersBlock.type = LettersBlock.TYPE_SPACE;
       lettersBlock.setLetters(" ");
@@ -765,7 +765,7 @@ public class HtmlParser extends Parser {
     return parentBlock;
   }
 
-  public LettersBlock createCharsBlock() {
+  public LettersBlock createLettersBlock() {
     // may be overridden by Flavoured Markdown Parser
     return new LettersBlock();
   }
