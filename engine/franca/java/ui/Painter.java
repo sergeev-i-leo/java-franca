@@ -2,7 +2,15 @@ package franca.java.ui;
 
 public class Painter {
 
-  public static int PRECISION = 100;
+  public static final int PRECISION = 100;
+
+  public static final int PRIMARY_BACKGROUND_COLOR = 1;
+  public static final int SECONDARY_BACKGROUND_COLOR = 2;
+  public static final int TERTIARY_BACKGROUND_COLOR = 3;
+
+  public static final int PRIMARY_TEXT_COLOR = 4;
+  public static final int SECONDARY_TEXT_COLOR = 5;
+  public static final int TERTIARY_TEXT_COLOR = 6;
 
   public int currentOpacity = 255;
   public String currentFontName = null;

@@ -2,6 +2,7 @@ package franca.java.ui.typography;
 
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.office.document.Block;
+import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
@@ -45,6 +46,20 @@ public class TextView extends View {
       setState(1);
       return;
     }
+
+    if (textBlock instanceof HeadingBlock) {
+      HeadingBlock headingBlock = (HeadingBlock) textBlock;
+      fontName = "secondary-h" + headingBlock.level;
+    } else {
+      fontName = "primary";
+    }
+
+    fontColor = Painter.PRIMARY_TEXT_COLOR;
+    lettersViews.clear();
+
+    LettersView lettersView = null;
+    boolean bold = false;
+    boolean italic = false;
 
     ArrayList<Block> blocks = textBlock.getInnerBlocks();
 
