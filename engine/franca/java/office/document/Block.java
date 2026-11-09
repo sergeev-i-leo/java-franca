@@ -15,10 +15,12 @@ public class Block {
 
   // array of strings className, className, className ...
   public JsonArray classesJsonArray = new JsonArray();
-  // style
-  public JsonObject styleJsonObject = new JsonObject();
   // single attributes, non-quoted attributes, quoted attributes
   public JsonArray attributesJsonArray = new JsonArray();
+  // style
+  public JsonObject styleJsonObject = new JsonObject();
+  // flavoured style, not html-compatible styles styles
+  public JsonObject flavouredStyleJsonObject = new JsonObject();
 
   private ArrayList<Block> innerBlocks = null;
 
@@ -28,13 +30,17 @@ public class Block {
     if ((classesJsonArray != null) && (classesJsonArray.isNotEmpty())) {
       jsonObject.put("classesJsonArray", classesJsonArray);
     }
+    JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
+    if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
+      jsonObject.put("attributesJsonArray", attributesJsonArray);
+    }
     JsonObject styleJsonObject = this.styleJsonObject.createCopy().asJsonObject();
     if ((styleJsonObject != null) && (styleJsonObject.isNotEmpty())) {
       jsonObject.put("styleJsonObject", styleJsonObject);
     }
-    JsonArray attributesJsonArray = this.attributesJsonArray.createCopy().asJsonArray();
-    if ((attributesJsonArray != null) && (attributesJsonArray.isNotEmpty())) {
-      jsonObject.put("attributesJsonArray", attributesJsonArray);
+    JsonObject flavouredStyleJsonObject = this.flavouredStyleJsonObject.createCopy().asJsonObject();
+    if ((flavouredStyleJsonObject != null) && (flavouredStyleJsonObject.isNotEmpty())) {
+      jsonObject.put("flavouredStyleJsonObject", flavouredStyleJsonObject);
     }
     if (innerBlocks == null) {
       return;
@@ -43,7 +49,7 @@ public class Block {
       return;
     }
     JsonArray jsonArray = new JsonArray();
-    jsonObject.put("childBlocks", jsonArray);
+    jsonObject.put("innerBlocks", jsonArray);
     addInnerBlocksToJsonArray(jsonArray);
   }
 
@@ -65,9 +71,11 @@ public class Block {
 
     serializeClassesJsonArray(targetBufferedString);
 
+    serializeAttributesJsonArray(targetBufferedString);
+
     serializeStyleJsonObject(targetBufferedString);
 
-    serializeAttributesJsonArray(targetBufferedString);
+    serializeFlavouredStyleJsonObject(targetBufferedString);
 
     if (spacesBefore >= 0) {
       serializeContents(targetBufferedString, serializationTag, spacesBefore + 2);
@@ -111,6 +119,23 @@ public class Block {
 
     for (String key : keys) {
       String value = styleJsonObject.getStringValue(key);
+      if (value != null) {
+        targetBufferedString.appendString(key + ":" + value + ";");
+      }
+    }
+    targetBufferedString.appendString("\"");
+  }
+
+  public void serializeFlavouredStyleJsonObject(BufferedString targetBufferedString) {
+    ArrayList<String> keys = flavouredStyleJsonObject.keys();
+    if (keys.isEmpty()) {
+      return;
+    }
+
+    targetBufferedString.appendString(" flavoured-style=\"");
+
+    for (String key : keys) {
+      String value = flavouredStyleJsonObject.getStringValue(key);
       if (value != null) {
         targetBufferedString.appendString(key + ":" + value + ";");
       }

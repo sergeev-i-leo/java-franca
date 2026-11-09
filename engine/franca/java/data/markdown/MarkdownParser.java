@@ -74,6 +74,7 @@ public class MarkdownParser extends HtmlParser {
       skipChars(7);
       HeadingBlock headingBlock = new HeadingBlock(6);
       parentBlock.addInnerBlock(headingBlock);
+      headingBlock.flavouredStyleJsonObject.putStringValue("font-name", "secondary-h6");
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -83,6 +84,7 @@ public class MarkdownParser extends HtmlParser {
       skipChars(6);
       HeadingBlock headingBlock = new HeadingBlock(5);
       parentBlock.addInnerBlock(headingBlock);
+      headingBlock.flavouredStyleJsonObject.putStringValue("font-name", "secondary-h5");
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -92,6 +94,7 @@ public class MarkdownParser extends HtmlParser {
       skipChars(5);
       HeadingBlock headingBlock = new HeadingBlock(4);
       parentBlock.addInnerBlock(headingBlock);
+      headingBlock.flavouredStyleJsonObject.putStringValue("font-name", "secondary-h4");
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -101,6 +104,7 @@ public class MarkdownParser extends HtmlParser {
       skipChars(4);
       HeadingBlock headingBlock = new HeadingBlock(3);
       parentBlock.addInnerBlock(headingBlock);
+      headingBlock.flavouredStyleJsonObject.putStringValue("font-name", "secondary-h3");
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -110,6 +114,7 @@ public class MarkdownParser extends HtmlParser {
       skipChars(3);
       HeadingBlock headingBlock = new HeadingBlock(2);
       parentBlock.addInnerBlock(headingBlock);
+      headingBlock.flavouredStyleJsonObject.putStringValue("font-name", "secondary-h2");
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;
@@ -119,6 +124,7 @@ public class MarkdownParser extends HtmlParser {
       skipChars(2);
       HeadingBlock headingBlock = new HeadingBlock(1);
       parentBlock.addInnerBlock(headingBlock);
+      headingBlock.flavouredStyleJsonObject.putStringValue("font-name", "secondary-h1");
       parseMarkdownTextContents(headingBlock, false);
       skipLine();
       return;

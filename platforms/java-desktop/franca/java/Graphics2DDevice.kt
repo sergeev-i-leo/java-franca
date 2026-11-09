@@ -49,7 +49,7 @@ open class Graphics2DDevice : Device() {
     }
   }
 
-  open fun resolveFont(fontName: String?, scale: Float?): Font {
+  open fun resolveFont(fontName: String?, fontWeight: String?, fontStyle: String?, scale: Float?): Font {
     if (scale == null) {
       return Font("SansSerif", Font.PLAIN, (18 * Painter.PRECISION).toInt())
     }

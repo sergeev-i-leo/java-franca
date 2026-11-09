@@ -13,13 +13,12 @@ public class Painter {
   public static final int TERTIARY_TEXT_COLOR = 6;
 
   public int currentOpacity = 255;
-  public String currentFontName = null;
 
-  public int calculateTextWidth(String fontName, String text) {
+  public int calculateTextWidth(String fontName, String fontWeight, String fontStyle, String text) {
     return 0;
   }
 
-  public int calculateFontHeight(String fontName) {
+  public int calculateFontHeight(String fontName, String fontWeight, String fontStyle) {
     return 0;
   }
 
@@ -29,19 +28,11 @@ public class Painter {
     return currentOpacity;
   }
 
-  public String setFontName(String fontName) {
-    String currentFontName = this.currentFontName;
-    if (fontName != null) {
-      this.currentFontName = fontName;
-    }
-    return currentFontName;
-  }
-
   public void fillCircle(int x, int y, int radius, int color) {
 
   }
 
-  public void paintText(String text, int x, int y, String fontName, int color, float scale) {
+  public void paintText(String text, int x, int y, String fontName, String fontWeight, String fontStyle, int color, float scale) {
 
   }
 

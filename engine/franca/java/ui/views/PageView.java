@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 public class PageView extends PanelView {
 
-  public ArrayList<View> views = new ArrayList<>();
-
   public int left = 0;
   public int top = 0;
   public int width = 0;

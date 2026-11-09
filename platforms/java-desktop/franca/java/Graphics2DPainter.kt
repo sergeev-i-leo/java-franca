@@ -17,20 +17,18 @@ class Graphics2DPainter(
     )
   }
 
-  override fun calculateTextWidth(fontName: String?, text: String?): Int {
+  override fun calculateTextWidth(fontName: String?, fontWeight: String, fontStyle: String?, text: String?): Int {
     if (text == null) {
       return 0
     }
 
-    val resolvedFontName = fontName ?: this.currentFontName
-    val font = graphics2DDevice.resolveFont(resolvedFontName, null)
+    val font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.stringWidth(text)
   }
 
-  override fun calculateFontHeight(fontName: String?): Int {
-    val resolvedFontName = fontName ?: this.currentFontName
-    val font = graphics2DDevice.resolveFont(resolvedFontName, null)
+  override fun calculateFontHeight(fontName: String?, fontWeight: String, fontStyle: String?): Int {
+    val font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.height
   }
@@ -51,7 +49,7 @@ class Graphics2DPainter(
     graphics2D.fillOval(px - pr, py - pr, pr * 2, pr * 2)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String, color: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
       color
@@ -59,7 +57,7 @@ class Graphics2DPainter(
       (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     graphics2D.color = Color(finalColor, true)
-    graphics2D.font = graphics2DDevice.resolveFont(fontName, scale);
-    graphics2D.drawString(text, (x * scale / Painter.PRECISION).toInt(), (y * scale / Painter.PRECISION).toInt())
+    graphics2D.font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, scale);
+    graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
   }
 }

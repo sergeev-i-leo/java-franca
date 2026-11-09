@@ -77,7 +77,7 @@ open class SkiaDevice() : Device() {
     }, 0, 2, TimeUnit.MILLISECONDS)
   }
 
-  open fun resolveFont(fontName: String?, scale: Float?): Font {
+  open fun resolveFont(fontName: String?, fontWeight: String?, fontStyle: String?, scale: Float?): Font {
     if (scale == null) {
       return Font(Typeface.makeDefault(), 18f * Painter.PRECISION)
     }

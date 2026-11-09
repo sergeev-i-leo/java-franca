@@ -101,8 +101,8 @@ public class DocumentFactory {
     targetBufferedString.finishLine();
     targetBufferedString.appendString("<body>");
     targetBufferedString.finishLine();
-    for (Block childBlock : block.getInnerBlocks()) {
-      childBlock.serialize(targetBufferedString, 2);
+    for (Block innerBlock : block.getInnerBlocks()) {
+      innerBlock.serialize(targetBufferedString, 2);
     }
     targetBufferedString.appendString("<body>");
     targetBufferedString.finishLine();
