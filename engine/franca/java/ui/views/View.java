@@ -31,8 +31,6 @@ public class View {
     }
     setState(0);
 
-    left = 0;
-    top = 0;
     width = 0;
     height = 0;
 
@@ -43,7 +41,7 @@ public class View {
     return state == 1;
   }
 
-  public void paint(Device device, Painter painter) {
+  public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
   }
 
   public void handlePointerDown(Device device, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {

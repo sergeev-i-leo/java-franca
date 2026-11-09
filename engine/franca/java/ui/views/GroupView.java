@@ -38,8 +38,6 @@ public class GroupView extends View {
       scale *= viewsScale;
     }
 
-    left = 0;
-    top = 0;
     width = 0;
     height = 0;
 
@@ -47,14 +45,17 @@ public class GroupView extends View {
 
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
+
+      if (!view.positionedAbsolutely) {
+        view.left = 0;
+        view.top = viewsTop;
+      }
+
       view.getReady(device, painter, availableWidth, availableHeight, scale);
 
       if (view.positionedAbsolutely) {
         continue;
       }
-
-      view.left = 0;
-      view.top = viewsTop;
 
       width = Math.max(view.left + view.width, width);
       height = Math.max(view.top + view.height, height);
@@ -66,9 +67,9 @@ public class GroupView extends View {
   }
 
   @Override
-  public void paint(Device device, Painter painter) {
+  public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
     for (int i = 0; i < views.size(); i++) {
-      views.get(i).paint(device, painter);
+      views.get(i).paint(device, painter, painterX, painterY, scale);
     }
   }
 }

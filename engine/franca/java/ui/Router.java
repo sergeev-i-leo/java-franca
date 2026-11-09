@@ -19,8 +19,10 @@ public class Router {
       return;
     }
     View view = views.get(0);
+    view.left = 0;
+    view.top = 0;
     if (view.isReady()) {
-      view.paint(device, painter);
+      view.paint(device, painter, view.left, view.top, null);
       return;
     }
     view.getReady(device, painter, device.getWidth(), device.getHeight(), 1f);

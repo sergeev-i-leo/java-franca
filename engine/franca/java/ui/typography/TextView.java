@@ -13,7 +13,12 @@ import java.util.ArrayList;
 public class TextView extends View {
 
   public String fontName = null;
-  public Integer fontColor = null;
+  public Integer color = null;
+
+  public int paddingLeft = 0;
+  public int paddingTop = 0;
+  public int paddingRight = 0;
+  public int paddingBottom = 0;
 
   public TextBlock textBlock = null;
 
@@ -37,8 +42,6 @@ public class TextView extends View {
 
     lettersViews.clear();
 
-    left = 0;
-    top = 0;
     width = 0;
     height = 0;
 
@@ -53,8 +56,8 @@ public class TextView extends View {
     } else {
       fontName = "primary";
     }
+    color = Painter.PRIMARY_TEXT_COLOR;
 
-    fontColor = Painter.PRIMARY_TEXT_COLOR;
     lettersViews.clear();
 
     LettersView lettersView = null;
@@ -68,6 +71,16 @@ public class TextView extends View {
 
     }
 
+    if (lettersView == null) {
+      lettersView = new LettersView();
+      lettersViews.add(lettersView);
+      lettersView.fontName = fontName;
+      lettersView.color = color;
+    }
+
     setState(1);
+  }
+
+  public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
   }
 }

@@ -20,31 +20,9 @@ public class PageView extends PanelView {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
-    if (isReady()) {
-      return;
-    }
-    if (getState() == 0) {
-      return;
-    }
-    setState(0);
-
-    left = 0;
-    top = 0;
-    width = availableWidth;
-    height = availableHeight;
+  public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
     for (int i = 0; i < views.size(); i++) {
-      View view = views.get(i);
-      view.getReady(device, painter, availableWidth, availableHeight, 1f);
-    }
-
-    setState(1);
-  }
-
-  @Override
-  public void paint(Device device, Painter painter) {
-    for (int i = 0; i < views.size(); i++) {
-      views.get(i).paint(device, painter);
+      views.get(i).paint(device, painter, painterX, painterY, scale);
     }
   }
 
