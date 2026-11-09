@@ -9,19 +9,17 @@ class SkiaPainter(
   private val canvas: Canvas
 ) : Painter() {
 
-  override fun calculateTextWidth(fontName: String?, text: String?): Int {
+  override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?): Int {
     if (text == null) {
       return 0
     }
 
-    val resolvedFontName = fontName ?: this.currentFontName
-    val font = skiaDevice.resolveFont(resolvedFontName, null)
+    val font = skiaDevice.resolveFont(fontName, fontWeight, fontStyle, null)
     return font.measureTextWidth(text).toInt()
   }
 
-  override fun calculateFontHeight(fontName: String?): Int {
-    val resolvedFontName = fontName ?: this.currentFontName
-    val font = skiaDevice.resolveFont(resolvedFontName, null)
+  override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?): Int {
+    val font = skiaDevice.resolveFont(fontName, fontWeight, fontStyle, null)
     return font.metrics.height.toInt()
   }
 
@@ -45,8 +43,8 @@ class SkiaPainter(
     canvas.drawCircle(px, py, pr, paint)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String, color: Int, scale: Float) {
-    val font = skiaDevice.resolveFont(fontName, scale)
+  override fun paintText(text: String, x: Int, y: Int, fontName: String, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
+    val font = skiaDevice.resolveFont(fontName, fontWeight, fontStyle, scale)
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
       color

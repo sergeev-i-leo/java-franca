@@ -17,7 +17,7 @@ class Graphics2DPainter(
     )
   }
 
-  override fun calculateTextWidth(fontName: String?, fontWeight: String, fontStyle: String?, text: String?): Int {
+  override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?): Int {
     if (text == null) {
       return 0
     }
@@ -27,7 +27,7 @@ class Graphics2DPainter(
     return metrics.stringWidth(text)
   }
 
-  override fun calculateFontHeight(fontName: String?, fontWeight: String, fontStyle: String?): Int {
+  override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?): Int {
     val font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.height

@@ -3,7 +3,6 @@ package franca.java.ui.typography;
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
-import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.LettersBlock;
 import franca.java.office.document.typography.TextBlock;
 import franca.java.ui.Device;
@@ -15,7 +14,9 @@ import java.util.ArrayList;
 public class TextView extends View {
 
   public String fontName = null;
-  public Integer fontColor = null;
+  public String fontWeight = null;
+  public String fontStyle = null;
+  public int color = 0;
 
   public int paddingLeft = 0;
   public int paddingTop = 0;
@@ -54,18 +55,56 @@ public class TextView extends View {
     }
 
     fontName = textBlock.flavouredStyleJsonObject.getStringValue("font-name");
-    fontColor = textBlock.flavouredStyleJsonObject.getIntegerValue("font-color");
-    if (fontColor == null) {
-      fontColor = Painter.PRIMARY_TEXT_COLOR;
+    fontWeight = textBlock.flavouredStyleJsonObject.getStringValue("font-weight");
+    fontStyle = textBlock.flavouredStyleJsonObject.getStringValue("font-style");
+    /*color = textBlock.styleJsonObject.getStringValue("color");
+    if (color == null) {
+      //fontColor = Painter.PRIMARY_TEXT_COLOR;
+    }*/
+    color = Painter.PRIMARY_TEXT_COLOR;
+
+    ArrayList<Block> blocks = textBlock.getInnerBlocks();
+
+    ArrayList<FormatItem> formatItems = new ArrayList<>();
+
+    for (int i = 0; i < blocks.size(); i++) {
+      Block block = blocks.get(i);
+      if (!(block instanceof LettersBlock)) {
+        continue;
+      }
+
+      LettersBlock lettersBlock = (LettersBlock) block;
+      FormatItem formatItem = new FormatItem(lettersBlock);
+      formatItems.add(formatItem);
+
+      formatItem.fontName = lettersBlock.flavouredStyleJsonObject.getStringValue("font-name");
+      if (formatItem.fontName == null) {
+        formatItem.fontName = fontName;
+      }
+      formatItem.fontWeight = lettersBlock.flavouredStyleJsonObject.getStringValue("font-wight");
+      if (formatItem.fontWeight == null) {
+        formatItem.fontWeight = fontWeight;
+      }
+      formatItem.fontStyle = lettersBlock.flavouredStyleJsonObject.getStringValue("font-style");
+      if (formatItem.fontStyle == null) {
+        formatItem.fontStyle = fontStyle;
+      }
+      formatItem.width = painter.calculateTextWidth(lettersBlock.letters, formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
+      formatItem.buildKey();
     }
 
     lettersViews.clear();
 
-    LettersView lettersView = null;
-    boolean bold = false;
-    boolean italic = false;
+    if (formatItems.isEmpty()) {
+      LettersView lettersView = new LettersView();
+      lettersViews.add(lettersView);
 
-    ArrayList<Block> blocks = textBlock.getInnerBlocks();
+      FormatItem formatItem = new FormatItem(null);
+      formatItems.add(formatItem);
+      formatItem.fontName = fontName;
+      formatItem.fontWeight = fontWeight;
+      formatItem.fontStyle = fontStyle;
+    }
 
     BufferedString bufferedString = new BufferedString();
 
@@ -73,37 +112,63 @@ public class TextView extends View {
     int y = paddingTop;
     availableWidth = availableWidth - paddingLeft - paddingRight;
 
-    ArrayList<Integer> widths = new ArrayList<>();
+    LettersView lettersView = null;
+    String key = "";
+    for (int i = 0; i < formatItems.size(); i++) {
+      FormatItem formatItem = formatItems.get(i);
+      if (formatItem.lettersBlock == null) {
+        // empty
+        lettersView = new LettersView();
+        lettersViews.add(lettersView);
+        lettersView.letters = "";
+        lettersView.fontName = fontName;
+        lettersView.fontStyle = fontStyle;
+        lettersView.fontName = fontName;
+        lettersView.fontName = fontName;
+      } else {
 
-    for (int i = 0; i < blocks.size(); i++) {
-      Block block = blocks.get(i);
-      if (!(block instanceof LettersBlock)) {
-        widths.add(0);
-        continue;
       }
-      LettersBlock lettersBlock = (LettersBlock) block;
-      String lettersBlockFontName = lettersBlock.flavouredStyleJsonObject.getStringValue("font-name");
-      if (lettersBlockFontName == null) {
-        int width = painter.calculateTextWidth(fontName, lettersBlock.letters);
-        widths.add(width);
-      }
-    }
-
-    if (lettersView == null) {
-      lettersView = new LettersView();
-      lettersViews.add(lettersView);
-      lettersView.fontName = fontName;
-      lettersView.fontColor = fontColor;
-      lettersView.left = paddingLeft;
-      lettersView.top = paddingTop;
-      lettersView.getReady(device, painter, availableWidth, availableHeight, scale);
-      width = lettersView.left + lettersView.width + paddingRight;
-      height = lettersView.top + lettersView.height + paddingBottom;
     }
 
     setState(1);
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
+  }
+}
+
+class FormatItem {
+
+  LettersBlock lettersBlock;
+  String fontName = null;
+  String fontWeight = null;
+  String fontStyle = null;
+  int color = 0;
+  int width = 0;
+  String key = null;
+
+  FormatItem(LettersBlock lettersBlock) {
+    this.lettersBlock = lettersBlock;
+  }
+
+  void buildKey() {
+
+    if (fontName != null) {
+      key = fontName;
+    } else {
+      key = "fontName";
+    }
+
+    if (fontWeight != null) {
+      key += fontWeight;
+    } else {
+      key += "fontWeight";
+    }
+
+    if (fontStyle != null) {
+      key += fontStyle;
+    } else {
+      key += "fontStyle";
+    }
   }
 }

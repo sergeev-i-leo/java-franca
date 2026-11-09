@@ -14,7 +14,7 @@ public class Painter {
 
   public int currentOpacity = 255;
 
-  public int calculateTextWidth(String fontName, String fontWeight, String fontStyle, String text) {
+  public int calculateTextWidth(String text, String fontName, String fontWeight, String fontStyle) {
     return 0;
   }
 
