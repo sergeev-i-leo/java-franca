@@ -233,12 +233,16 @@ public class TextView extends View {
 
       lineHeight = Math.max(fontHeight, lineHeight);
     }
-    
+
     height += lineHeight;
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
     painter.setCurrentTextStyle(textStyle);
+    for (int i = 0; i < lettersViews.size(); i++) {
+      LettersView letterView = lettersViews.get(i);
+      letterView.paint(device, painter, painterX, painterY, scale);
+    }
   }
 }
 

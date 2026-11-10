@@ -15,6 +15,6 @@ public class LettersView extends View {
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
+    painter.paintText(letters, painterX + left, painterY + top, textStyle.fontName, textStyle.fontWeight, textStyle.fontStyle, textStyle.color, scale);
   }
-
 }

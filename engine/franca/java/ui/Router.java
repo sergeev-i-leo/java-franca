@@ -22,7 +22,7 @@ public class Router {
     view.left = 0;
     view.top = 0;
     if (view.isReady()) {
-      view.paint(device, painter, view.left, view.top, null);
+      view.paint(device, painter, view.left, view.top, 1f);
       return;
     }
     view.getReady(device, painter, device.getWidth(), device.getHeight(), 1f);

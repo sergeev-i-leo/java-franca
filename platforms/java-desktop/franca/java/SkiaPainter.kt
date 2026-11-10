@@ -72,7 +72,7 @@ class SkiaPainter(
     canvas.drawCircle(px, py, pr, paint)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
     var currentFontName = fontName
     var currentFontWeight = fontWeight
     var currentFontStyle = fontName;
