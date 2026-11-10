@@ -22,13 +22,44 @@ class Graphics2DPainter(
       return 0
     }
 
-    val font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, null)
+    var currentFontName = fontName
+    var currentFontWeight = fontWeight
+    var currentFontStyle = fontName;
+    if (currentTextStyle != null) {
+      if (currentFontName == null) {
+        currentFontName = currentTextStyle.fontName
+      }
+      if (currentFontWeight == null) {
+        currentFontWeight = currentTextStyle.fontWeight
+      }
+      if (currentFontStyle == null) {
+        currentFontStyle = currentTextStyle.fontStyle
+      }
+    }
+
+    val font = graphics2DDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.stringWidth(text)
   }
 
   override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?): Int {
-    val font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, null)
+
+    var currentFontName = fontName
+    var currentFontWeight = fontWeight
+    var currentFontStyle = fontName;
+    if (currentTextStyle != null) {
+      if (currentFontName == null) {
+        currentFontName = currentTextStyle.fontName
+      }
+      if (currentFontWeight == null) {
+        currentFontWeight = currentTextStyle.fontWeight
+      }
+      if (currentFontStyle == null) {
+        currentFontStyle = currentTextStyle.fontStyle
+      }
+    }
+
+    val font = graphics2DDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, null)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.height
   }
@@ -50,6 +81,22 @@ class Graphics2DPainter(
   }
 
   override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
+    var currentFontName = fontName
+    var currentFontWeight = fontWeight
+    var currentFontStyle = fontName;
+    if (currentTextStyle != null) {
+      if (currentFontName == null) {
+        currentFontName = currentTextStyle.fontName
+      }
+      if (currentFontWeight == null) {
+        currentFontWeight = currentTextStyle.fontWeight
+      }
+      if (currentFontStyle == null) {
+        currentFontStyle = currentTextStyle.fontStyle
+      }
+    }
+    graphics2D.font = graphics2DDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, scale)
+
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
       color
@@ -57,7 +104,6 @@ class Graphics2DPainter(
       (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     graphics2D.color = Color(finalColor, true)
-    graphics2D.font = graphics2DDevice.resolveFont(fontName, fontWeight, fontStyle, scale);
     graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
   }
 }

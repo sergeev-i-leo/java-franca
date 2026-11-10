@@ -8,15 +8,11 @@ import franca.java.office.document.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
 import franca.java.ui.views.View;
+import franca.java.ui.TextStyle;
 
 import java.util.ArrayList;
 
 public class TextView extends View {
-
-  public String fontName = null;
-  public String fontWeight = null;
-  public String fontStyle = null;
-  public int color = 0;
 
   public int paddingLeft = 0;
   public int paddingTop = 0;
@@ -27,6 +23,11 @@ public class TextView extends View {
   public TextBlock textBlock = null;
 
   public ArrayList<LettersView> lettersViews = new ArrayList<>();
+
+  public TextView() {
+    super();
+    textStyle = new TextStyle();
+  }
 
   public void setText(String text) {
     MarkdownParser markdownParser = new MarkdownParser();
@@ -54,14 +55,7 @@ public class TextView extends View {
       return;
     }
 
-    fontName = textBlock.flavouredStyleJsonObject.getStringValue("font-name");
-    fontWeight = textBlock.flavouredStyleJsonObject.getStringValue("font-weight");
-    fontStyle = textBlock.flavouredStyleJsonObject.getStringValue("font-style");
-    /*color = textBlock.styleJsonObject.getStringValue("color");
-    if (color == null) {
-      //fontColor = Painter.PRIMARY_TEXT_COLOR;
-    }*/
-    color = Painter.PRIMARY_TEXT_COLOR;
+    textStyle.fontName = textBlock.flavouredStyleJsonObject.getStringValue("font-name");
 
     ArrayList<Block> blocks = textBlock.getInnerBlocks();
 
@@ -79,15 +73,15 @@ public class TextView extends View {
 
       formatItem.fontName = lettersBlock.flavouredStyleJsonObject.getStringValue("font-name");
       if (formatItem.fontName == null) {
-        formatItem.fontName = fontName;
+        formatItem.fontName = textStyle.fontName;
       }
-      formatItem.fontWeight = lettersBlock.flavouredStyleJsonObject.getStringValue("font-wight");
+      formatItem.fontWeight = lettersBlock.styleJsonObject.getStringValue("font-wight");
       if (formatItem.fontWeight == null) {
-        formatItem.fontWeight = fontWeight;
+        formatItem.fontWeight = textStyle.fontWeight;
       }
       formatItem.fontStyle = lettersBlock.flavouredStyleJsonObject.getStringValue("font-style");
       if (formatItem.fontStyle == null) {
-        formatItem.fontStyle = fontStyle;
+        formatItem.fontStyle = textStyle.fontStyle;
       }
       formatItem.width = painter.calculateTextWidth(lettersBlock.letters, formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
       formatItem.buildKey();
@@ -101,9 +95,9 @@ public class TextView extends View {
 
       FormatItem formatItem = new FormatItem(null);
       formatItems.add(formatItem);
-      formatItem.fontName = fontName;
-      formatItem.fontWeight = fontWeight;
-      formatItem.fontStyle = fontStyle;
+      formatItem.fontName = textStyle.fontName;
+      formatItem.fontWeight = textStyle.fontWeight;
+      formatItem.fontStyle = textStyle.fontStyle;
     }
 
     BufferedString bufferedString = new BufferedString();
@@ -124,7 +118,7 @@ public class TextView extends View {
         lettersView.fontName = fontName;
         lettersView.fontStyle = fontStyle;
         lettersView.fontName = fontName;
-        lettersView.fontName = fontName;
+        lettersView.color = fontName;
       } else {
 
       }
@@ -134,6 +128,7 @@ public class TextView extends View {
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
+    painter.setCurrentTextStyle(textStyle);
   }
 }
 

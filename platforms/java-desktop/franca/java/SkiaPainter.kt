@@ -14,12 +14,42 @@ class SkiaPainter(
       return 0
     }
 
-    val font = skiaDevice.resolveFont(fontName, fontWeight, fontStyle, null)
+    var currentFontName = fontName
+    var currentFontWeight = fontWeight
+    var currentFontStyle = fontName;
+    if (currentTextStyle != null) {
+      if (currentFontName == null) {
+        currentFontName = currentTextStyle.fontName
+      }
+      if (currentFontWeight == null) {
+        currentFontWeight = currentTextStyle.fontWeight
+      }
+      if (currentFontStyle == null) {
+        currentFontStyle = currentTextStyle.fontStyle
+      }
+    }
+
+    val font = skiaDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, null)
     return font.measureTextWidth(text).toInt()
   }
 
   override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?): Int {
-    val font = skiaDevice.resolveFont(fontName, fontWeight, fontStyle, null)
+    var currentFontName = fontName
+    var currentFontWeight = fontWeight
+    var currentFontStyle = fontName;
+    if (currentTextStyle != null) {
+      if (currentFontName == null) {
+        currentFontName = currentTextStyle.fontName
+      }
+      if (currentFontWeight == null) {
+        currentFontWeight = currentTextStyle.fontWeight
+      }
+      if (currentFontStyle == null) {
+        currentFontStyle = currentTextStyle.fontStyle
+      }
+    }
+
+    val font = skiaDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, null)
     return font.metrics.height.toInt()
   }
 
@@ -44,7 +74,22 @@ class SkiaPainter(
   }
 
   override fun paintText(text: String, x: Int, y: Int, fontName: String, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
-    val font = skiaDevice.resolveFont(fontName, fontWeight, fontStyle, scale)
+    var currentFontName = fontName
+    var currentFontWeight = fontWeight
+    var currentFontStyle = fontName;
+    if (currentTextStyle != null) {
+      if (currentFontName == null) {
+        currentFontName = currentTextStyle.fontName
+      }
+      if (currentFontWeight == null) {
+        currentFontWeight = currentTextStyle.fontWeight
+      }
+      if (currentFontStyle == null) {
+        currentFontStyle = currentTextStyle.fontStyle
+      }
+    }
+    val font = skiaDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, scale)
+
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
       color

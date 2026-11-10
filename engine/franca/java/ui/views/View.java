@@ -2,6 +2,7 @@ package franca.java.ui.views;
 
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
+import franca.java.ui.TextStyle;
 
 public class View {
 
@@ -11,6 +12,8 @@ public class View {
   public int height = 0;
 
   public boolean positionedAbsolutely = false;
+
+  public TextStyle textStyle = null;
 
   volatile private int state = -1;
 
