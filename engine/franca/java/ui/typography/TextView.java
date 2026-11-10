@@ -85,6 +85,7 @@ public class TextView extends View {
         formatItem.fontStyle = textStyle.fontStyle;
       }
       formatItem.width = painter.calculateTextWidth(lettersBlock.letters, formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
+      formatItem.fontHeight = painter.calculateFontHeight(formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
     }
 
     lettersViews.clear();
@@ -105,64 +106,135 @@ public class TextView extends View {
     }
 
     availableWidth = availableWidth - paddingLeft - paddingRight;
-    int viewsTop = paddingTop;
+    height = paddingTop;
     availableWidth=4000;
 
     // first letter
     int i0 = 0;
     // space
     int i1 = 0;
-    int viewsWidth = 0;
+    int accumulatedWidth = 0;
     int i2 = 0;
     while (i2 < formatItems.size()) {
       FormatItem formatItem = formatItems.get(i2);
-      if (!formatItem.lettersBlock.letters.equals(" ")) {
-        viewsWidth += formatItem.width;
+      if (!formatItem.lettersBlock.type.equals(LettersBlock.TYPE_SPACE)) {
+        accumulatedWidth += formatItem.width;
         i2++;
         continue;
       }
       // space found
-      if (viewsWidth + formatItem.width < availableWidth) {
+      if (accumulatedWidth + formatItem.width < availableWidth) {
         i1 = i2;
-        viewsWidth += formatItem.width;
+        accumulatedWidth += formatItem.width;
         i2++;
         continue;
       }
       if (i1 == i0) {
         // first space on long line
-        viewsTop += buildLettersViews(formatItems, i0, i2, viewsTop);
-        viewsTop += lineSpacing;
+        buildLettersViews(formatItems, i0, i2);
         i0 = i2 + 1;
         i1 = i2 + 1;
-        viewsWidth = 0;
+        accumulatedWidth = 0;
         i2++;
         continue;
       }
-      viewsTop += buildLettersViews(formatItems, i0, i1, viewsTop);
-      viewsTop += lineSpacing;
+      buildLettersViews(formatItems, i0, i1);
       i0 = i1 + 1;
       i1 = i2;
-      viewsWidth = 0;
+      accumulatedWidth = 0;
       for (int i3 = i0; i3 <= i1; i3++) {
-        viewsWidth += formatItems.get(i3).width;
+        accumulatedWidth += formatItems.get(i3).width;
       }
       i2++;
     }
 
+    height += paddingBottom;
+
     setState(1);
   }
 
-  public int buildLettersViews(ArrayList<FormatItem> formatItems, int i0, int i1, int viewsTop) {
-    int lineHeight = 0;
-    /*BufferedString bufferedString = new BufferedString();
-    String key0 = null;
-    if (key0 == null) {
-      key0 = formatItem.getKey();
-    } else {
-      String key1 = formatItem.getKey();
-    }*/
+  public void buildLettersViews(ArrayList<FormatItem> formatItems, int i0, int i1) {
+    FormatItem formatItem = formatItems.get(i0);
+    String fontName = formatItem.fontName;
+    String fontWeight = formatItem.fontWeight;
+    String fontStyle = formatItem.fontStyle;
+    int color = formatItem.color;
+    int fontHeight = formatItem.fontHeight;
 
-    return lineHeight;
+    if (!lettersViews.isEmpty()) {
+      height += lineSpacing;
+    }
+
+    int x = paddingLeft;
+    int allocatedWidth = 0;
+    int lineHeight = 0;
+
+    BufferedString bufferedString = new BufferedString();
+    for (int i2 = i0; i2 <= i1; i2++) {
+      formatItem = formatItems.get(i2);
+      boolean formatChanged = false;
+      if ((formatItem.fontName != null) && (formatItem == null)) {
+        formatChanged = true;
+      } else if ((formatItem.fontName == null) && (formatItem != null)) {
+        formatChanged = true;
+      } else if (!formatItem.fontName.equals(fontName)) {
+        formatChanged = true;
+      } else if ((formatItem.fontWeight != null) && (fontWeight == null)) {
+        formatChanged = true;
+      } else if ((formatItem.fontWeight == null) && (fontWeight != null)) {
+        formatChanged = true;
+      } else if (!formatItem.fontWeight.equals(fontWeight)) {
+        formatChanged = true;
+      } else if ((formatItem.fontStyle != null) && (fontStyle == null)) {
+        formatChanged = true;
+      } else if ((formatItem.fontStyle == null) && (fontStyle != null)) {
+        formatChanged = true;
+      } else if (!formatItem.fontStyle.equals(fontStyle)) {
+        formatChanged = true;
+      } else if (formatItem.color != color) {
+        formatChanged = true;
+      }
+      if (!formatChanged) {
+        bufferedString.appendString(formatItem.lettersBlock.letters);
+        allocatedWidth += formatItem.width;
+        continue;
+      }
+      LettersView lettersView = new LettersView();
+      lettersViews.add(lettersView);
+      lettersView.letters = bufferedString.getString();
+      lettersView.textStyle = new TextStyle();
+      lettersView.left = x;
+      lettersView.top = height;
+      lettersView.width = allocatedWidth;
+      lettersView.height = fontHeight;
+
+      x += allocatedWidth;
+      lineHeight = Math.max(fontHeight, lineHeight);
+
+      bufferedString.clear();
+      bufferedString.appendString(formatItem.lettersBlock.letters);
+
+      fontName = formatItem.fontName;
+      fontWeight = formatItem.fontWeight;
+      fontStyle = formatItem.fontStyle;
+      color = formatItem.color;
+      fontHeight = formatItem.fontHeight;
+    }
+
+    if (bufferedString.isNotEmpty()) {
+      LettersView lettersView = new LettersView();
+      lettersViews.add(lettersView);
+      lettersView.letters = bufferedString.getString();
+      lettersView.textStyle = new TextStyle();
+      lettersView.left = x;
+      lettersView.top = height;
+      lettersView.width = allocatedWidth;
+      lettersView.height = fontHeight;
+
+      lineHeight = Math.max(fontHeight, lineHeight);
+    }
+    
+    height += lineHeight;
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
@@ -174,32 +246,9 @@ class FormatItem extends TextStyle {
 
   LettersBlock lettersBlock;
   int width = 0;
+  int fontHeight = 0;
 
   FormatItem(LettersBlock lettersBlock) {
     this.lettersBlock = lettersBlock;
-  }
-
-  String getKey() {
-    String key;
-
-    if (fontName != null) {
-      key = fontName;
-    } else {
-      key = "fontName";
-    }
-
-    if (fontWeight != null) {
-      key += "#" + fontWeight;
-    } else {
-      key += "$fontWeight";
-    }
-
-    if (fontStyle != null) {
-      key += "#" + fontStyle;
-    } else {
-      key += "#fontStyle";
-    }
-
-    return key + "#" + color;
   }
 }
