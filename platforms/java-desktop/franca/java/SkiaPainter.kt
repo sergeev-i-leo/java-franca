@@ -99,6 +99,8 @@ class SkiaPainter(
       this.color = finalColor
       isAntiAlias = true
     }
-    canvas.drawString(text, x * scale / PRECISION, y * scale / PRECISION, font, textPaint)
+    val metrics = font.metrics
+    val baselineY = (y * scale / PRECISION - metrics.ascent)
+    canvas.drawString(text, x * scale / PRECISION, baselineY, font, textPaint)
   }
 }

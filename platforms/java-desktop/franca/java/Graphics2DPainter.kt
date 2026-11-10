@@ -104,6 +104,7 @@ class Graphics2DPainter(
       (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     graphics2D.color = Color(finalColor, true)
-    graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
+    //graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
+    graphics2D.drawString(text, 0, 0)
   }
 }
