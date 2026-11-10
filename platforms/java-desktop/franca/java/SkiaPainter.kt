@@ -1,6 +1,5 @@
 package franca.java
 
-import franca.java.ui.Device
 import franca.java.ui.Painter
 import org.jetbrains.skia.*
 

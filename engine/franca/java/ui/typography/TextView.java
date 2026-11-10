@@ -11,6 +11,7 @@ import franca.java.ui.views.View;
 import franca.java.ui.TextStyle;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TextView extends View {
 
@@ -75,7 +76,7 @@ public class TextView extends View {
       if (formatItem.fontName == null) {
         formatItem.fontName = textStyle.fontName;
       }
-      formatItem.fontWeight = lettersBlock.styleJsonObject.getStringValue("font-wight");
+      formatItem.fontWeight = lettersBlock.styleJsonObject.getStringValue("font-weight");
       if (formatItem.fontWeight == null) {
         formatItem.fontWeight = textStyle.fontWeight;
       }
@@ -84,7 +85,6 @@ public class TextView extends View {
         formatItem.fontStyle = textStyle.fontStyle;
       }
       formatItem.width = painter.calculateTextWidth(lettersBlock.letters, formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
-      formatItem.buildKey();
     }
 
     lettersViews.clear();
@@ -92,39 +92,77 @@ public class TextView extends View {
     if (formatItems.isEmpty()) {
       LettersView lettersView = new LettersView();
       lettersViews.add(lettersView);
+      lettersView.left = paddingLeft;
+      lettersView.top = paddingTop;
+      lettersView.letters = "";
+      lettersView.height = painter.calculateFontHeight(textStyle.fontName, textStyle.fontWeight, textStyle.fontStyle);
 
-      FormatItem formatItem = new FormatItem(null);
-      formatItems.add(formatItem);
-      formatItem.fontName = textStyle.fontName;
-      formatItem.fontWeight = textStyle.fontWeight;
-      formatItem.fontStyle = textStyle.fontStyle;
+      width = paddingLeft + lettersView.width + paddingRight;
+      height = paddingTop + lettersView.height + paddingBottom;
+
+      setState(1);
+      return;
     }
 
-    BufferedString bufferedString = new BufferedString();
-
-    int x = paddingLeft;
-    int y = paddingTop;
     availableWidth = availableWidth - paddingLeft - paddingRight;
+    int viewsTop = paddingTop;
+    availableWidth=4000;
 
-    LettersView lettersView = null;
-    String key = "";
-    for (int i = 0; i < formatItems.size(); i++) {
-      FormatItem formatItem = formatItems.get(i);
-      if (formatItem.lettersBlock == null) {
-        // empty
-        lettersView = new LettersView();
-        lettersViews.add(lettersView);
-        lettersView.letters = "";
-        lettersView.fontName = fontName;
-        lettersView.fontStyle = fontStyle;
-        lettersView.fontName = fontName;
-        lettersView.color = fontName;
-      } else {
-
+    // first letter
+    int i0 = 0;
+    // space
+    int i1 = 0;
+    int viewsWidth = 0;
+    int i2 = 0;
+    while (i2 < formatItems.size()) {
+      FormatItem formatItem = formatItems.get(i2);
+      if (!formatItem.lettersBlock.letters.equals(" ")) {
+        viewsWidth += formatItem.width;
+        i2++;
+        continue;
       }
+      // space found
+      if (viewsWidth + formatItem.width < availableWidth) {
+        i1 = i2;
+        viewsWidth += formatItem.width;
+        i2++;
+        continue;
+      }
+      if (i1 == i0) {
+        // first space on long line
+        viewsTop += buildLettersViews(formatItems, i0, i2, viewsTop);
+        viewsTop += lineSpacing;
+        i0 = i2 + 1;
+        i1 = i2 + 1;
+        viewsWidth = 0;
+        i2++;
+        continue;
+      }
+      viewsTop += buildLettersViews(formatItems, i0, i1, viewsTop);
+      viewsTop += lineSpacing;
+      i0 = i1 + 1;
+      i1 = i2;
+      viewsWidth = 0;
+      for (int i3 = i0; i3 <= i1; i3++) {
+        viewsWidth += formatItems.get(i3).width;
+      }
+      i2++;
     }
 
     setState(1);
+  }
+
+  public int buildLettersViews(ArrayList<FormatItem> formatItems, int i0, int i1, int viewsTop) {
+    int lineHeight = 0;
+    /*BufferedString bufferedString = new BufferedString();
+    String key0 = null;
+    if (key0 == null) {
+      key0 = formatItem.getKey();
+    } else {
+      String key1 = formatItem.getKey();
+    }*/
+
+    return lineHeight;
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
@@ -132,21 +170,17 @@ public class TextView extends View {
   }
 }
 
-class FormatItem {
+class FormatItem extends TextStyle {
 
   LettersBlock lettersBlock;
-  String fontName = null;
-  String fontWeight = null;
-  String fontStyle = null;
-  int color = 0;
   int width = 0;
-  String key = null;
 
   FormatItem(LettersBlock lettersBlock) {
     this.lettersBlock = lettersBlock;
   }
 
-  void buildKey() {
+  String getKey() {
+    String key;
 
     if (fontName != null) {
       key = fontName;
@@ -155,15 +189,17 @@ class FormatItem {
     }
 
     if (fontWeight != null) {
-      key += fontWeight;
+      key += "#" + fontWeight;
     } else {
-      key += "fontWeight";
+      key += "$fontWeight";
     }
 
     if (fontStyle != null) {
-      key += fontStyle;
+      key += "#" + fontStyle;
     } else {
-      key += "fontStyle";
+      key += "#fontStyle";
     }
+
+    return key + "#" + color;
   }
 }
