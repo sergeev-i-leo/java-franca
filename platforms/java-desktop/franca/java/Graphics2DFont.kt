@@ -19,12 +19,12 @@ class Graphics2DFont(
   var baselineY = 0.0f
 
   var derivedFont: Font
-  var derivedSize: Float
+  var derivedFontSize: Float
 
   init {
     this.font = font.deriveFont(fontSize)
     derivedFont = this.font
-    derivedSize = fontSize
+    derivedFontSize = fontSize
 
     val fontRenderContext = FontRenderContext(null, true, true)
     val metrics = this.font.getLineMetrics("Ag", fontRenderContext)
@@ -38,12 +38,12 @@ class Graphics2DFont(
     baselineY = (ascent - descent) / 2f + ascent * 0.05f
   }
 
-  public fun deriveFont(size: Float): Font {
-    if ((size * 100f).toInt() == (derivedSize * 100f).toInt()) {
+  fun deriveFont(size: Float): Font {
+    if ((size * 100f).toInt() == (derivedFontSize * 100f).toInt()) {
       return derivedFont
     }
-    derivedSize = size
-    derivedFont = font.deriveFont(derivedSize)
+    derivedFontSize = size
+    derivedFont = font.deriveFont(derivedFontSize)
     return derivedFont
   }
 }

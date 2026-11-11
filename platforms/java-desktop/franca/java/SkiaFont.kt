@@ -8,7 +8,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 class SkiaFont(
-  typeface: Typeface,
+  val typeface: Typeface,
   fontSize: Float
 ) {
 
@@ -25,6 +25,9 @@ class SkiaFont(
   var height = 0
   var baselineY = 0.0f
 
+  var derivedFont: Font
+  var derivedFontSize: Float
+
   init {
     val metrics = font.metrics
     ascent = metrics.ascent
@@ -37,6 +40,9 @@ class SkiaFont(
     lineHeight = descent - ascent + leading
     height = (descent - ascent).roundToInt()
     baselineY = computeBaselineY(font)
+
+    derivedFont = Font(typeface, fontSize)
+    derivedFontSize = fontSize
   }
 
   private fun computeBaselineY(font: Font): Float {
@@ -65,5 +71,12 @@ class SkiaFont(
     return bounds.height / 2f - bounds.bottom
   }
 
-  fun measureTextWidth(text: String): Int = font.measureTextWidth(text).roundToInt()
+  fun deriveFont(size: Float): Font {
+    if ((size * 100f).toInt() == (derivedFontSize * 100f).toInt()) {
+      return derivedFont
+    }
+    derivedFontSize = size
+    derivedFont = Font(typeface, derivedFontSize)
+    return derivedFont
+  }
 }
