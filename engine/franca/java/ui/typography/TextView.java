@@ -107,7 +107,7 @@ public class TextView extends View {
 
     availableWidth = availableWidth - paddingLeft - paddingRight;
     height = paddingTop;
-    availableWidth=4000;
+    availableWidth=400;
 
     // first letter
     int i0 = 0;
