@@ -3,10 +3,12 @@ package franca.java
 import franca.java.ui.Device
 import franca.java.ui.Painter
 import java.awt.Font
+import java.awt.font.FontRenderContext
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
+import kotlin.math.roundToInt
 
 open class Graphics2DDevice : Device() {
 

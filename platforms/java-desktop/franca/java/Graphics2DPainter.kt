@@ -4,11 +4,14 @@ import franca.java.ui.Painter
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.RenderingHints
+import java.awt.font.FontRenderContext
 
 class Graphics2DPainter(
   private val graphics2DDevice: Graphics2DDevice,
   private var graphics2D: Graphics2D
 ) : Painter() {
+
+  private val fontRenderContext = FontRenderContext(null, true, true)
 
   init {
     graphics2D.setRenderingHint(
@@ -83,7 +86,7 @@ class Graphics2DPainter(
   override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
     var currentFontName = fontName
     var currentFontWeight = fontWeight
-    var currentFontStyle = fontName;
+    var currentFontStyle = fontStyle
     if (currentTextStyle != null) {
       if (currentFontName == null) {
         currentFontName = currentTextStyle.fontName
@@ -95,7 +98,10 @@ class Graphics2DPainter(
         currentFontStyle = currentTextStyle.fontStyle
       }
     }
-    graphics2D.font = graphics2DDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, scale)
+    val resolvedFont = graphics2DDevice.resolveFont(currentFontName, currentFontWeight, currentFontStyle, scale)
+    graphics2D.font = resolvedFont
+    val metrics = graphics2D.getFontMetrics(resolvedFont)
+    val resolvedY = (y * scale / PRECISION + metrics.ascent).toInt()
 
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
@@ -104,7 +110,7 @@ class Graphics2DPainter(
       (currentOpacity shl 24) or (color and 0x00FFFFFF)
     }
     graphics2D.color = Color(finalColor, true)
-    //graphics2D.drawString(text, (x * scale / PRECISION).toInt(), (y * scale / PRECISION).toInt())
-    graphics2D.drawString(text, 0, 0)
+
+    graphics2D.drawString(text, (x * scale / PRECISION).toInt(), resolvedY)
   }
 }
