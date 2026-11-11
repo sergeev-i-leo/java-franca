@@ -173,27 +173,25 @@ public class TextView extends View {
     for (int i2 = i0; i2 <= i1; i2++) {
       formatItem = formatItems.get(i2);
       boolean formatChanged = false;
-      if ((formatItem.fontName != null) && (formatItem == null)) {
+      if ((formatItem.fontName != null) && (fontName != null) && (!formatItem.fontName.equals(fontName))) {
         formatChanged = true;
-      } else if ((formatItem.fontName == null) && (formatItem != null)) {
-        formatChanged = true;
-      } else if (!formatItem.fontName.equals(fontName)) {
-        formatChanged = true;
-      } else if ((formatItem.fontWeight != null) && (fontWeight == null)) {
-        formatChanged = true;
-      } else if ((formatItem.fontWeight == null) && (fontWeight != null)) {
-        formatChanged = true;
-      } else if (!formatItem.fontWeight.equals(fontWeight)) {
-        formatChanged = true;
-      } else if ((formatItem.fontStyle != null) && (fontStyle == null)) {
-        formatChanged = true;
-      } else if ((formatItem.fontStyle == null) && (fontStyle != null)) {
-        formatChanged = true;
-      } else if (!formatItem.fontStyle.equals(fontStyle)) {
-        formatChanged = true;
-      } else if (formatItem.color != color) {
+      } else if ((formatItem.fontName != null) || (fontName != null)) {
         formatChanged = true;
       }
+      if ((formatItem.fontWeight != null) && (fontWeight != null) && (!formatItem.fontWeight.equals(fontWeight))) {
+        formatChanged = true;
+      } else if ((formatItem.fontWeight != null) || (fontWeight != null)) {
+        formatChanged = true;
+      }
+      if ((formatItem.fontStyle != null) && (fontStyle != null) && (!formatItem.fontStyle.equals(fontStyle))) {
+        formatChanged = true;
+      } else if ((formatItem.fontStyle != null) || (fontStyle != null)) {
+        formatChanged = true;
+      }
+      if (formatItem.color != color) {
+        formatChanged = true;
+      }
+
       if (!formatChanged) {
         bufferedString.appendString(formatItem.lettersBlock.letters);
         allocatedWidth += formatItem.width;
