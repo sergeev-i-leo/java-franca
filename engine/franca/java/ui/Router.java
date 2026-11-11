@@ -25,7 +25,12 @@ public class Router {
       view.paint(device, painter, view.left, view.top, 1f);
       return;
     }
+    long startTime = System.nanoTime();
     view.getReady(device, painter, device.getWidth(), device.getHeight(), 1f);
+    long endTime = System.nanoTime();
+    long durationInNanos = endTime - startTime;
+    long durationInMillis = durationInNanos / 1_000_000;
+    System.out.println("get ready за: " + durationInMillis + " мс");
     // repaint
     device.requestPainting();
   }
