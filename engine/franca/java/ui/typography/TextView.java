@@ -148,6 +148,11 @@ public class TextView extends View {
       i2++;
     }
 
+    i2--;
+    if (i0 <= i2) {
+      buildLettersViews(formatItems, i0, i2);
+    }
+
     height += paddingBottom;
 
     setState(1);
@@ -173,18 +178,24 @@ public class TextView extends View {
     for (int i2 = i0; i2 <= i1; i2++) {
       formatItem = formatItems.get(i2);
       boolean formatChanged = false;
-      if ((formatItem.fontName != null) && (fontName != null) && (!formatItem.fontName.equals(fontName))) {
-        formatChanged = true;
+      if ((formatItem.fontName != null) && (fontName != null)) {
+        if (!formatItem.fontName.equals(fontName)) {
+          formatChanged = true;
+        }
       } else if ((formatItem.fontName != null) || (fontName != null)) {
         formatChanged = true;
       }
-      if ((formatItem.fontWeight != null) && (fontWeight != null) && (!formatItem.fontWeight.equals(fontWeight))) {
-        formatChanged = true;
+      if ((formatItem.fontWeight != null) && (fontWeight != null)) {
+        if (!formatItem.fontWeight.equals(fontWeight)) {
+          formatChanged = true;
+        }
       } else if ((formatItem.fontWeight != null) || (fontWeight != null)) {
         formatChanged = true;
       }
-      if ((formatItem.fontStyle != null) && (fontStyle != null) && (!formatItem.fontStyle.equals(fontStyle))) {
-        formatChanged = true;
+      if ((formatItem.fontStyle != null) && (fontStyle != null)) {
+        if (!formatItem.fontStyle.equals(fontStyle)) {
+          formatChanged = true;
+        }
       } else if ((formatItem.fontStyle != null) || (fontStyle != null)) {
         formatChanged = true;
       }
@@ -200,11 +211,16 @@ public class TextView extends View {
       LettersView lettersView = new LettersView();
       lettersViews.add(lettersView);
       lettersView.letters = bufferedString.getString();
-      lettersView.textStyle = new TextStyle();
       lettersView.left = x;
       lettersView.top = height;
       lettersView.width = allocatedWidth;
       lettersView.height = fontHeight;
+
+      lettersView.textStyle = new TextStyle();
+      lettersView.textStyle.fontName = fontName;
+      lettersView.textStyle.fontWeight = fontWeight;
+      lettersView.textStyle.fontStyle = fontStyle;
+      lettersView.textStyle.color = color;
 
       x += allocatedWidth;
       lineHeight = Math.max(fontHeight, lineHeight);
