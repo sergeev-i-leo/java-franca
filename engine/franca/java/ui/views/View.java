@@ -11,7 +11,7 @@ public class View {
   public int width = 0;
   public int height = 0;
 
-  public boolean positionedAbsolutely = false;
+  public int zIndex = 0;
 
   public TextStyle textStyle = null;
 
