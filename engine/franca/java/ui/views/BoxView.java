@@ -41,14 +41,14 @@ public class BoxView extends GroupView {
     for (int i = 0; i < views.size(); i++) {
       View view = views.get(i);
 
-      if (!view.positionedAbsolutely) {
+      if (view.zIndex == 0) {
         view.left = viewsLeft;
         view.top = viewsTop;
       }
 
       view.getReady(device, painter, availableWidth, availableHeight, scale);
 
-      if (view.positionedAbsolutely) {
+      if (view.zIndex > 0) {
         continue;
       }
 
