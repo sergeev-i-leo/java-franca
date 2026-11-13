@@ -16,6 +16,14 @@ public class Painter {
 
   public TextStyle currentTextStyle = null;
 
+  public int getWidth() {
+    return 0;
+  }
+
+  public int getHeight() {
+    return 0;
+  }
+
   public int calculateTextWidth(String text, String fontName, String fontWeight, String fontStyle) {
     return 0;
   }

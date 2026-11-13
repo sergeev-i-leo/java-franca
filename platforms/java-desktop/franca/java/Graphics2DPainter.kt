@@ -20,6 +20,14 @@ class Graphics2DPainter(
     )
   }
 
+  override fun getWidth(): Int {
+    return graphics2DDevice.graphicsPanel.width * Painter.PRECISION;
+  }
+
+  override fun getHeight(): Int {
+    return graphics2DDevice.graphicsPanel.height * Painter.PRECISION;
+  }
+
   override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?): Int {
     if (text == null) {
       return 0

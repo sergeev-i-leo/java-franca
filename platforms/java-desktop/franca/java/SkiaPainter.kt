@@ -8,6 +8,14 @@ class SkiaPainter(
   private val canvas: Canvas
 ) : Painter() {
 
+  override fun getWidth(): Int {
+    return skiaDevice.skiaLayer.width * PRECISION;
+  }
+
+  override fun getHeight(): Int {
+    return skiaDevice.skiaLayer.height * PRECISION;
+  }
+
   override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?): Int {
     if (text == null) {
       return 0

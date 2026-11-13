@@ -20,14 +20,6 @@ open class Graphics2DDevice : Device() {
     return System.nanoTime() / 1000000
   }
 
-  override fun getWidth(): Int {
-    return graphicsPanel.width * Painter.PRECISION;
-  }
-
-  override fun getHeight(): Int {
-    return graphicsPanel.height * Painter.PRECISION;
-  }
-
   override fun startPainting() {
     if (scheduledExecutorService != null) {
       return
