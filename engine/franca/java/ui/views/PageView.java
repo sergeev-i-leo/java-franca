@@ -3,8 +3,6 @@ package franca.java.ui.views;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
 
-import java.util.ArrayList;
-
 public class PageView extends PanelView {
 
   public int left = 0;
@@ -19,15 +17,15 @@ public class PageView extends PanelView {
 
   @Override
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
-    for (int i = 0; i < views.size(); i++) {
-      views.get(i).paint(device, painter, painterX, painterY, scale);
+    for (int i = 0; i < innerViews.size(); i++) {
+      innerViews.get(i).paint(device, painter, painterX, painterY, scale);
     }
   }
 
   @Override
   public void handlePointerDown(Device device, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {
-    for (int i = 0; i < views.size(); i++) {
-      views.get(i).handlePointerDown(device, 0, 0, pointedX, pointedY, buttonNumber);
+    for (int i = 0; i < innerViews.size(); i++) {
+      innerViews.get(i).handlePointerDown(device, 0, 0, pointedX, pointedY, buttonNumber);
     }
   }
 }

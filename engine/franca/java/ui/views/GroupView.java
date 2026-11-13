@@ -7,17 +7,17 @@ import java.util.ArrayList;
 
 public class GroupView extends View {
 
-  public ArrayList<View> views = new ArrayList<>();
+  public ArrayList<View> innerViews = new ArrayList<>();
 
-  public Float viewsScale = null;
+  public Float innerViewsScale = null;
 
   public boolean isReady() {
     int state = getState();
     if (state != 1) {
       return false;
     }
-    for (int i = 0; i < views.size(); i++) {
-      if (!views.get(i).isReady()) {
+    for (int i = 0; i < innerViews.size(); i++) {
+      if (!innerViews.get(i).isReady()) {
         return false;
       }
     }
@@ -34,8 +34,8 @@ public class GroupView extends View {
     }
     setState(0);
 
-    if (viewsScale != null) {
-      scale *= viewsScale;
+    if (innerViewsScale != null) {
+      scale *= innerViewsScale;
     }
 
     width = 0;
@@ -43,8 +43,8 @@ public class GroupView extends View {
 
     int viewsTop = 0;
 
-    for (int i = 0; i < views.size(); i++) {
-      View view = views.get(i);
+    for (int i = 0; i < innerViews.size(); i++) {
+      View view = innerViews.get(i);
 
       if (view.zIndex == 0) {
         view.left = 0;
@@ -68,8 +68,8 @@ public class GroupView extends View {
 
   @Override
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
-    for (int i = 0; i < views.size(); i++) {
-      views.get(i).paint(device, painter, painterX, painterY, scale);
+    for (int i = 0; i < innerViews.size(); i++) {
+      innerViews.get(i).paint(device, painter, painterX, painterY, scale);
     }
   }
 }

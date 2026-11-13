@@ -38,8 +38,8 @@ public class BoxView extends GroupView {
     viewsWidth = 0;
     viewsHeight = 0;
 
-    for (int i = 0; i < views.size(); i++) {
-      View view = views.get(i);
+    for (int i = 0; i < innerViews.size(); i++) {
+      View view = innerViews.get(i);
 
       if (view.zIndex == 0) {
         view.left = viewsLeft;
