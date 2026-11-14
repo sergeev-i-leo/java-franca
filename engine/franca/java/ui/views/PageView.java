@@ -2,6 +2,8 @@ package franca.java.ui.views;
 
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
+import franca.java.ui.views.panel.PanelView;
+import franca.java.ui.views.panel.PanelViewport;
 
 public class PageView extends PanelView {
 

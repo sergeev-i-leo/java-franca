@@ -1,9 +1,11 @@
-package franca.java.ui.views;
+package franca.java.ui.views.markdown;
 
 import franca.java.office.document.Block;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.ui.typography.TextView;
+import franca.java.ui.views.GroupView;
+import franca.java.ui.views.panel.PanelView;
 
 public class MarkdownView extends PanelView {
 

@@ -1,4 +1,4 @@
-package franca.java.ui.views;
+package franca.java.ui.views.panel;
 
 public class PanelViewport {
 

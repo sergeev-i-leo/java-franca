@@ -1,7 +1,8 @@
-package franca.java.ui.views;
+package franca.java.ui.views.panel;
 
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
+import franca.java.ui.views.BoxView;
 
 public class PanelView extends BoxView {
 
