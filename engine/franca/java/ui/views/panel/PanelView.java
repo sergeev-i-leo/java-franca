@@ -2,9 +2,9 @@ package franca.java.ui.views.panel;
 
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
-import franca.java.ui.views.BoxView;
+import franca.java.ui.views.GroupView;
 
-public class PanelView extends BoxView {
+public class PanelView extends GroupView {
 
   public PanelViewport panelViewport = null;
 

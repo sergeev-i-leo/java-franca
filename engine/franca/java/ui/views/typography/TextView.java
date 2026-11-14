@@ -1,4 +1,4 @@
-package franca.java.ui.typography;
+package franca.java.ui.views.typography;
 
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
@@ -11,7 +11,6 @@ import franca.java.ui.views.View;
 import franca.java.ui.TextStyle;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class TextView extends View {
 
@@ -33,7 +32,7 @@ public class TextView extends View {
   public void setText(String text) {
     MarkdownParser markdownParser = new MarkdownParser();
     textBlock = markdownParser.parseMarkdownTextBlock(text);
-    setState(-1);
+    setReadiness(-1);
   }
 
   @Override
@@ -41,10 +40,10 @@ public class TextView extends View {
     if (isReady()) {
       return;
     }
-    if (getState() == 0) {
+    if (getReadiness() == 0) {
       return;
     }
-    setState(0);
+    setReadiness(0);
 
     lettersViews.clear();
 
@@ -52,7 +51,7 @@ public class TextView extends View {
     height = 0;
 
     if (textBlock == null) {
-      setState(1);
+      setReadiness(1);
       return;
     }
 
@@ -101,7 +100,7 @@ public class TextView extends View {
       width = paddingLeft + lettersView.width + paddingRight;
       height = paddingTop + lettersView.height + paddingBottom;
 
-      setState(1);
+      setReadiness(1);
       return;
     }
 
@@ -155,7 +154,7 @@ public class TextView extends View {
 
     height += paddingBottom;
 
-    setState(1);
+    setReadiness(1);
   }
 
   public void buildLettersViews(ArrayList<FormatItem> formatItems, int i0, int i1) {

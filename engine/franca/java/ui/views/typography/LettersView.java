@@ -1,4 +1,4 @@
-package franca.java.ui.typography;
+package franca.java.ui.views.typography;
 
 import franca.java.ui.Device;
 import franca.java.ui.Painter;

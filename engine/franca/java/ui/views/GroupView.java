@@ -3,20 +3,30 @@ package franca.java.ui.views;
 import java.util.ArrayList;
 
 import franca.java.office.document.Block;
+import franca.java.office.document.table.TableBlock;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
-import franca.java.ui.typography.TextView;
+import franca.java.ui.views.table.TableView;
+import franca.java.ui.views.typography.TextView;
 
 public class GroupView extends View {
 
   public ArrayList<View> innerViews = new ArrayList<>();
 
+  public int paddingLeft = 0;
+  public int paddingTop = 0;
+  public int paddingRight = 0;
+  public int paddingBottom = 0;
+
   public Float innerViewsScale = null;
+
+  public int zDeepness = 0;
 
   public void build(Block block) {
     buildInnerView(this, block);
+    setReadiness(-1);
   }
 
   public void buildInnerView(GroupView groupView, Block block) {
@@ -32,9 +42,20 @@ public class GroupView extends View {
       textView.textBlock = (ParagraphBlock) block;
       return;
     }
+    if (block instanceof TableBlock) {
+      buildTableView(groupView, (TableBlock) block);
+      return;
+    }
     if (block.getInnerBlocks().size() > 0) {
       buildInnerViews(groupView, block);
     }
+  }
+
+  public void buildTableView(GroupView groupView, TableBlock tableBlock) {
+
+    TableView tableView = new TableView();
+    groupView.innerViews.add(tableView);
+
   }
 
   public void buildInnerViews(GroupView groupView, Block block) {
@@ -44,7 +65,7 @@ public class GroupView extends View {
   }
 
   public boolean isReady() {
-    int state = getState();
+    int state = getReadiness();
     if (state != 1) {
       return false;
     }
@@ -61,10 +82,10 @@ public class GroupView extends View {
     if (isReady()) {
       return;
     }
-    if (getState() == 0) {
+    if (getReadiness() == 0) {
       return;
     }
-    setState(0);
+    setReadiness(0);
 
     if (innerViewsScale != null) {
       scale *= innerViewsScale;
@@ -72,36 +93,48 @@ public class GroupView extends View {
 
     width = 0;
     height = 0;
+    zDeepness = 0;
 
-    int viewsTop = 0;
+    int innerViewTop = paddingTop;
 
     for (int i = 0; i < innerViews.size(); i++) {
-      View view = innerViews.get(i);
+      View innerView = innerViews.get(i);
 
-      if (view.zIndex == 0) {
-        view.left = 0;
-        view.top = viewsTop;
+      zDeepness = Math.max(innerView.zIndex, zDeepness);
+
+      if (innerView.zIndex == 0) {
+        innerView.left = paddingLeft;
+        innerView.top = innerViewTop;
       }
 
-      view.getReady(device, painter, availableWidth, availableHeight, scale);
+      innerView.getReady(device, painter, availableWidth, availableHeight, scale);
 
-      if (view.zIndex > 0) {
+      if (innerView.zIndex > 0) {
         continue;
       }
 
-      width = Math.max(view.left + view.width, width);
-      height = Math.max(view.top + view.height, height);
+      width = Math.max(innerView.left + innerView.width + paddingRight, width);
+      height = Math.max(innerView.top + innerView.height + paddingBottom, height);
 
-      viewsTop += view.height;
+      innerViewTop += innerView.height;
     }
 
-    setState(1);
+    setReadiness(1);
   }
 
   @Override
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
     for (int i = 0; i < innerViews.size(); i++) {
-      innerViews.get(i).paint(device, painter, painterX, painterY, scale);
+      View innerView = innerViews.get(i);
+      if (innerView.zIndex == 0) {
+        innerViews.get(i).paint(device, painter, painterX, painterY, scale);
+      }
+    }
+    for (int i = 1; i < zDeepness; i++) {
+      View innerView = innerViews.get(i);
+      if (innerView.zIndex == i) {
+        innerViews.get(i).paint(device, painter, painterX, painterY, scale);
+      }
     }
   }
 }

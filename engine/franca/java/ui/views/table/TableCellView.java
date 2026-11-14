@@ -1,19 +1,16 @@
 package franca.java.ui.views.table;
 
-import franca.java.ui.views.View;
+import franca.java.ui.views.GroupView;
 
-public class TableCellView extends View {
+public class TableCellView extends GroupView {
 
   public int column;
   public int columnsNumber;
-  public View innerView;
 
-  public String verticalAlignment = "top";
-
-  public TableCellView(int column, int columnsNumber, View innerView) {
+  public TableCellView(int column, int columnsNumber) {
+    super();
     this.column = column;
     this.columnsNumber = columnsNumber;
-    this.innerView = innerView;
   }
 
 }

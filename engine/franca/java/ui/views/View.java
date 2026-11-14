@@ -15,33 +15,33 @@ public class View {
 
   public TextStyle textStyle = null;
 
-  volatile private int state = -1;
+  volatile private int readiness = -1;
 
-  public void setState(int state) {
-    this.state = state;
+  public void setReadiness(int readiness) {
+    this.readiness = readiness;
   }
 
-  public int getState() {
-    return state;
+  public int getReadiness() {
+    return readiness;
   }
 
   public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
     if (isReady()) {
       return;
     }
-    if (getState() == 0) {
+    if (getReadiness() == 0) {
       return;
     }
-    setState(0);
+    setReadiness(0);
 
     width = 0;
     height = 0;
 
-    setState(1);
+    setReadiness(1);
   }
 
   public boolean isReady() {
-    return state == 1;
+    return readiness == 1;
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
