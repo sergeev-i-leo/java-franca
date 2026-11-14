@@ -12,10 +12,6 @@ public class MarkdownView extends PanelView {
   }
 
   public void buildInnerView(GroupView groupView, Block block) {
-    if (block.getInnerBlocks().size() > 0) {
-      buildInnerViews(groupView, block);
-      return;
-    }
     if (block instanceof HeadingBlock) {
       TextView textView = new TextView();
       groupView.innerViews.add(textView);
@@ -26,6 +22,11 @@ public class MarkdownView extends PanelView {
       TextView textView = new TextView();
       groupView.innerViews.add(textView);
       textView.textBlock = (ParagraphBlock) block;
+      return;
+    }
+    if (block.getInnerBlocks().size() > 0) {
+      buildInnerViews(groupView, block);
+      return;
     }
   }
 
