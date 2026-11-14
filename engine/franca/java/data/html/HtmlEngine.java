@@ -526,6 +526,7 @@ public class HtmlEngine extends Parser {
         parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "", styleJsonObject);
         skipChars(4);
         literalBufferedString.clear();
+        spacesCount = 0;
         continue;
       }
 
@@ -548,7 +549,8 @@ public class HtmlEngine extends Parser {
         literalBufferedString.clear();
         spacesCount++;
         continue;
-      } else if (spacesCount > 0) {
+      }
+      if (spacesCount > 0) {
         // literalStringBuffer must be null
         if (literalBufferedString.isNotEmpty()) {
           System.out.println("Accumulated chars at position " + inputPosition);
@@ -580,7 +582,7 @@ public class HtmlEngine extends Parser {
       literalBufferedString.appendChar(consumeChar());
     }
 
-    if (literalBufferedString.isNotEmpty()) {
+    if ((literalBufferedString.isNotEmpty()) || (parentBlock.getInnerBlocks().isEmpty())) {
       // chars found
       JsonObject styleJsonObject;
       if (styleJsonObjects.isEmpty()) {

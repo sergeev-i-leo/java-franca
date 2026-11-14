@@ -353,12 +353,25 @@ public class MarkdownParser extends HtmlEngine {
           skipLine();
           break;
         }
-        TableCellBlock tableCellBlock = new TableCellBlock(tableBodyBlock == null);
-        parseMarkdownTextContents(tableCellBlock, true);
         skipWhitespaces();
-        if (peekChar() == '|') {
+        if (peekString("<<")) {
+          skipChars(2);
+          spanTableCell(tableHeaderBlock, tableBodyBlock, "<");
+        } else if (peekString("^^")) {
+          skipChars(2);
+          spanTableCell(tableHeaderBlock, tableBodyBlock, "^");
+        } else if (peekString("<<^^")) {
+          skipChars(4);
+          spanTableCell(tableHeaderBlock, tableBodyBlock, "<^");
+        } else if (peekString("^^<<")) {
+          skipChars(4);
+          spanTableCell(tableHeaderBlock, tableBodyBlock, "<^");
+        } else {
+          TableCellBlock tableCellBlock = new TableCellBlock(tableBodyBlock == null);
+          parseMarkdownTextContents(tableCellBlock, true);
           tableRowBlock.addInnerBlock(tableCellBlock);
         }
+        skipWhitespaces();
         // '|'
         skipChars(1);
       }
@@ -388,6 +401,26 @@ public class MarkdownParser extends HtmlEngine {
       }
     }
     return tableBlock;
+  }
+
+  private void spanTableCell(Block tableHeaderBlock, Block tableBodyBlock, String text) {
+    ArrayList<Block> rowBlocks = tableHeaderBlock.getInnerBlocks();
+    if (tableBodyBlock != null) {
+      rowBlocks = tableBodyBlock.getInnerBlocks();
+    }
+    int row = rowBlocks.size() - 1;
+    Block rowBlock = rowBlocks.get(row);
+    int column = 0;
+    for (int i = 0; i < rowBlock.getInnerBlocks().size(); i++) {
+      Block cellBlock =
+    }
+    if (text.equals("<<")) {
+      if (rowBlocks.isEmpty()) {
+        return;
+      }
+      Block cellBlock = rowBlocks.
+    }
+
   }
 
   private void parseBlockCellAlignments(ArrayList<String> blockCellAlignments) {
@@ -434,7 +467,7 @@ public class MarkdownParser extends HtmlEngine {
     literalBufferedString = new BufferedString();
 
     // for trailing spaces
-    int spacesCount = 0;
+    int spacesCount = -1;
 
     while (inputPosition < input.length()) {
 
@@ -464,6 +497,7 @@ public class MarkdownParser extends HtmlEngine {
         parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LINE_BREAK, "", styleJsonObject);
         skipChars(4);
         literalBufferedString.clear();
+        spacesCount = 0;
         continue;
       }
 
@@ -481,6 +515,14 @@ public class MarkdownParser extends HtmlEngine {
       }
 
       if (peekChar() == ' ') {
+        if (spacesCount < 0) {
+          if (isTableCell) {
+            // leading space
+            skipChars(1);
+            continue;
+          }
+          spacesCount = 0;
+        }
         if (literalBufferedString.isNotEmpty()) {
           // there are accumulated chars
           parentBlock = appendLettersBlock(parentBlock, LettersBlock.TYPE_LETTERS, literalBufferedString.getString(), styleJsonObject);
@@ -490,7 +532,8 @@ public class MarkdownParser extends HtmlEngine {
         literalBufferedString.clear();
         spacesCount++;
         continue;
-      } else if (spacesCount > 0) {
+      }
+      if (spacesCount > 0) {
         // literalStringBuffer must be null
         if (literalBufferedString.isNotEmpty()) {
           System.out.println("Accumulated chars at position " + inputPosition);
@@ -505,7 +548,7 @@ public class MarkdownParser extends HtmlEngine {
       literalBufferedString.appendChar(consumeChar());
     }
 
-    if (literalBufferedString.isNotEmpty()) {
+    if ((literalBufferedString.isNotEmpty()) || (parentBlock.getInnerBlocks().isEmpty())) {
       // chars found
       JsonObject styleJsonObject;
       if (styleJsonObjects.isEmpty()) {
