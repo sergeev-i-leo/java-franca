@@ -3,11 +3,13 @@ package franca.java.ui.views;
 import java.util.ArrayList;
 
 import franca.java.office.document.Block;
-import franca.java.office.document.table.TableBlock;
+import franca.java.office.document.table.*;
 import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
+import franca.java.office.document.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
+import franca.java.ui.views.table.TableCellView;
 import franca.java.ui.views.table.TableView;
 import franca.java.ui.views.typography.TextView;
 
@@ -22,7 +24,7 @@ public class GroupView extends View {
 
   public Float innerViewsScale = null;
 
-  public int zDeepness = 0;
+  public int lastInnerLayer = 0;
 
   public void build(Block block) {
     buildInnerView(this, block);
@@ -42,6 +44,12 @@ public class GroupView extends View {
       textView.textBlock = (ParagraphBlock) block;
       return;
     }
+    if (block instanceof TextBlock) {
+      TextView textView = new TextView();
+      groupView.innerViews.add(textView);
+      textView.textBlock = (TextBlock) block;
+      return;
+    }
     if (block instanceof TableBlock) {
       buildTableView(groupView, (TableBlock) block);
       return;
@@ -55,6 +63,25 @@ public class GroupView extends View {
 
     TableView tableView = new TableView();
     groupView.innerViews.add(tableView);
+
+    for (int i0 = 0; i0 < tableBlock.getInnerBlocks().size(); i0++) {
+      Block block0 = tableBlock.getInnerBlock(i0);
+      if ((block0 instanceof TableHeaderBlock) || (block0 instanceof TableBodyBlock)) {
+        for (int i1 = 0; i1 < block0.getInnerBlocks().size(); i1++) {
+          Block block1 = block0.getInnerBlock(i1);
+          if (block1 instanceof TableRowBlock) {
+            for (int i2 = 0; i2 < block1.getInnerBlocks().size(); i2++) {
+              Block block2 = block1.getInnerBlock(i2);
+              if (block2 instanceof TableCellBlock) {
+                TableCellView tableCellView = new TableCellView();
+                tableView.innerViews.add(tableCellView);
+                buildInnerView(tableCellView, block2);
+              }
+            }
+          }
+        }
+      }
+    }
 
   }
 
@@ -93,30 +120,30 @@ public class GroupView extends View {
 
     width = 0;
     height = 0;
-    zDeepness = 0;
+    lastInnerLayer = 0;
 
-    int innerViewTop = paddingTop;
+    int viewTop = paddingTop;
 
     for (int i = 0; i < innerViews.size(); i++) {
-      View innerView = innerViews.get(i);
+      View view = innerViews.get(i);
 
-      zDeepness = Math.max(innerView.zIndex, zDeepness);
+      lastInnerLayer = Math.max(view.layer, lastInnerLayer);
 
-      if (innerView.zIndex == 0) {
-        innerView.left = paddingLeft;
-        innerView.top = innerViewTop;
+      if (view.layer == 0) {
+        view.left = paddingLeft;
+        view.top = viewTop;
       }
 
-      innerView.getReady(device, painter, availableWidth, availableHeight, scale);
+      view.getReady(device, painter, availableWidth, availableHeight, scale);
 
-      if (innerView.zIndex > 0) {
+      if (view.layer > 0) {
         continue;
       }
 
-      width = Math.max(innerView.left + innerView.width + paddingRight, width);
-      height = Math.max(innerView.top + innerView.height + paddingBottom, height);
+      width = Math.max(view.left + view.width + paddingRight, width);
+      height = Math.max(view.top + view.height + paddingBottom, height);
 
-      innerViewTop += innerView.height;
+      viewTop += view.height;
     }
 
     setReadiness(1);
@@ -126,13 +153,13 @@ public class GroupView extends View {
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
     for (int i = 0; i < innerViews.size(); i++) {
       View innerView = innerViews.get(i);
-      if (innerView.zIndex == 0) {
+      if (innerView.layer == 0) {
         innerViews.get(i).paint(device, painter, painterX, painterY, scale);
       }
     }
-    for (int i = 1; i < zDeepness; i++) {
+    for (int i = 1; i < lastInnerLayer; i++) {
       View innerView = innerViews.get(i);
-      if (innerView.zIndex == i) {
+      if (innerView.layer == i) {
         innerViews.get(i).paint(device, painter, painterX, painterY, scale);
       }
     }

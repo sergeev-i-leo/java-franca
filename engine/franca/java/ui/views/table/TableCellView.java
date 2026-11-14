@@ -4,13 +4,9 @@ import franca.java.ui.views.GroupView;
 
 public class TableCellView extends GroupView {
 
-  public int column;
-  public int columnsNumber;
-
-  public TableCellView(int column, int columnsNumber) {
-    super();
-    this.column = column;
-    this.columnsNumber = columnsNumber;
-  }
+  public int column = 0;
+  public int columnsSpan = 1;
+  public int row = 0;
+  public int rowsSpan = 1;
 
 }
