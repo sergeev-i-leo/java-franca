@@ -1,15 +1,47 @@
 package franca.java.ui.views;
 
+import java.util.ArrayList;
+
+import franca.java.office.document.Block;
+import franca.java.office.document.typography.HeadingBlock;
+import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
-
-import java.util.ArrayList;
+import franca.java.ui.typography.TextView;
 
 public class GroupView extends View {
 
   public ArrayList<View> innerViews = new ArrayList<>();
 
   public Float innerViewsScale = null;
+
+  public void build(Block block) {
+    buildInnerView(this, block);
+  }
+
+  public void buildInnerView(GroupView groupView, Block block) {
+    if (block instanceof HeadingBlock) {
+      TextView textView = new TextView();
+      groupView.innerViews.add(textView);
+      textView.textBlock = (HeadingBlock) block;
+      return;
+    }
+    if (block instanceof ParagraphBlock) {
+      TextView textView = new TextView();
+      groupView.innerViews.add(textView);
+      textView.textBlock = (ParagraphBlock) block;
+      return;
+    }
+    if (block.getInnerBlocks().size() > 0) {
+      buildInnerViews(groupView, block);
+    }
+  }
+
+  public void buildInnerViews(GroupView groupView, Block block) {
+    for (int i = 0; i < block.getInnerBlocks().size(); i++) {
+      buildInnerView(groupView, block.getInnerBlock(i));
+    }
+  }
 
   public boolean isReady() {
     int state = getState();
