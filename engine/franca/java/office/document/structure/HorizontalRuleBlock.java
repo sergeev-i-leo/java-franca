@@ -15,13 +15,13 @@ public class HorizontalRuleBlock extends Block {
   }
 
   @Override
-  public void serialize(BufferedString targetBufferedString, int spacesBefore) {
+  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
     addQuotedAttribute("data-type", type);
-    super.serialize(targetBufferedString, spacesBefore);
+    super.toHtml(targetBufferedString, spacesBefore);
   }
 
   @Override
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return "hr";
   }
 

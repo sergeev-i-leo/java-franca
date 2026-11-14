@@ -1,6 +1,6 @@
 package franca.java.office.document.typography;
 
-import franca.java.data.html.HtmlParser;
+import franca.java.data.html.HtmlEngine;
 import franca.java.data.json.JsonObject;
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
@@ -22,8 +22,8 @@ public class TextBlock extends Block {
   }
 
   @Override
-  public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
-    super.serializeContents(targetBufferedString, serializationTag, -1);
+  public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
+    super.contentsToHtml(targetBufferedString, htmlTag, -1);
     if (spacesBefore >= 0) {
       targetBufferedString.finishLine();
     }
@@ -63,10 +63,10 @@ public class TextBlock extends Block {
     clearInnerBlocks();
 
     ArrayList styleJsonObjects = new ArrayList<JsonObject>();
-    HtmlParser htmlParser = new HtmlParser();
-    htmlParser.input = htmlText;
-    htmlParser.inputPosition = 0;
-    htmlParser.parseHtmlTextContents(this, styleJsonObjects);
+    HtmlEngine htmlEngine = new HtmlEngine();
+    htmlEngine.input = htmlText;
+    htmlEngine.inputPosition = 0;
+    htmlEngine.parseHtmlTextContents(this, styleJsonObjects);
   }
 
   public void setMarkdownText(String markdownText) {

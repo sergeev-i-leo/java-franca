@@ -2,7 +2,7 @@ package franca.java.data.markdown;
 
 import java.util.ArrayList;
 
-import franca.java.data.html.HtmlParser;
+import franca.java.data.html.HtmlEngine;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
@@ -15,7 +15,7 @@ import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.office.document.typography.TextBlock;
 
-public class MarkdownParser extends HtmlParser {
+public class MarkdownParser extends HtmlEngine {
 
   public Block parse(String input) {
     this.input = input;

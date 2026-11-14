@@ -2,10 +2,10 @@ package franca.java.office.document;
 
 import java.util.ArrayList;
 
+import franca.java.data.html.HtmlEngine;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
 import franca.java.data.json.JsonArray;
-import franca.java.office.document.factory.DocumentFactory;
 
 public class Block {
 
@@ -61,30 +61,30 @@ public class Block {
     }
   }
 
-  public void serialize(BufferedString targetBufferedString, int spacesBefore) {
+  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
     if (spacesBefore >= 0) {
       targetBufferedString.appendChars(' ', spacesBefore);
     }
 
-    String serializationTag = getSerializationTag();
-    targetBufferedString.appendString("<" + serializationTag + " data-block=\"" + getDataBlock() + "\"");
+    String htmlTag = getHtmlTag();
+    targetBufferedString.appendString("<" + htmlTag + " data-block=\"" + getDataBlock() + "\"");
 
-    serializeClassesJsonArray(targetBufferedString);
+    classesJsonArrayToHtml(targetBufferedString);
 
-    serializeAttributesJsonArray(targetBufferedString);
+    attributesJsonArrayToHtml(targetBufferedString);
 
-    serializeStyleJsonObject(targetBufferedString);
+    styleJsonObjectToHtml(targetBufferedString);
 
-    serializeFlavouredStyleJsonObject(targetBufferedString);
+    flavouredStyleJsonObjectToHtml(targetBufferedString);
 
     if (spacesBefore >= 0) {
-      serializeContents(targetBufferedString, serializationTag, spacesBefore + 2);
+      contentsToHtml(targetBufferedString, htmlTag, spacesBefore + 2);
     } else {
-      serializeContents(targetBufferedString, serializationTag, spacesBefore);
+      contentsToHtml(targetBufferedString, htmlTag, spacesBefore);
     }
   }
 
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return "div";
   }
 
@@ -92,7 +92,7 @@ public class Block {
     return "Block";
   }
 
-  public void serializeClassesJsonArray(BufferedString targetBufferedString) {
+  public void classesJsonArrayToHtml(BufferedString targetBufferedString) {
     if (classesJsonArray.isEmpty()) {
       return;
     }
@@ -109,41 +109,7 @@ public class Block {
     targetBufferedString.appendString("\"");
   }
 
-  public void serializeStyleJsonObject(BufferedString targetBufferedString) {
-    ArrayList<String> keys = styleJsonObject.keys();
-    if (keys.isEmpty()) {
-      return;
-    }
-
-    targetBufferedString.appendString(" style=\"");
-
-    for (String key : keys) {
-      String value = styleJsonObject.getStringValue(key);
-      if (value != null) {
-        targetBufferedString.appendString(key + ":" + value + ";");
-      }
-    }
-    targetBufferedString.appendString("\"");
-  }
-
-  public void serializeFlavouredStyleJsonObject(BufferedString targetBufferedString) {
-    ArrayList<String> keys = flavouredStyleJsonObject.keys();
-    if (keys.isEmpty()) {
-      return;
-    }
-
-    targetBufferedString.appendString(" flavoured-style=\"");
-
-    for (String key : keys) {
-      String value = flavouredStyleJsonObject.getStringValue(key);
-      if (value != null) {
-        targetBufferedString.appendString(key + ":" + value + ";");
-      }
-    }
-    targetBufferedString.appendString("\"");
-  }
-
-  public void serializeAttributesJsonArray(BufferedString targetBufferedString) {
+  public void attributesJsonArrayToHtml(BufferedString targetBufferedString) {
     if (attributesJsonArray.isEmpty()) {
       return;
     }
@@ -177,8 +143,42 @@ public class Block {
     }
   }
 
-  public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
-    if (DocumentFactory.htmlTagIsSelfClosing(serializationTag)) {
+  public void styleJsonObjectToHtml(BufferedString targetBufferedString) {
+    ArrayList<String> keys = styleJsonObject.keys();
+    if (keys.isEmpty()) {
+      return;
+    }
+
+    targetBufferedString.appendString(" style=\"");
+
+    for (String key : keys) {
+      String value = styleJsonObject.getStringValue(key);
+      if (value != null) {
+        targetBufferedString.appendString(key + ":" + value + ";");
+      }
+    }
+    targetBufferedString.appendString("\"");
+  }
+
+  public void flavouredStyleJsonObjectToHtml(BufferedString targetBufferedString) {
+    ArrayList<String> keys = flavouredStyleJsonObject.keys();
+    if (keys.isEmpty()) {
+      return;
+    }
+
+    targetBufferedString.appendString(" flavoured-style=\"");
+
+    for (String key : keys) {
+      String value = flavouredStyleJsonObject.getStringValue(key);
+      if (value != null) {
+        targetBufferedString.appendString(key + ":" + value + ";");
+      }
+    }
+    targetBufferedString.appendString("\"");
+  }
+
+  public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
+    if (HtmlEngine.isSelfClosingHtmlTag(htmlTag)) {
       targetBufferedString.appendString(">");
       if (spacesBefore >= 0) {
         targetBufferedString.finishLine();
@@ -197,13 +197,13 @@ public class Block {
     }
 
     for (Block block : getInnerBlocks()) {
-      block.serialize(targetBufferedString, spacesBefore);
+      block.toHtml(targetBufferedString, spacesBefore);
     }
 
     if (spacesBefore >= 0) {
       targetBufferedString.appendChars(' ', spacesBefore);
     }
-    targetBufferedString.appendString("</" + serializationTag + ">");
+    targetBufferedString.appendString("</" + htmlTag + ">");
     if (spacesBefore >= 0) {
       targetBufferedString.finishLine();
     }
@@ -263,5 +263,4 @@ public class Block {
     }
     innerBlocks = null;
   }
-
 }

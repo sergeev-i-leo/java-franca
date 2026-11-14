@@ -12,8 +12,8 @@ public class AudioBlock extends Block {
   }
 
   @Override
-  public void serialize(BufferedString targetBufferedString, int spacesBefore) {
-    super.serialize(targetBufferedString, spacesBefore);
+  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
+    super.toHtml(targetBufferedString, spacesBefore);
   }
 
   @Override

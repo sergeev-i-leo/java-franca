@@ -19,7 +19,7 @@ public class ListBlock extends Block {
   }
 
   @Override
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return isOrdered ? "ol" : "ul";
   }
 

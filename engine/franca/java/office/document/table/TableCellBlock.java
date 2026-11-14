@@ -5,7 +5,7 @@ import franca.java.office.document.Block;
 
 public class TableCellBlock extends Block {
 
-  public boolean isHeader = false;
+  public boolean isHeader;
 
   public TableCellBlock(boolean isHeader) {
     super();
@@ -19,7 +19,7 @@ public class TableCellBlock extends Block {
   }
 
   @Override
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return isHeader ? "th" : "td";
   }
 

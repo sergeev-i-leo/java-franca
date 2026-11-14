@@ -24,7 +24,7 @@ public class GroupView extends View {
 
   public Float innerViewsScale = null;
 
-  public int lastInnerLayer = 0;
+  public int maxInnerLayer = 0;
 
   public void build(Block block) {
     buildInnerView(this, block);
@@ -82,7 +82,6 @@ public class GroupView extends View {
         }
       }
     }
-
   }
 
   public void buildInnerViews(GroupView groupView, Block block) {
@@ -120,14 +119,14 @@ public class GroupView extends View {
 
     width = 0;
     height = 0;
-    lastInnerLayer = 0;
+    maxInnerLayer = 0;
 
     int viewTop = paddingTop;
 
     for (int i = 0; i < innerViews.size(); i++) {
       View view = innerViews.get(i);
 
-      lastInnerLayer = Math.max(view.layer, lastInnerLayer);
+      maxInnerLayer = Math.max(view.layer, maxInnerLayer);
 
       if (view.layer == 0) {
         view.left = paddingLeft;
@@ -151,16 +150,12 @@ public class GroupView extends View {
 
   @Override
   public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
-    for (int i = 0; i < innerViews.size(); i++) {
-      View innerView = innerViews.get(i);
-      if (innerView.layer == 0) {
-        innerViews.get(i).paint(device, painter, painterX, painterY, scale);
-      }
-    }
-    for (int i = 1; i < lastInnerLayer; i++) {
-      View innerView = innerViews.get(i);
-      if (innerView.layer == i) {
-        innerViews.get(i).paint(device, painter, painterX, painterY, scale);
+    for (int i0 = 0; i0 <= maxInnerLayer; i0++) {
+      for (int i1 = 0; i1 < innerViews.size(); i1++) {
+        View view = innerViews.get(i1);
+        if (view.layer == i0) {
+          view.paint(device, painter, painterX, painterY, scale);
+        }
       }
     }
   }

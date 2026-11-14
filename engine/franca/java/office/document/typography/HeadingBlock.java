@@ -23,7 +23,7 @@ public class HeadingBlock extends TextBlock {
   }
 
   @Override
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return "h" + Runtime.intToString(level);
   }
 

@@ -9,13 +9,32 @@ import franca.java.data.json.JsonArray;
 import franca.java.data.json.JsonObject;
 import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
-import franca.java.office.document.factory.DocumentFactory;
+import franca.java.office.document.list.ListBlock;
+import franca.java.office.document.list.ListItemBlock;
+import franca.java.office.document.structure.HorizontalRuleBlock;
+import franca.java.office.document.table.*;
+import franca.java.office.document.typography.HeadingBlock;
 import franca.java.office.document.typography.LettersBlock;
+import franca.java.office.document.typography.ParagraphBlock;
 import franca.java.office.document.typography.TextBlock;
 
-public class HtmlParser extends Parser {
+public class HtmlEngine extends Parser {
 
   private Block bodyBlock = null;
+
+  public static boolean isSelfClosingHtmlTag(String tagName) {
+    switch (tagName) {
+      case "area":
+      case "img":
+      case "input":
+      case "hr":
+      case "link":
+      case "meta":
+        return true;
+      default:
+        return false;
+    }
+  }
 
   public Block parse(String input) {
     this.input = input;
@@ -100,7 +119,7 @@ public class HtmlParser extends Parser {
     skipWhitespaces();
 
     String tagName = parseTagName();
-    Block block = DocumentFactory.createBlockByTagName(tagName);
+    Block block = createBlockByTagName(tagName);
     if (tagName.equals("body")) {
       bodyBlock = block;
     }
@@ -117,7 +136,7 @@ public class HtmlParser extends Parser {
       skipWhitespaces();
     }
     if (peekChar() != '>') {
-    } else if (DocumentFactory.htmlTagIsSelfClosing(tagName)) {
+    } else if (HtmlEngine.isSelfClosingHtmlTag(tagName)) {
       needsHtmlNodeContents = false;
     }
 
@@ -162,6 +181,61 @@ public class HtmlParser extends Parser {
     skipChars(1);
 
     return block;
+  }
+
+  public Block createBlockByTagName(String tagName) {
+    if (tagName.equals("h1")) {
+      return new HeadingBlock(1);
+    }
+    if (tagName.equals("h2")) {
+      return new HeadingBlock(2);
+    }
+    if (tagName.equals("h3")) {
+      return new HeadingBlock(3);
+    }
+    if (tagName.equals("h4")) {
+      return new HeadingBlock(4);
+    }
+    if (tagName.equals("h5")) {
+      return new HeadingBlock(5);
+    }
+    if (tagName.equals("h6")) {
+      return new HeadingBlock(6);
+    }
+    if (tagName.equals("p")) {
+      return new ParagraphBlock();
+    }
+    if (tagName.equals("hr")) {
+      return new HorizontalRuleBlock();
+    }
+    if (tagName.equals("ul")) {
+      return new ListBlock(false);
+    }
+    if (tagName.equals("ol")) {
+      return new ListBlock(true);
+    }
+    if (tagName.equals("li")) {
+      return new ListItemBlock();
+    }
+    if (tagName.equals("table")) {
+      return new TableBlock();
+    }
+    if (tagName.equals("thead")) {
+      return new TableHeaderBlock();
+    }
+    if (tagName.equals("tbody")) {
+      return new TableBodyBlock();
+    }
+    if (tagName.equals("tr")) {
+      return new TableRowBlock();
+    }
+    if (tagName.equals("th")) {
+      return new TableCellBlock(true);
+    }
+    if (tagName.equals("td")) {
+      return new TableCellBlock(false);
+    }
+    return new Block();
   }
 
   private String parseTagName() {
@@ -768,5 +842,38 @@ public class HtmlParser extends Parser {
   public LettersBlock createLettersBlock() {
     // may be overridden by Flavoured Markdown Parser
     return new LettersBlock();
+  }
+
+  public String build(Block block) {
+    BufferedString bufferedString = new BufferedString();
+    bufferedString.appendString("<!DOCTYPE html>");
+    bufferedString.finishLine();
+    bufferedString.appendString("<html lang=\"en\">");
+    bufferedString.finishLine();
+    bufferedString.appendString("<head>");
+    bufferedString.finishLine();
+    bufferedString.appendString("<meta charset=\"UTF-8\">");
+    bufferedString.finishLine();
+    bufferedString.appendString("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+    bufferedString.finishLine();
+    bufferedString.appendString("<style>");
+    bufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}span[data-block=\"chars-block\"]{white-space:pre-wrap;}");
+    bufferedString.appendString("</style>");
+    bufferedString.finishLine();
+    bufferedString.appendString("<title>http://localhost:8080</title>");
+    bufferedString.finishLine();
+    bufferedString.appendString("</head>");
+    bufferedString.finishLine();
+    bufferedString.appendString("<body>");
+    bufferedString.finishLine();
+    for (Block innerBlock : block.getInnerBlocks()) {
+      innerBlock.toHtml(bufferedString, 2);
+    }
+    bufferedString.appendString("</body>");
+    bufferedString.finishLine();
+    bufferedString.appendString("</html>");
+    bufferedString.finishLine();
+
+    return bufferedString.getString();
   }
 }

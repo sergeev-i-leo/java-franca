@@ -23,13 +23,13 @@ public class LettersBlock extends Block {
   }
 
   @Override
-  public void serialize(BufferedString targetBufferedString, int spacesBefore) {
+  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
     addQuotedAttribute("data-type", type);
-    super.serialize(targetBufferedString, spacesBefore);
+    super.toHtml(targetBufferedString, spacesBefore);
   }
 
   @Override
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return "span";
   }
 
@@ -39,7 +39,7 @@ public class LettersBlock extends Block {
   }
 
   @Override
-  public void serializeContents(BufferedString targetBufferedString, String serializationTag, int spacesBefore) {
+  public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
     targetBufferedString.appendString(">");
 
     if (type.equals(LettersBlock.TYPE_LETTERS)) {
@@ -63,7 +63,7 @@ public class LettersBlock extends Block {
       targetBufferedString.appendString("<br>");
     }
 
-    targetBufferedString.appendString("</" + serializationTag + ">");
+    targetBufferedString.appendString("</" + htmlTag + ">");
     if (spacesBefore >= 0) {
       targetBufferedString.finishLine();
     }

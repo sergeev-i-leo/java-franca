@@ -9,9 +9,9 @@ public class ListItemBlock extends Block {
   public String type = "*";
 
   @Override
-  public void serialize(BufferedString targetBufferedString, int spacesBefore) {
+  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
     addQuotedAttribute("data-type", type);
-    super.serialize(targetBufferedString, spacesBefore);
+    super.toHtml(targetBufferedString, spacesBefore);
   }
 
   @Override
@@ -21,7 +21,7 @@ public class ListItemBlock extends Block {
   }
 
   @Override
-  public String getSerializationTag() {
+  public String getHtmlTag() {
     return "li";
   }
 
