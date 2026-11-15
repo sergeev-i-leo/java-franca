@@ -11,6 +11,7 @@ import franca.java.data.json.JsonStringPrimitive;
 import franca.java.office.document.Block;
 import franca.java.office.document.list.ListBlock;
 import franca.java.office.document.list.ListItemBlock;
+import franca.java.office.document.media.ImageBlock;
 import franca.java.office.document.structure.HorizontalRuleBlock;
 import franca.java.office.document.table.*;
 import franca.java.office.document.typography.HeadingBlock;
@@ -234,6 +235,9 @@ public class HtmlEngine extends Parser {
     }
     if (tagName.equals("td")) {
       return new TableCellBlock(false);
+    }
+    if (tagName.equals("img")) {
+      return new ImageBlock();
     }
     return new Block();
   }
@@ -582,7 +586,7 @@ public class HtmlEngine extends Parser {
       literalBufferedString.appendChar(consumeChar());
     }
 
-    if ((literalBufferedString.isNotEmpty()) || (parentBlock.getInnerBlocks().isEmpty())) {
+    if (literalBufferedString.isNotEmpty()) {
       // chars found
       JsonObject styleJsonObject;
       if (styleJsonObjects.isEmpty()) {
@@ -859,7 +863,7 @@ public class HtmlEngine extends Parser {
     bufferedString.appendString("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
     bufferedString.finishLine();
     bufferedString.appendString("<style>");
-    bufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}span[data-block=\"chars-block\"]{white-space:pre-wrap;}");
+    bufferedString.appendString("body{margin:0;padding:0;}table,th,td{border:1px solid black;}");
     bufferedString.appendString("</style>");
     bufferedString.finishLine();
     bufferedString.appendString("<title>http://localhost:8080</title>");

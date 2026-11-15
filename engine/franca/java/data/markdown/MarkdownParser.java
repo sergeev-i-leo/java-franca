@@ -514,7 +514,7 @@ public class MarkdownParser extends HtmlEngine {
       literalBufferedString.appendChar(consumeChar());
     }
 
-    if ((literalBufferedString.isNotEmpty()) || (parentBlock.getInnerBlocks().isEmpty())) {
+    if (literalBufferedString.isNotEmpty()) {
       // chars found
       JsonObject styleJsonObject;
       if (styleJsonObjects.isEmpty()) {

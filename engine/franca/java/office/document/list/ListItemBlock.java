@@ -9,12 +9,6 @@ public class ListItemBlock extends Block {
   public String type = "*";
 
   @Override
-  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
-    addQuotedAttribute("data-type", type);
-    super.toHtml(targetBufferedString, spacesBefore);
-  }
-
-  @Override
   public void fillJsonObject(JsonObject jsonObject) {
     super.fillJsonObject(jsonObject);
     jsonObject.putStringValue("type", type);
