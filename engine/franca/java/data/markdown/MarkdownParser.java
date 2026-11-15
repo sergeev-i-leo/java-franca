@@ -354,23 +354,9 @@ public class MarkdownParser extends HtmlEngine {
           break;
         }
         skipWhitespaces();
-        if (peekString("<<")) {
-          skipChars(2);
-          spanTableCell(tableHeaderBlock, tableBodyBlock, "<");
-        } else if (peekString("^^")) {
-          skipChars(2);
-          spanTableCell(tableHeaderBlock, tableBodyBlock, "^");
-        } else if (peekString("<<^^")) {
-          skipChars(4);
-          spanTableCell(tableHeaderBlock, tableBodyBlock, "<^");
-        } else if (peekString("^^<<")) {
-          skipChars(4);
-          spanTableCell(tableHeaderBlock, tableBodyBlock, "<^");
-        } else {
-          TableCellBlock tableCellBlock = new TableCellBlock(tableBodyBlock == null);
-          parseMarkdownTextContents(tableCellBlock, true);
-          tableRowBlock.addInnerBlock(tableCellBlock);
-        }
+        TableCellBlock tableCellBlock = new TableCellBlock(tableBodyBlock == null);
+        parseMarkdownTextContents(tableCellBlock, true);
+        tableRowBlock.addInnerBlock(tableCellBlock);
         skipWhitespaces();
         // '|'
         skipChars(1);
@@ -401,26 +387,6 @@ public class MarkdownParser extends HtmlEngine {
       }
     }
     return tableBlock;
-  }
-
-  private void spanTableCell(Block tableHeaderBlock, Block tableBodyBlock, String text) {
-    ArrayList<Block> rowBlocks = tableHeaderBlock.getInnerBlocks();
-    if (tableBodyBlock != null) {
-      rowBlocks = tableBodyBlock.getInnerBlocks();
-    }
-    int row = rowBlocks.size() - 1;
-    Block rowBlock = rowBlocks.get(row);
-    int column = 0;
-    for (int i = 0; i < rowBlock.getInnerBlocks().size(); i++) {
-      Block cellBlock =
-    }
-    if (text.equals("<<")) {
-      if (rowBlocks.isEmpty()) {
-        return;
-      }
-      Block cellBlock = rowBlocks.
-    }
-
   }
 
   private void parseBlockCellAlignments(ArrayList<String> blockCellAlignments) {
