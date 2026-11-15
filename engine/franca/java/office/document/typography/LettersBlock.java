@@ -23,12 +23,6 @@ public class LettersBlock extends Block {
   }
 
   @Override
-  public void toHtml(BufferedString targetBufferedString, int spacesBefore) {
-    addQuotedAttribute("data-type", type);
-    super.toHtml(targetBufferedString, spacesBefore);
-  }
-
-  @Override
   public String getHtmlTag() {
     return "span";
   }

@@ -67,7 +67,7 @@ public class Block {
     }
 
     String htmlTag = getHtmlTag();
-    targetBufferedString.appendString("<" + htmlTag + " data-block=\"" + getDataBlock() + "\"");
+    targetBufferedString.appendString("<" + htmlTag);
 
     classesJsonArrayToHtml(targetBufferedString);
 
@@ -135,7 +135,7 @@ public class Block {
       if (string != null) {
         targetBufferedString.appendString("=" + string);
       } else {
-        string = jsonObject.getStringValue("quotedValue");
+        string = jsonObject.getStringValue("quoted-value");
         if (string != null) {
           targetBufferedString.appendString(" = \"" + string + "\"");
         }

@@ -62,7 +62,7 @@ public class TextBlock extends Block {
   public void setHtmlText(String htmlText) {
     clearInnerBlocks();
 
-    ArrayList styleJsonObjects = new ArrayList<JsonObject>();
+    ArrayList<JsonObject> styleJsonObjects = new ArrayList<>();
     HtmlEngine htmlEngine = new HtmlEngine();
     htmlEngine.input = htmlText;
     htmlEngine.inputPosition = 0;
