@@ -5,22 +5,22 @@ import franca.java.office.document.Block;
 
 public class TableCellBlock extends Block {
 
-  public boolean isHeader;
+  public boolean isHeaderCellBlock;
 
-  public TableCellBlock(boolean isHeader) {
+  public TableCellBlock(boolean isHeaderCellBlock) {
     super();
-    this.isHeader = isHeader;
+    this.isHeaderCellBlock = isHeaderCellBlock;
   }
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
     super.fillJsonObject(jsonObject);
-    jsonObject.putBooleanValue("isHeader", isHeader);
+    jsonObject.putBooleanValue("isHeaderCellBlock", isHeaderCellBlock);
   }
 
   @Override
   public String getHtmlTag() {
-    return isHeader ? "th" : "td";
+    return isHeaderCellBlock ? "th" : "td";
   }
 
   @Override
