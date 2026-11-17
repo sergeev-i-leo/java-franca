@@ -147,7 +147,7 @@ public class Parser {
   }
 
   public boolean peekLineEnd() {
-    return (peekChar() == '\r') || (peekChar() == '\n');
+    return (peekChar() == '\r') || (peekChar() == '\n') || (inputPosition == input.length());
   }
 
   public char consumeChar() {

@@ -193,6 +193,7 @@ public class MarkdownParser extends HtmlEngine {
         return null;
       }
       if (peekChar() == ']') {
+        skipChars(1);
         break;
       }
       altBufferedString.appendChar(peekChar());
@@ -215,6 +216,7 @@ public class MarkdownParser extends HtmlEngine {
         return null;
       }
       if (peekChar() == ')') {
+        skipChars(1);
         break;
       }
       srcBufferedString.appendChar(peekChar());
@@ -227,11 +229,13 @@ public class MarkdownParser extends HtmlEngine {
     JsonObject jsonObject = new JsonObject();
     if (altBufferedString.isNotEmpty()) {
       imageBlock.attributesJsonArray.add(jsonObject);
-      jsonObject.putStringValue("alt", altBufferedString.toString());
+      jsonObject.putStringValue("name", "alt");
+      jsonObject.putStringValue("value", altBufferedString.getString());
       jsonObject = new JsonObject();
     }
     imageBlock.attributesJsonArray.add(jsonObject);
-    jsonObject.putStringValue("src", srcBufferedString.toString());
+    jsonObject.putStringValue("name", "src");
+    jsonObject.putStringValue("value", srcBufferedString.getString());
     return imageBlock;
   }
 
