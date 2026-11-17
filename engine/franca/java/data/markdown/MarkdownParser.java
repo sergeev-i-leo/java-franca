@@ -230,12 +230,12 @@ public class MarkdownParser extends HtmlEngine {
     if (altBufferedString.isNotEmpty()) {
       imageBlock.attributesJsonArray.add(jsonObject);
       jsonObject.putStringValue("name", "alt");
-      jsonObject.putStringValue("value", altBufferedString.getString());
+      jsonObject.putStringValue("quoted-value", altBufferedString.getString());
       jsonObject = new JsonObject();
     }
     imageBlock.attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", "src");
-    jsonObject.putStringValue("value", srcBufferedString.getString());
+    jsonObject.putStringValue("quoted-value", srcBufferedString.getString());
     return imageBlock;
   }
 
