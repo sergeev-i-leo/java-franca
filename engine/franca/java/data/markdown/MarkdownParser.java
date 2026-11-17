@@ -8,6 +8,7 @@ import franca.java.expected.BufferedString;
 import franca.java.office.document.Block;
 import franca.java.office.document.list.ListBlock;
 import franca.java.office.document.list.ListItemBlock;
+import franca.java.office.document.media.ImageBlock;
 import franca.java.office.document.structure.HorizontalRuleBlock;
 import franca.java.office.document.table.*;
 import franca.java.office.document.typography.LettersBlock;
@@ -130,7 +131,16 @@ public class MarkdownParser extends HtmlEngine {
       return;
     }
 
-    Block block = parseMarkdownListBlock(0);
+    Block block = parseMarkdownImageBlock();
+    if (block != null) {
+      if (parentBlock != null) {
+        parentBlock.addInnerBlock(block);
+      }
+      // empty line after list block to be parsed to paragraph block
+      return;
+    }
+
+    block = parseMarkdownListBlock(0);
     if (block != null) {
       if (parentBlock != null) {
         parentBlock.addInnerBlock(block);
@@ -148,7 +158,7 @@ public class MarkdownParser extends HtmlEngine {
       return;
     }
 
-    block = parseHtmlNode();;
+    block = parseHtmlNode();
     if (block != null) {
       // skip lineEnd
       parentBlock.addInnerBlock(block);
@@ -164,6 +174,65 @@ public class MarkdownParser extends HtmlEngine {
     parentBlock.addInnerBlock(paragraphBlock);
     parseMarkdownTextContents(paragraphBlock, false);
     skipLine();
+  }
+
+  public ImageBlock parseMarkdownImageBlock() {
+    if ((peekChar() != '!') || (peekNextChar(1) != '[')) {
+      return null;
+    }
+
+    int currentInputPosition = inputPosition;
+
+    skipChars(2);
+    BufferedString altBufferedString = new BufferedString();
+    // alt
+    while (true) {
+      if (peekLineEnd()) {
+        // oops
+        inputPosition = currentInputPosition;
+        return null;
+      }
+      if (peekChar() == ']') {
+        break;
+      }
+      altBufferedString.appendChar(peekChar());
+      skipChars(1);
+    }
+    skipWhitespaces();
+    if (peekChar() != '(') {
+      // oops
+      inputPosition = currentInputPosition;
+      return null;
+    }
+    skipChars(1);
+
+    BufferedString srcBufferedString = new BufferedString();
+
+    while (true) {
+      if (peekLineEnd()) {
+        // oops
+        inputPosition = currentInputPosition;
+        return null;
+      }
+      if (peekChar() == ')') {
+        break;
+      }
+      srcBufferedString.appendChar(peekChar());
+      skipChars(1);
+    }
+
+    skipLine();
+
+    ImageBlock imageBlock = new ImageBlock();
+    JsonObject jsonObject = new JsonObject();
+    if (altBufferedString.isNotEmpty()) {
+      imageBlock.attributesJsonArray.add(jsonObject);
+      jsonObject.putStringValue("alt", altBufferedString.toString());
+      jsonObject = new JsonObject();
+    }
+    imageBlock.attributesJsonArray.add(jsonObject);
+    jsonObject.putStringValue("src", srcBufferedString.toString());
+    return imageBlock;
   }
 
   public ListBlock parseMarkdownListBlock(int expectedIndentationCount) {
