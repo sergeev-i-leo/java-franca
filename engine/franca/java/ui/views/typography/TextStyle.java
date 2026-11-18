@@ -1,4 +1,6 @@
-package franca.java.ui;
+package franca.java.ui.views.typography;
+
+import franca.java.ui.Painter;
 
 public class TextStyle {
 

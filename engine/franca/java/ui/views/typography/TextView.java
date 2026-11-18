@@ -8,7 +8,6 @@ import franca.java.office.document.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
 import franca.java.ui.views.View;
-import franca.java.ui.TextStyle;
 
 import java.util.ArrayList;
 
@@ -21,13 +20,9 @@ public class TextView extends View {
   public int lineSpacing = 0;
 
   public TextBlock textBlock = null;
+  public TextStyle textStyle = new TextStyle();
 
   public ArrayList<LettersView> lettersViews = new ArrayList<>();
-
-  public TextView() {
-    super();
-    textStyle = new TextStyle();
-  }
 
   public void setText(String text) {
     MarkdownParser markdownParser = new MarkdownParser();

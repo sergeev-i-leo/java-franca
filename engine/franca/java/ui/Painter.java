@@ -1,5 +1,7 @@
 package franca.java.ui;
 
+import franca.java.ui.views.typography.TextStyle;
+
 public class Painter {
 
   public static final int PRECISION = 100;
