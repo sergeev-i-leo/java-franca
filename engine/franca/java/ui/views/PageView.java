@@ -18,7 +18,7 @@ public class PageView extends PanelView {
   }
 
   @Override
-  public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
+  public void paint(Device device, Painter painter, int painterX, int painterY, float scale) {
     for (int i = 0; i < innerViews.size(); i++) {
       innerViews.get(i).paint(device, painter, painterX, painterY, scale);
     }

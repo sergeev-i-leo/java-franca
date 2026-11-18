@@ -8,13 +8,13 @@ public class PanelViewport {
   public PanelView panelView;
   public int scrollable;
 
-  public int leftMargin = 0;
-  public int topMargin = 0;
-  public int rightMargin = 0;
-  public int bottomMargin = 0;
+  public int paddingLeft = 0;
+  public int paddingTop = 0;
+  public int paddingRight = 0;
+  public int paddingBottom = 0;
 
-  public int viewsX = 0;
-  public int viewsY = 0;
+  public int innerViewsX = 0;
+  public int innerViewsY = 0;
 
   public PanelViewport(PanelView panelView, int scrollable) {
     this.panelView = panelView;

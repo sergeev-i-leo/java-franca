@@ -36,7 +36,7 @@ public class TextView extends View {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, Float scale) {
+  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, float scale) {
     if (isReady()) {
       return;
     }
@@ -249,11 +249,11 @@ public class TextView extends View {
     height += lineHeight;
   }
 
-  public void paint(Device device, Painter painter, int painterX, int painterY, Float scale) {
+  public void paint(Device device, Painter painter, int painterX, int painterY, float scale) {
     painter.setCurrentTextStyle(textStyle);
     for (int i = 0; i < lettersViews.size(); i++) {
       LettersView letterView = lettersViews.get(i);
-      letterView.paint(device, painter, painterX, painterY, scale);
+      letterView.paint(device, painter, painterX + left + paddingLeft, painterY + top + paddingTop, scale);
     }
   }
 }
