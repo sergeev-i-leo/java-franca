@@ -22,8 +22,8 @@ public class TextBlock extends Block {
   }
 
   @Override
-  public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
-    super.contentsToHtml(targetBufferedString, htmlTag, -1);
+  public void contentsToHtml(BufferedString targetBufferedString, int spacesBefore) {
+    super.contentsToHtml(targetBufferedString, -1);
     if (spacesBefore >= 0) {
       targetBufferedString.finishLine();
     }

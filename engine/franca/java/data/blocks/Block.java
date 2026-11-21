@@ -91,9 +91,9 @@ public class Block {
     }
 
     if (spacesBefore >= 0) {
-      contentsToHtml(targetBufferedString, htmlTag, spacesBefore + 2);
+      contentsToHtml(targetBufferedString, spacesBefore + 2);
     } else {
-      contentsToHtml(targetBufferedString, htmlTag, spacesBefore);
+      contentsToHtml(targetBufferedString, spacesBefore);
     }
 
     if (spacesBefore >= 0) {
@@ -199,7 +199,7 @@ public class Block {
     targetBufferedString.appendString("\"");
   }
 
-  public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
+  public void contentsToHtml(BufferedString targetBufferedString, int spacesBefore) {
     innerBlocksToHtml(targetBufferedString, spacesBefore);
   }
 

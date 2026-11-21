@@ -33,9 +33,7 @@ public class LettersBlock extends Block {
   }
 
   @Override
-  public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
-    targetBufferedString.appendString(">");
-
+  public void contentsToHtml(BufferedString targetBufferedString, int spacesBefore) {
     if (type.equals(LettersBlock.TYPE_SPACE)) {
       targetBufferedString.appendChar(' ');
     } else if (type.equals(LettersBlock.TYPE_NON_BREAKABLE_SPACE)) {
@@ -52,11 +50,6 @@ public class LettersBlock extends Block {
           targetBufferedString.appendChar(c);
         }
       }
-    }
-
-    targetBufferedString.appendString("</" + htmlTag + ">");
-    if (spacesBefore >= 0) {
-      targetBufferedString.finishLine();
     }
   }
 
