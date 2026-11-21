@@ -196,9 +196,7 @@ public class Block {
       targetBufferedString.finishLine();
     }
 
-    for (Block block : getInnerBlocks()) {
-      block.toHtml(targetBufferedString, spacesBefore);
-    }
+    innerBlocksToHtml(targetBufferedString, spacesBefore);
 
     if (spacesBefore >= 0) {
       targetBufferedString.appendChars(' ', spacesBefore);
@@ -227,6 +225,12 @@ public class Block {
     attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", attributeName);
     jsonObject.putStringValue("quoted-value", attributeValue);
+  }
+
+  public void innerBlocksToHtml(BufferedString targetBufferedString, int spacesBefore) {
+    for (Block block : getInnerBlocks()) {
+      block.toHtml(targetBufferedString, spacesBefore);
+    }
   }
 
   public void addInnerBlock(Block block) {
