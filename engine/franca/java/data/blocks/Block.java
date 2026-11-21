@@ -226,7 +226,7 @@ public class Block {
     JsonObject jsonObject = new JsonObject();
     attributesJsonArray.add(jsonObject);
     jsonObject.putStringValue("name", attributeName);
-    jsonObject.putStringValue("quotedValue", attributeValue);
+    jsonObject.putStringValue("quoted-value", attributeValue);
   }
 
   public void addInnerBlock(Block block) {
