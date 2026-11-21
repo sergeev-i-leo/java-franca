@@ -2,11 +2,11 @@ package franca.java.ui.views;
 
 import java.util.ArrayList;
 
-import franca.java.office.document.Block;
-import franca.java.office.document.table.*;
-import franca.java.office.document.typography.HeadingBlock;
-import franca.java.office.document.typography.ParagraphBlock;
-import franca.java.office.document.typography.TextBlock;
+import franca.java.data.blocks.Block;
+import franca.java.data.blocks.table.*;
+import franca.java.data.blocks.typography.HeadingBlock;
+import franca.java.data.blocks.typography.ParagraphBlock;
+import franca.java.data.blocks.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
 import franca.java.ui.views.table.TableCellView;

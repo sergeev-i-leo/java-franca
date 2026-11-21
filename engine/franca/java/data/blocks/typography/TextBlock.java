@@ -1,10 +1,10 @@
-package franca.java.office.document.typography;
+package franca.java.data.blocks.typography;
 
 import franca.java.data.html.HtmlEngine;
 import franca.java.data.json.JsonObject;
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
-import franca.java.office.document.Block;
+import franca.java.data.blocks.Block;
 
 import java.util.ArrayList;
 

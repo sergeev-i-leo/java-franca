@@ -1,4 +1,4 @@
-package franca.java.office.document;
+package franca.java.data.blocks;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class Block {
   public JsonArray attributesJsonArray = new JsonArray();
   // style
   public JsonObject styleJsonObject = new JsonObject();
-  // flavoured style, not html-compatible styles styles
+  // flavoured style, not html styles
   public JsonObject flavouredStyleJsonObject = new JsonObject();
 
   private ArrayList<Block> innerBlocks = null;

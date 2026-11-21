@@ -1,4 +1,4 @@
-package franca.java.office.document.typography;
+package franca.java.data.blocks.typography;
 
 import franca.java.data.json.JsonObject;
 import franca.java.expected.Runtime;

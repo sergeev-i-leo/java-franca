@@ -2,7 +2,6 @@ package franca.java.ui.views;
 
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
-import franca.java.ui.views.typography.TextStyle;
 
 public class View {
 

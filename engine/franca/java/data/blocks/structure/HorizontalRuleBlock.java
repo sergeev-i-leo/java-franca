@@ -1,12 +1,11 @@
-package franca.java.office.document.list;
+package franca.java.data.blocks.structure;
 
 import franca.java.data.json.JsonObject;
-import franca.java.expected.BufferedString;
-import franca.java.office.document.Block;
+import franca.java.data.blocks.Block;
 
-public class ListItemBlock extends Block {
+public class HorizontalRuleBlock extends Block {
 
-  public String type = "*";
+  public String type = "***";
 
   @Override
   public void fillJsonObject(JsonObject jsonObject) {
@@ -16,11 +15,11 @@ public class ListItemBlock extends Block {
 
   @Override
   public String getHtmlTag() {
-    return "li";
+    return "hr";
   }
 
   @Override
   public String getDataBlock() {
-    return "ListItemBlock";
+    return "HorizontalRuleBlock";
   }
 }

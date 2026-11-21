@@ -1,8 +1,8 @@
-package franca.java.office.document.media;
+package franca.java.data.blocks.media;
 
+import franca.java.data.blocks.Block;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
-import franca.java.office.document.Block;
 
 public class ImageBlock extends Block {
 

@@ -1,4 +1,4 @@
-package franca.java.office.document.typography;
+package franca.java.data.blocks.typography;
 
 public class ParagraphBlock extends TextBlock {
 

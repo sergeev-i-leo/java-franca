@@ -1,7 +1,7 @@
-package franca.java.office.document.table;
+package franca.java.data.blocks.table;
 
 import franca.java.data.json.JsonObject;
-import franca.java.office.document.Block;
+import franca.java.data.blocks.Block;
 
 public class TableCellBlock extends Block {
 

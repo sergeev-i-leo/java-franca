@@ -1,7 +1,7 @@
-package franca.java.office.document.list;
+package franca.java.data.blocks.list;
 
+import franca.java.data.blocks.Block;
 import franca.java.data.json.JsonObject;
-import franca.java.office.document.Block;
 
 public class ListBlock extends Block {
 

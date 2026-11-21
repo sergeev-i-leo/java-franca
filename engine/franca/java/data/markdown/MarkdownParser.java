@@ -2,19 +2,19 @@ package franca.java.data.markdown;
 
 import java.util.ArrayList;
 
+import franca.java.data.blocks.table.*;
 import franca.java.data.html.HtmlEngine;
 import franca.java.data.json.JsonObject;
 import franca.java.expected.BufferedString;
-import franca.java.office.document.Block;
-import franca.java.office.document.list.ListBlock;
-import franca.java.office.document.list.ListItemBlock;
-import franca.java.office.document.media.ImageBlock;
-import franca.java.office.document.structure.HorizontalRuleBlock;
-import franca.java.office.document.table.*;
-import franca.java.office.document.typography.LettersBlock;
-import franca.java.office.document.typography.HeadingBlock;
-import franca.java.office.document.typography.ParagraphBlock;
-import franca.java.office.document.typography.TextBlock;
+import franca.java.data.blocks.Block;
+import franca.java.data.blocks.list.ListBlock;
+import franca.java.data.blocks.list.ListItemBlock;
+import franca.java.data.blocks.media.ImageBlock;
+import franca.java.data.blocks.structure.HorizontalRuleBlock;
+import franca.java.data.blocks.typography.LettersBlock;
+import franca.java.data.blocks.typography.HeadingBlock;
+import franca.java.data.blocks.typography.ParagraphBlock;
+import franca.java.data.blocks.typography.TextBlock;
 
 public class MarkdownParser extends HtmlEngine {
 

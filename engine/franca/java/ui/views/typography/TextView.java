@@ -2,9 +2,9 @@ package franca.java.ui.views.typography;
 
 import franca.java.data.markdown.MarkdownParser;
 import franca.java.expected.BufferedString;
-import franca.java.office.document.Block;
-import franca.java.office.document.typography.LettersBlock;
-import franca.java.office.document.typography.TextBlock;
+import franca.java.data.blocks.Block;
+import franca.java.data.blocks.typography.LettersBlock;
+import franca.java.data.blocks.typography.TextBlock;
 import franca.java.ui.Device;
 import franca.java.ui.Painter;
 import franca.java.ui.views.View;
