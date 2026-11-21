@@ -850,7 +850,7 @@ public class HtmlEngine extends Parser {
     return new LettersBlock();
   }
 
-  public String createHtml(Block block) {
+  public String toHtml(Block block) {
     BufferedString bufferedString = new BufferedString();
     bufferedString.appendString("<!DOCTYPE html>");
     bufferedString.finishLine();

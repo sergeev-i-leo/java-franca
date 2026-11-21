@@ -36,7 +36,13 @@ public class LettersBlock extends Block {
   public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
     targetBufferedString.appendString(">");
 
-    if (type.equals(LettersBlock.TYPE_LETTERS)) {
+    if (type.equals(LettersBlock.TYPE_SPACE)) {
+      targetBufferedString.appendChar(' ');
+    } else if (type.equals(LettersBlock.TYPE_NON_BREAKABLE_SPACE)) {
+      targetBufferedString.appendString("&nbsp;");
+    } else if (type.equals(LettersBlock.TYPE_LINE_BREAK)) {
+      targetBufferedString.appendString("<br>");
+    } else {
       for (int i = 0; i < letters.length(); i++) {
         char c = letters.charAt(i);
         String string = encodeHtmChar(c);
@@ -46,15 +52,6 @@ public class LettersBlock extends Block {
           targetBufferedString.appendChar(c);
         }
       }
-    }
-    if (type.equals(LettersBlock.TYPE_SPACE)) {
-      targetBufferedString.appendChar(' ');
-    }
-    if (type.equals(LettersBlock.TYPE_NON_BREAKABLE_SPACE)) {
-      targetBufferedString.appendString("&nbsp;");
-    }
-    if (type.equals(LettersBlock.TYPE_LINE_BREAK)) {
-      targetBufferedString.appendString("<br>");
     }
 
     targetBufferedString.appendString("</" + htmlTag + ">");
