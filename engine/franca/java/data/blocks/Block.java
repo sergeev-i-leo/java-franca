@@ -77,10 +77,32 @@ public class Block {
 
     flavouredStyleJsonObjectToHtml(targetBufferedString);
 
+    if (HtmlEngine.isSelfClosingHtmlTag(htmlTag)) {
+      targetBufferedString.appendString(">");
+      if (spacesBefore >= 0) {
+        targetBufferedString.finishLine();
+      }
+      return;
+    }
+
+    targetBufferedString.appendString(">");
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
+    }
+
     if (spacesBefore >= 0) {
       contentsToHtml(targetBufferedString, htmlTag, spacesBefore + 2);
     } else {
       contentsToHtml(targetBufferedString, htmlTag, spacesBefore);
+    }
+
+    if (spacesBefore >= 0) {
+      targetBufferedString.appendChars(' ', spacesBefore);
+    }
+
+    targetBufferedString.appendString("</" + htmlTag + ">");
+    if (spacesBefore >= 0) {
+      targetBufferedString.finishLine();
     }
   }
 
@@ -178,33 +200,7 @@ public class Block {
   }
 
   public void contentsToHtml(BufferedString targetBufferedString, String htmlTag, int spacesBefore) {
-    if (HtmlEngine.isSelfClosingHtmlTag(htmlTag)) {
-      targetBufferedString.appendString(">");
-      if (spacesBefore >= 0) {
-        targetBufferedString.finishLine();
-      }
-      return;
-    } else if (getInnerBlocks().isEmpty()) {
-      targetBufferedString.appendString("/>");
-      if (spacesBefore >= 0) {
-        targetBufferedString.finishLine();
-      }
-      return;
-    }
-    targetBufferedString.appendString(">");
-    if (spacesBefore >= 0) {
-      targetBufferedString.finishLine();
-    }
-
     innerBlocksToHtml(targetBufferedString, spacesBefore);
-
-    if (spacesBefore >= 0) {
-      targetBufferedString.appendChars(' ', spacesBefore);
-    }
-    targetBufferedString.appendString("</" + htmlTag + ">");
-    if (spacesBefore >= 0) {
-      targetBufferedString.finishLine();
-    }
   }
 
   public void addQuotedAttribute(String attributeName, String attributeValue) {
