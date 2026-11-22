@@ -26,7 +26,8 @@ class Graphics2DPanel(
 
   override fun paintComponent(graphics: Graphics) {
     super.paintComponent(graphics)
-    val graphicsPainter = Graphics2DPainter(graphicsDevice, graphics as Graphics2D)
+    val graphicsPainter = Graphics2DPainter(graphicsDevice)
+    graphicsPainter.assignGraphics2D(graphics as Graphics2D)
     graphicsDevice.paint(graphicsPainter)
     graphicsDevice.startPainting();
   }

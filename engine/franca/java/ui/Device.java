@@ -27,6 +27,14 @@ public class Device {
     return 0L;
   }
 
+  public int getWidth() {
+    return 0;
+  }
+
+  public int getHeight() {
+    return 0;
+  }
+
   public void requestPainting() {
     // one-shot animation
     Animation animation = new Animation(this, 0, 0, 0L);

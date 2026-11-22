@@ -1,18 +1,17 @@
 package franca.java
 
+import content.studio.GraphicsPanel
 import franca.java.ui.Device
 import franca.java.ui.Painter
 import java.awt.Font
-import java.awt.font.FontRenderContext
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
-import kotlin.math.roundToInt
 
 open class Graphics2DDevice : Device() {
 
-  var graphicsPanel = Graphics2DPanel(this)
+  var graphicsPanel = GraphicsPanel()
   private var scheduledExecutorService: ScheduledExecutorService? = null
   private var lastTickTime = 0L
 
@@ -20,12 +19,20 @@ open class Graphics2DDevice : Device() {
     return System.nanoTime() / 1000000
   }
 
+  override fun getWidth(): Int {
+    return graphicsPanel.width * Painter.PRECISION;
+  }
+
+  override fun getHeight(): Int {
+    return graphicsPanel.height * Painter.PRECISION;
+  }
+
   override fun startPainting() {
     if (scheduledExecutorService != null) {
       return
     }
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    scheduledExecutorService?.scheduleAtFixedRate(Runnable { tick() }, 0, 2, TimeUnit.MILLISECONDS)
+    scheduledExecutorService?.scheduleAtFixedRate({ tick() }, 0, 2, TimeUnit.MILLISECONDS)
   }
 
   private fun tick() {
@@ -35,7 +42,9 @@ open class Graphics2DDevice : Device() {
     }
     lastTickTime = tickTime
     if (needsPainting()) {
-      SwingUtilities.invokeLater { graphicsPanel.repaint() }
+      SwingUtilities.invokeLater {
+        graphicsPanel.repaint()
+      }
     }
     if (!needsNextPainting()) {
       scheduledExecutorService!!.shutdown()
@@ -45,7 +54,7 @@ open class Graphics2DDevice : Device() {
 
   open fun resolveFont(fontName: String?, fontWeight: String?, fontStyle: String?, scale: Float?): Font {
     if (scale == null) {
-      return Font("SansSerif", Font.PLAIN, (18 * Painter.PRECISION).toInt())
+      return Font("SansSerif", Font.PLAIN, 18 * Painter.PRECISION)
     }
     return Font("SansSerif", Font.PLAIN, (18 * scale).toInt())
   }

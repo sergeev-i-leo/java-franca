@@ -24,7 +24,8 @@ open class SkiaDevice() : Device() {
 
     skiaLayer.skikoView = object : SkikoView {
       override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
-        val skiaPainter = SkiaPainter(this@SkiaDevice, canvas);
+        val skiaPainter = SkiaPainter(this@SkiaDevice)
+        skiaPainter.assignCanvas(canvas)
         this@SkiaDevice.paint(skiaPainter)
         this@SkiaDevice.startPainting();
       }
@@ -43,6 +44,14 @@ open class SkiaDevice() : Device() {
 
   override fun getTime(): Long {
     return System.nanoTime() / 1000000
+  }
+
+  override fun getWidth(): Int {
+    return skiaLayer.width * Painter.PRECISION;
+  }
+
+  override fun getHeight(): Int {
+    return skiaLayer.height * Painter.PRECISION;
   }
 
   override fun startPainting() {
