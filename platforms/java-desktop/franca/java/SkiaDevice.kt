@@ -4,10 +4,6 @@ import franca.java.ui.Device
 import franca.java.ui.Painter
 import org.jetbrains.skia.Font
 import org.jetbrains.skia.Typeface
-import org.jetbrains.skiko.SkiaLayer
-import org.jetbrains.skiko.SkikoView
-import java.awt.event.MouseAdapter
-import java.awt.event.MouseEvent
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit

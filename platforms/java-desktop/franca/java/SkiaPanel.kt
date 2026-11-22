@@ -3,7 +3,6 @@ package franca.java
 import java.awt.*
 import javax.swing.JPanel
 
-import franca.java.SkiaDevice
 import org.jetbrains.skiko.SkiaLayer
 import org.jetbrains.skiko.SkikoView
 import java.awt.event.MouseAdapter
@@ -18,6 +17,8 @@ class SkiaPanel(
   init {
     layout = BorderLayout()
     background = Color.WHITE
+
+    add(skiaLayer)
 
     skiaLayer.skikoView = object : SkikoView {
       override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
