@@ -1,6 +1,5 @@
 package franca.java
 
-import content.studio.GraphicsPanel
 import franca.java.ui.Device
 import franca.java.ui.Painter
 import java.awt.Font
@@ -9,9 +8,9 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import javax.swing.SwingUtilities
 
-open class Graphics2DDevice : Device() {
+open class Graphics2DDevice() : Device() {
 
-  var graphicsPanel = GraphicsPanel()
+  lateinit var graphics2DPanel: Graphics2DPanel
   private var scheduledExecutorService: ScheduledExecutorService? = null
   private var lastTickTime = 0L
 
@@ -20,11 +19,11 @@ open class Graphics2DDevice : Device() {
   }
 
   override fun getWidth(): Int {
-    return graphicsPanel.width * Painter.PRECISION;
+    return graphics2DPanel.width * Painter.PRECISION;
   }
 
   override fun getHeight(): Int {
-    return graphicsPanel.height * Painter.PRECISION;
+    return graphics2DPanel.height * Painter.PRECISION;
   }
 
   override fun startPainting() {
@@ -43,7 +42,7 @@ open class Graphics2DDevice : Device() {
     lastTickTime = tickTime
     if (needsPainting()) {
       SwingUtilities.invokeLater {
-        graphicsPanel.repaint()
+        graphics2DPanel.repaint()
       }
     }
     if (!needsNextPainting()) {

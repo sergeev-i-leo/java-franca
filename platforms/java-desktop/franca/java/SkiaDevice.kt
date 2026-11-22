@@ -15,43 +15,20 @@ import javax.swing.SwingUtilities
 
 open class SkiaDevice() : Device() {
 
-  val skiaLayer = SkiaLayer()
-
+  lateinit var skiaPanel: SkiaPanel
   private var scheduler: ScheduledExecutorService? = null
   private var lastTickTime = 0L
-
-  init {
-
-    skiaLayer.skikoView = object : SkikoView {
-      override fun onRender(canvas: org.jetbrains.skia.Canvas, width: Int, height: Int, nanoTime: Long) {
-        val skiaPainter = SkiaPainter(this@SkiaDevice)
-        skiaPainter.assignCanvas(canvas)
-        this@SkiaDevice.paint(skiaPainter)
-        this@SkiaDevice.startPainting();
-      }
-    }
-
-    skiaLayer.addMouseListener(object : MouseAdapter() {
-      override fun mousePressed(mouseEvent: MouseEvent) {
-        if (mouseEvent.button == MouseEvent.BUTTON1) {
-          handlePointerDown(mouseEvent.x, mouseEvent.y, 1)
-        } else if (mouseEvent.button == MouseEvent.BUTTON3) {
-          handlePointerDown(mouseEvent.x, mouseEvent.y, 3)
-        }
-      }
-    })
-  }
 
   override fun getTime(): Long {
     return System.nanoTime() / 1000000
   }
 
   override fun getWidth(): Int {
-    return skiaLayer.width * Painter.PRECISION;
+    return skiaPanel.skiaLayer.width * Painter.PRECISION;
   }
 
   override fun getHeight(): Int {
-    return skiaLayer.height * Painter.PRECISION;
+    return skiaPanel.skiaLayer.height * Painter.PRECISION;
   }
 
   override fun startPainting() {
@@ -68,7 +45,7 @@ open class SkiaDevice() : Device() {
       lastTickTime = tickTime
 
       if (needsPainting()) {
-        SwingUtilities.invokeLater { skiaLayer.needRedraw() }
+        SwingUtilities.invokeLater { skiaPanel.skiaLayer.needRedraw() }
       }
 
       if (!needsNextPainting()) {
