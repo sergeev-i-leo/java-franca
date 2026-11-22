@@ -3,8 +3,8 @@ package franca.java;
 import franca.java.ui.Painter;
 import franca.java.ui.Device;
 import franca.java.ui.Router;
-import franca.java.ui.typography.ParagraphView;
 import franca.java.ui.views.PageView;
+import franca.java.ui.views.typography.TextView;
 
 public class Router0 extends Router {
 
@@ -17,11 +17,11 @@ public class Router0 extends Router {
     spinnerView = new SpinnerView(300 * Painter.PRECISION);
     PageView pageView = new PageView();
     views.add(pageView);
-    pageView.views.add(testView0);
-    pageView.views.add(spinnerView);
-    ParagraphView paragraphView = new ParagraphView();
-    pageView.views.add(paragraphView);
-    paragraphView.setText("**HELLO** WORLD!!!");
+    pageView.innerViews.add(testView0);
+    pageView.innerViews.add(spinnerView);
+    TextView textView = new TextView();
+    pageView.innerViews.add(textView);
+    textView.setText("**HELLO** WORLD!!!");
   }
 
   @Override

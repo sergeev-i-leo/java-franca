@@ -12,15 +12,14 @@ public class TestView0 extends View {
   MyAnimation myAnimation = null;
 
   @Override
-  public void paint(Device device, Painter painter) {
-
+  public void paint(Device device, Painter painter, int painterX, int painterY, float scale) {
     float x = (new Random().nextInt(50) + 50f) * Painter.PRECISION;
     float y = (new Random().nextInt(50) + 50f) * Painter.PRECISION;
 
     if (myAnimation != null) {
-      painter.paintText(String.valueOf(myAnimation.currentValue), (int) x, (int) y, "", 255, 1f);
+      painter.paintText(String.valueOf(myAnimation.currentValue), (int) x, (int) y, null, null, null, 255, 1f);
     } else {
-      painter.paintText("PAINT", (int) x, (int) y, "", 255, 1f);
+      painter.paintText("PAINT", (int) x, (int) y, null, null, null, 255, 1f);
     }
   }
 

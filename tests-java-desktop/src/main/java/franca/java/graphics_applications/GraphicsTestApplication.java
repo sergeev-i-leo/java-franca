@@ -3,6 +3,7 @@ package franca.java.graphics_applications;
 import javax.swing.*;
 
 import franca.java.Graphics2DDevice;
+import franca.java.Graphics2DPanel;
 import franca.java.Router0;
 
 public class GraphicsTestApplication {
@@ -14,7 +15,8 @@ public class GraphicsTestApplication {
     JFrame frame = new JFrame("SwingTestApplication");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    frame.add(graphics2DDevice.getGraphicsPanel());
+    graphics2DDevice.graphics2DPanel = new Graphics2DPanel(graphics2DDevice);
+    frame.add(graphics2DDevice.graphics2DPanel);
 
     frame.pack();
     frame.setSize(800, 800);
