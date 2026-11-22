@@ -21,16 +21,15 @@ class AndroidPainter(
       style = Paint.Style.FILL
     }
 
-    val px = x.toFloat() / Painter.PRECISION.toFloat()
-    val py = y.toFloat() / Painter.PRECISION.toFloat()
-    val pr = radius.toFloat() / Painter.PRECISION.toFloat()
+    val px = x.toFloat() / PRECISION.toFloat()
+    val py = y.toFloat() / PRECISION.toFloat()
+    val pr = radius.toFloat() / PRECISION.toFloat()
 
     canvas?.drawCircle(px, py, pr, paint)
   }
 
-  override fun paintText(text: String, x: Float, y: Float, painterFontName: String, deviceColor: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
     paint.apply {
-      color = 0xFFFF0000.toInt()
       isAntiAlias = true
       style = Paint.Style.FILL
       textSize = 40f

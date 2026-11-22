@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import franca.java.*
-import franca.java.ui.Page
 
 class AndroidNavigator(
   private val context: Context,
