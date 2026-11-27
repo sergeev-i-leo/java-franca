@@ -22,11 +22,11 @@ public class Router {
     view.left = 0;
     view.top = 0;
     if (view.isReady()) {
-      view.paint(device, painter, view.left, view.top, 1f);
+      view.paint(device, painter, view.left, view.top, 100);
       return;
     }
     long startTime = System.nanoTime();
-    view.getReady(device, painter, device.getWidth(), device.getHeight(), 1f);
+    view.getReady(device, painter, device.getWidth(), device.getHeight(), 100);
     long endTime = System.nanoTime();
     long durationInNanos = endTime - startTime;
     long durationInMillis = durationInNanos / 1_000_000;

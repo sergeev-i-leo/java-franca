@@ -22,7 +22,7 @@ public class View {
     return readiness;
   }
 
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, float scale) {
+  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
     if (isReady()) {
       return;
     }
@@ -41,7 +41,7 @@ public class View {
     return readiness == 1;
   }
 
-  public void paint(Device device, Painter painter, int painterX, int painterY, float scale) {
+  public void paint(Device device, Painter painter, int painterX, int painterY, int zoomPercentage) {
   }
 
   public void handlePointerDown(Device device, int painterX, int painterY, int pointedX, int pointedY, int buttonNumber) {

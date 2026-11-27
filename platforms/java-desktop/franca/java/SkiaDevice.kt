@@ -51,13 +51,10 @@ open class SkiaDevice() : Device() {
     }, 0, 2, TimeUnit.MILLISECONDS)
   }
 
-  open fun resolveFont(fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int?): Font {
-    if (zoomPercentage == null) {
-      return Font(Typeface.makeDefault(), 18f * Painter.PRECISION)
-    }
+  open fun resolveFont(fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int): Font {
     if (zoomPercentage == 100) {
       return Font(Typeface.makeDefault(), 18f * Painter.PRECISION)
     }
-    return Font(Typeface.makeDefault(), 18f * zoomPercentage / 100)
+    return Font(Typeface.makeDefault(), 18f * Painter.PRECISION * zoomPercentage / 100)
   }
 }

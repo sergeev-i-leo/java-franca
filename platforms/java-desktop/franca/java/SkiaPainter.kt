@@ -33,7 +33,7 @@ class SkiaPainter(
       }
     }
 
-    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, null)
+    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
     return font.measureTextWidth(text).toInt()
   }
 
@@ -53,7 +53,7 @@ class SkiaPainter(
       }
     }
 
-    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, null)
+    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
     return font.metrics.height.toInt()
   }
 

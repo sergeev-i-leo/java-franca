@@ -39,7 +39,7 @@ open class Graphics2DPainter(
       }
     }
 
-    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, null)
+    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.stringWidth(text)
   }
@@ -61,7 +61,7 @@ open class Graphics2DPainter(
       }
     }
 
-    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, null)
+    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
     val metrics = graphics2D.getFontMetrics(font)
     return metrics.height
   }

@@ -26,9 +26,9 @@ public class PanelView extends GroupView {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, float scale) {
+  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
 
-    super.getReady(device, painter, availableWidth, availableHeight, scale);
+    super.getReady(device, painter, availableWidth, availableHeight, zoomPercentage);
 
     if (scrollable == 0) {
       width = availableWidth;
@@ -42,13 +42,13 @@ public class PanelView extends GroupView {
   }
 
   @Override
-  public void paint(Device device, Painter painter, int painterX, int painterY, float scale) {
+  public void paint(Device device, Painter painter, int painterX, int painterY, int zoomPercentage) {
 
     for (int i0 = 0; i0 <= maxInnerLayer; i0++) {
       for (int i1 = 0; i1 < innerViews.size(); i1++) {
         View view = innerViews.get(i1);
         if (view.layer == i0) {
-          view.paint(device, painter, painterX + left + paddingLeft + xOffset, painterY + top + paddingTop + yOffset, scale);
+          view.paint(device, painter, painterX + left + paddingLeft + xOffset, painterY + top + paddingTop + yOffset, zoomPercentage);
         }
       }
     }
