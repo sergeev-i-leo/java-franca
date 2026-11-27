@@ -7,8 +7,8 @@ public class ScalablePanelView extends PanelView {
 
   public Float innerViewsScale = null;
 
-  public ScalablePanelView(int scrollable) {
-    super(scrollable);
+  public ScalablePanelView() {
+    super(PanelView.SCROLLABLE_HORIZONTALLY + PanelView.SCROLLABLE_VERTICALLY);
   }
 
   @Override

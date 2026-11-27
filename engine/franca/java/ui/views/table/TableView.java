@@ -10,6 +10,6 @@ public class TableView extends PanelView {
   public ArrayList<TableViewRow> tableViewRows = new ArrayList<>();
 
   public TableView() {
-    super();
+    super(PanelView.SCROLLABLE_HORIZONTALLY);
   }
 }
