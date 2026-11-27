@@ -22,8 +22,6 @@ public class GroupView extends View {
   public int paddingRight = 0;
   public int paddingBottom = 0;
 
-  public Float innerViewsScale = null;
-
   public int maxInnerLayer = 0;
 
   public void build(Block block) {
@@ -113,10 +111,6 @@ public class GroupView extends View {
     }
     setReadiness(0);
 
-    if (innerViewsScale != null) {
-      scale *= innerViewsScale;
-    }
-
     width = 0;
     height = 0;
     maxInnerLayer = 0;
@@ -150,9 +144,6 @@ public class GroupView extends View {
 
   @Override
   public void paint(Device device, Painter painter, int painterX, int painterY, float scale) {
-    if (innerViewsScale != null) {
-      scale *= innerViewsScale;
-    }
     for (int i0 = 0; i0 <= maxInnerLayer; i0++) {
       for (int i1 = 0; i1 < innerViews.size(); i1++) {
         View view = innerViews.get(i1);

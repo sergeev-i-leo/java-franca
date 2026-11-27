@@ -2,7 +2,7 @@ package franca.java.ui.views.table;
 
 import java.util.ArrayList;
 
-import franca.java.ui.views.panel.PanelView;
+import franca.java.ui.views.panels.PanelView;
 
 public class TableView extends PanelView {
 
