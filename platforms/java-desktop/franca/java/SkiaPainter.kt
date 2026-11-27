@@ -77,7 +77,7 @@ class SkiaPainter(
     canvas.drawCircle(px, py, pr, paint)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, zoomPercentage: Int) {
     var resolvedFontName = fontName
     var resolvedFontWeight = fontWeight
     var resolvedFontStyle = fontName;
@@ -92,7 +92,7 @@ class SkiaPainter(
         resolvedFontStyle = currentTextStyle.fontStyle
       }
     }
-    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, scale)
+    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, zoomPercentage)
 
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
@@ -105,7 +105,7 @@ class SkiaPainter(
       isAntiAlias = true
     }
     val metrics = font.metrics
-    val baselineY = (y * scale / PRECISION - metrics.ascent)
-    canvas.drawString(text, x * scale / PRECISION, baselineY, font, textPaint)
+    val baselineY = (y * zoomPercentage / (PRECISION * 100) - metrics.ascent)
+    canvas.drawString(text, (x * zoomPercentage / (PRECISION * 100)).toFloat(), baselineY, font, textPaint)
   }
 }

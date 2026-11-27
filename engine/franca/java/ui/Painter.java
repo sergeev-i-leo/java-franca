@@ -40,7 +40,7 @@ public class Painter {
 
   }
 
-  public void paintText(String text, int x, int y, String fontName, String fontWeight, String fontStyle, int color, float scale) {
+  public void paintText(String text, int x, int y, String fontName, String fontWeight, String fontStyle, int color, int zoomPercentage) {
 
   }
 

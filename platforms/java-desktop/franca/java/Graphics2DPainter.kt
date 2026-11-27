@@ -82,7 +82,7 @@ open class Graphics2DPainter(
     graphics2D.fillOval(px - pr, py - pr, pr * 2, pr * 2)
   }
 
-  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, scale: Float) {
+  override fun paintText(text: String, x: Int, y: Int, fontName: String?, fontWeight: String?, fontStyle: String?, color: Int, zoomPercentage: Int) {
     var resolvedFontName = fontName
     var resolvedFontWeight = fontWeight
     var resolvedFontStyle = fontStyle
@@ -97,10 +97,10 @@ open class Graphics2DPainter(
         resolvedFontStyle = currentTextStyle.fontStyle
       }
     }
-    val resolvedFont = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, scale)
+    val resolvedFont = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, zoomPercentage)
     graphics2D.font = resolvedFont
     val metrics = graphics2D.getFontMetrics(resolvedFont)
-    val resolvedY = (y * scale / PRECISION + metrics.ascent).toInt()
+    val resolvedY = (y * zoomPercentage / (PRECISION * 100) + metrics.ascent)
 
     val withOpacity = ((color shr 24) and 0xFF) != 0
     val finalColor = if (withOpacity) {
@@ -110,6 +110,6 @@ open class Graphics2DPainter(
     }
     graphics2D.color = Color(finalColor, true)
 
-    graphics2D.drawString(text, (x * scale / PRECISION).toInt(), resolvedY)
+    graphics2D.drawString(text, x * zoomPercentage / (PRECISION * 100), resolvedY)
   }
 }
