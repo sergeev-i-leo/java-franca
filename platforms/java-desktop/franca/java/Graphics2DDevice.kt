@@ -53,9 +53,9 @@ open class Graphics2DDevice() : Device() {
 
   open fun resolveFont(fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int): Font {
     if (zoomPercentage == 100) {
-      return Font("SansSerif", Font.PLAIN, 18 * Painter.PRECISION)
+      return Font("SansSerif", Font.PLAIN, 18)
     }
 
-    return Font("SansSerif", Font.PLAIN, 18 * Painter.PRECISION * zoomPercentage / 100)
+    return Font("SansSerif", Font.PLAIN, 18 * zoomPercentage / 100)
   }
 }

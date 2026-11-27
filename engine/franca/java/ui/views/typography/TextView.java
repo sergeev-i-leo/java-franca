@@ -78,8 +78,8 @@ public class TextView extends View {
       if (formatItem.fontStyle == null) {
         formatItem.fontStyle = textStyle.fontStyle;
       }
-      formatItem.width = painter.calculateTextWidth(lettersBlock.letters, formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
-      formatItem.fontHeight = painter.calculateFontHeight(formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle);
+      formatItem.width = painter.calculateTextWidth(lettersBlock.letters, formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle, zoomPercentage);
+      formatItem.fontHeight = painter.calculateFontHeight(formatItem.fontName, formatItem.fontWeight, formatItem.fontStyle, zoomPercentage);
     }
 
     lettersViews.clear();
@@ -90,7 +90,7 @@ public class TextView extends View {
       lettersView.left = paddingLeft;
       lettersView.top = paddingTop;
       lettersView.letters = "";
-      lettersView.height = painter.calculateFontHeight(textStyle.fontName, textStyle.fontWeight, textStyle.fontStyle);
+      lettersView.height = painter.calculateFontHeight(textStyle.fontName, textStyle.fontWeight, textStyle.fontStyle, zoomPercentage);
 
       width = paddingLeft + lettersView.width + paddingRight;
       height = paddingTop + lettersView.height + paddingBottom;
