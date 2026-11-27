@@ -33,7 +33,7 @@ class SkiaPainter(
       }
     }
 
-    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
+    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 0)
     if (zoomPercentage == 100) {
       return font.measureTextWidth(text).toInt()
     }
@@ -56,7 +56,7 @@ class SkiaPainter(
       }
     }
 
-    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
+    val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 0)
     if (zoomPercentage == 100) {
       return font.metrics.height.toInt()
     }

@@ -39,7 +39,7 @@ open class Graphics2DPainter(
       }
     }
 
-    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
+    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 0)
     val metrics = graphics2D.getFontMetrics(font)
     if (zoomPercentage == 100) {
       return metrics.stringWidth(text)
@@ -64,7 +64,7 @@ open class Graphics2DPainter(
       }
     }
 
-    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
+    val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 0)
     val metrics = graphics2D.getFontMetrics(font)
     if (zoomPercentage == 100) {
       return metrics.height
