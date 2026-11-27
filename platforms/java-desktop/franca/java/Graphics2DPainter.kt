@@ -19,7 +19,7 @@ open class Graphics2DPainter(
     )
   }
 
-  override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?): Int {
+  override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int): Int {
     if (text == null) {
       return 0
     }
@@ -41,10 +41,13 @@ open class Graphics2DPainter(
 
     val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
     val metrics = graphics2D.getFontMetrics(font)
-    return metrics.stringWidth(text)
+    if (zoomPercentage == 100) {
+      return metrics.stringWidth(text)
+    }
+    return metrics.stringWidth(text) * zoomPercentage / 100;
   }
 
-  override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?): Int {
+  override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int): Int {
 
     var resolvedFontName = fontName
     var resolvedFontWeight = fontWeight
@@ -63,7 +66,10 @@ open class Graphics2DPainter(
 
     val font = graphics2DDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
     val metrics = graphics2D.getFontMetrics(font)
-    return metrics.height
+    if (zoomPercentage == 100) {
+      return metrics.height
+    }
+    return metrics.height * zoomPercentage / 100
   }
 
   override fun fillCircle(x: Int, y: Int, radius: Int, color: Int) {

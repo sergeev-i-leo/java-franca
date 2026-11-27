@@ -13,7 +13,7 @@ class SkiaPainter(
     this.canvas = canvas
   }
 
-  override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?): Int {
+  override fun calculateTextWidth(text: String?, fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int): Int {
     if (text == null) {
       return 0
     }
@@ -34,10 +34,13 @@ class SkiaPainter(
     }
 
     val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
-    return font.measureTextWidth(text).toInt()
+    if (zoomPercentage == 100) {
+      return font.measureTextWidth(text).toInt()
+    }
+    return (font.measureTextWidth(text) * zoomPercentage / 100).toInt();
   }
 
-  override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?): Int {
+  override fun calculateFontHeight(fontName: String?, fontWeight: String?, fontStyle: String?, zoomPercentage: Int): Int {
     var resolvedFontName = fontName
     var resolvedFontWeight = fontWeight
     var resolvedFontStyle = fontName;
@@ -54,7 +57,10 @@ class SkiaPainter(
     }
 
     val font = skiaDevice.resolveFont(resolvedFontName, resolvedFontWeight, resolvedFontStyle, 100)
-    return font.metrics.height.toInt()
+    if (zoomPercentage == 100) {
+      return font.metrics.height.toInt()
+    }
+    return (font.metrics.height * zoomPercentage / 100).toInt()
   }
 
   override fun fillCircle(x: Int, y: Int, radius: Int, color: Int) {

@@ -1,6 +1,7 @@
 package franca.java.ui;
 
 import franca.java.ui.animations.Animation;
+import franca.java.ui.views.typography.TextStyle;
 
 /**
  * Device manages all animations.

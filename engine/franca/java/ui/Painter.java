@@ -18,14 +18,6 @@ public class Painter {
 
   public TextStyle currentTextStyle = null;
 
-  public int calculateTextWidth(String text, String fontName, String fontWeight, String fontStyle) {
-    return 0;
-  }
-
-  public int calculateFontHeight(String fontName, String fontWeight, String fontStyle) {
-    return 0;
-  }
-
   public int setCurrentOpacity(int opacity) {
     int currentOpacity = this.currentOpacity;
     this.currentOpacity = opacity;
@@ -33,7 +25,15 @@ public class Painter {
   }
 
   public void setCurrentTextStyle(TextStyle textStyle) {
-    this.currentTextStyle = textStyle;
+    currentTextStyle = textStyle;
+  }
+
+  public int calculateTextWidth(String text, String fontName, String fontWeight, String fontStyle, int zoomPercentage) {
+    return 0;
+  }
+
+  public int calculateFontHeight(String fontName, String fontWeight, String fontStyle, int zoomPercentage) {
+    return 0;
   }
 
   public void fillCircle(int x, int y, int radius, int color) {
@@ -41,7 +41,6 @@ public class Painter {
   }
 
   public void paintText(String text, int x, int y, String fontName, String fontWeight, String fontStyle, int color, int zoomPercentage) {
-
   }
 
 }
