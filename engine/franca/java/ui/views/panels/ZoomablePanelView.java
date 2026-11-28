@@ -25,6 +25,10 @@ public class ZoomablePanelView extends PanelView {
     width = availableWidth;
     height = availableHeight;
 
+    int viewTop = paddingTop;
+    availableWidth -= paddingLeft + paddingRight;
+    availableHeight -= paddingTop + paddingBottom;
+
     if (innerViewsZoomPercentage != 100) {
       zoomPercentage = zoomPercentage * innerViewsZoomPercentage / 100;
       availableWidth = availableWidth * innerViewsZoomPercentage / 100;
@@ -32,8 +36,6 @@ public class ZoomablePanelView extends PanelView {
     }
 
     maxInnerLayer = 0;
-
-    int viewTop = paddingTop;
 
     for (int i = 0; i < innerViews.size(); i++) {
       View view = innerViews.get(i);

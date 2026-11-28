@@ -116,6 +116,8 @@ public class GroupView extends View {
     maxInnerLayer = 0;
 
     int viewTop = paddingTop;
+    availableWidth -= paddingLeft + paddingRight;
+    availableHeight -= paddingTop + paddingBottom;
 
     for (int i = 0; i < innerViews.size(); i++) {
       View view = innerViews.get(i);

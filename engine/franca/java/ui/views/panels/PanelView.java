@@ -10,15 +10,10 @@ public class PanelView extends GroupView {
   public static int SCROLLABLE_HORIZONTALLY = 1;
   public static int SCROLLABLE_VERTICALLY = 2;
 
-  public int paddingLeft = 0;
-  public int paddingTop = 0;
-  public int paddingRight = 0;
-  public int paddingBottom = 0;
-
   public int scrollable;
 
-  public int xOffset = 0;
-  public int yOffset = 0;
+  public int viewportX = 0;
+  public int viewportY = 0;
 
   public PanelView(int scrollable) {
     super();
@@ -48,7 +43,7 @@ public class PanelView extends GroupView {
       for (int i1 = 0; i1 < innerViews.size(); i1++) {
         View view = innerViews.get(i1);
         if (view.layer == i0) {
-          view.paint(device, painter, painterX + left + paddingLeft + xOffset, painterY + top + paddingTop + yOffset, zoomPercentage);
+          view.paint(device, painter, painterX + left + paddingLeft + viewportX, painterY + top + paddingTop + viewportY, zoomPercentage);
         }
       }
     }
