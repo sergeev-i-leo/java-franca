@@ -102,14 +102,7 @@ public class GroupView extends View {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
-    if (isReady()) {
-      return;
-    }
-    if (getReadiness() == 0) {
-      return;
-    }
-    setReadiness(0);
+  public void prepare(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
 
     width = 0;
     height = 0;
@@ -140,8 +133,6 @@ public class GroupView extends View {
 
       viewTop += view.height;
     }
-
-    setReadiness(1);
   }
 
   @Override

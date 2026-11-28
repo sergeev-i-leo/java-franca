@@ -31,14 +31,7 @@ public class TextView extends View {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
-    if (isReady()) {
-      return;
-    }
-    if (getReadiness() == 0) {
-      return;
-    }
-    setReadiness(0);
+  public void prepare(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
 
     lettersViews.clear();
 
@@ -95,7 +88,6 @@ public class TextView extends View {
       width = paddingLeft + lettersView.width + paddingRight;
       height = paddingTop + lettersView.height + paddingBottom;
 
-      setReadiness(1);
       return;
     }
 
@@ -147,8 +139,6 @@ public class TextView extends View {
     }
 
     height += paddingBottom;
-
-    setReadiness(1);
   }
 
   public void buildLettersViews(ArrayList<FormatItem> formatItems, int i0, int i1) {

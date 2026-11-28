@@ -31,14 +31,18 @@ public class View {
     }
     setReadiness(0);
 
-    width = 0;
-    height = 0;
+    prepare(device, painter, availableWidth, availableHeight, zoomPercentage);
 
     setReadiness(1);
   }
 
   public boolean isReady() {
     return readiness == 1;
+  }
+
+  public void prepare(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
+    width = 0;
+    height = 0;
   }
 
   public void paint(Device device, Painter painter, int painterX, int painterY, int zoomPercentage) {

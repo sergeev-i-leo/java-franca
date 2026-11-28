@@ -21,9 +21,9 @@ public class PanelView extends GroupView {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
+  public void prepare(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
 
-    super.getReady(device, painter, availableWidth, availableHeight, zoomPercentage);
+    super.prepare(device, painter, availableWidth, availableHeight, zoomPercentage);
 
     if (scrollable == 0) {
       width = availableWidth;

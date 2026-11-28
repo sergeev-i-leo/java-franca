@@ -13,14 +13,7 @@ public class ZoomablePanelView extends PanelView {
   }
 
   @Override
-  public void getReady(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
-    if (isReady()) {
-      return;
-    }
-    if (getReadiness() == 0) {
-      return;
-    }
-    setReadiness(0);
+  public void prepare(Device device, Painter painter, int availableWidth, int availableHeight, int zoomPercentage) {
 
     width = availableWidth;
     height = availableHeight;
@@ -55,8 +48,6 @@ public class ZoomablePanelView extends PanelView {
 
       viewTop += view.height;
     }
-
-    setReadiness(1);
   }
 
   @Override
